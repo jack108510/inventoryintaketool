@@ -21221,6 +21221,174 @@
             setTimeout(hideStatus, 3000);
         }
 
+        // Helper function called from onclick - gets button element
+        function addProductToOrderFromButton(button) {
+            try {
+                console.log('🔘 Button clicked:', button);
+                
+                // Make sure we have the button element
+                if (!button) {
+                    console.error('❌ No button provided');
+                    showStatus('Error: Could not find button', 'error');
+                    return;
+                }
+                
+                // Get button from closest if needed (handles icon clicks)
+                if (!button.dataset || !button.dataset.productId) {
+                    button = button.closest('button');
+                }
+                
+                if (!button || !button.dataset || !button.dataset.productId) {
+                    console.error('❌ Could not find button element or data attributes');
+                    showStatus('Error: Could not find product information', 'error');
+                    return;
+                }
+                
+                const productId = button.dataset.productId;
+                const isFromDatabase = button.dataset.productFromDb === 'true';
+                
+                console.log('📦 Adding product:', { productId, isFromDatabase, name: button.dataset.productName });
+                
+                addProductToOrder(productId, isFromDatabase, button);
+            } catch (error) {
+                console.error('❌ Error in addProductToOrderFromButton:', error);
+                showStatus('Error adding product: ' + error.message, 'error');
+            }
+        }
+
+        // Unified function to add any product (manual or database) to the order
+        function addProductToOrder(productId, isFromDatabase, button) {
+            console.log('➕ addProductToOrder called:', { productId, isFromDatabase, hasButton: !!button });
+            let product = null;
+            
+            // Try to get product info from the button's data attributes first (more reliable)
+            if (button && button.dataset && button.dataset.productId) {
+                // Use data from button if available
+                product = {
+                    id: button.dataset.productId || productId,
+                    name: button.dataset.productName || '',
+                    itemNumber: button.dataset.productItemNumber || '',
+                    upcCode: button.dataset.productUpc || '',
+                    size: button.dataset.productSize || '',
+                    notes: '',
+                    fromDatabase: button.dataset.productFromDb === 'true'
+                };
+                console.log('✅ Using button data:', product);
+            } else {
+                console.log('⚠️ Button data not available, using fallback lookup');
+                // Fallback to lookup method
+                if (isFromDatabase) {
+                    // For database products, extract UPC code from the ID (format: 'db_' + upcCode)
+                    const upcCode = productId.startsWith('db_') ? productId.substring(3) : productId;
+                    
+                    // Try to find in productDatabase first (keyed by UPC)
+                    let dbProduct = productDatabase[upcCode];
+                    
+                    // If not found, try itemNumberDatabase (keyed by item number)
+                    if (!dbProduct) {
+                        dbProduct = itemNumberDatabase[upcCode];
+                    }
+                    
+                    // If still not found, try searching by UPC or item number in the search index
+                    if (!dbProduct && productSearchIndex && productSearchIndex.length > 0) {
+                        const searchResult = productSearchIndex.find(item => 
+                            item.upcCode === upcCode || item.itemNumber === upcCode
+                        );
+                        if (searchResult) {
+                            dbProduct = {
+                                name: searchResult.name,
+                                itemNumber: searchResult.itemNumber,
+                                upcCode: searchResult.upcCode
+                            };
+                        }
+                    }
+                    
+                    if (dbProduct) {
+                        product = {
+                            id: productId,
+                            name: dbProduct.name || '',
+                            itemNumber: dbProduct.itemNumber || '',
+                            upcCode: dbProduct.upcCode || upcCode,
+                            size: '',
+                            notes: '',
+                            fromDatabase: true
+                        };
+                    }
+                } else {
+                    // For manual products, find in manualProducts array
+                    product = manualProducts.find(item => item.id === productId);
+                }
+            }
+            
+            if (!product || !product.name) {
+                console.error('❌ Product not found or missing name:', product);
+                showStatus('Product not found', 'error');
+                return;
+            }
+            
+            console.log('✅ Product found, checking for existing item in scanned items...');
+            
+            // Check if item already exists in scanned items (by itemNumber or UPC)
+            const existingItem = scannedItems.find(item => 
+                (product.itemNumber && item.itemNumber === product.itemNumber) ||
+                (product.upcCode && item.upcCode === product.upcCode)
+            );
+            
+            if (existingItem) {
+                // Increment quantity if item already exists
+                existingItem.quantity = (existingItem.quantity || 1) + 1;
+                existingItem.updatedAt = new Date().toISOString();
+                saveData();
+                renderTable();
+                showStatus(`${product.name} quantity increased to ${existingItem.quantity}`, 'success');
+                setTimeout(hideStatus, 3000);
+                return;
+            }
+            
+            // Create new scanned item
+            const displayName = product.size 
+                ? `${product.name} (${product.size})` 
+                : product.name;
+            
+            const newItem = {
+                id: 'scan_' + Date.now(),
+                itemNumber: product.itemNumber || '',
+                upcCode: product.upcCode || '',
+                name: displayName || 'Unknown Product',
+                quantity: 1,
+                scannedAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+            
+            // Add optional fields
+            if (product.size) {
+                newItem.size = product.size;
+            }
+            if (product.notes) {
+                newItem.notes = product.notes;
+            }
+            if (product.manualNotes) {
+                newItem.manualNotes = product.manualNotes;
+            }
+            
+            // If missing required fields, open missing product modal
+            if (!newItem.itemNumber && !newItem.upcCode) {
+                openMissingProductModal(newItem);
+                return;
+            }
+            
+            scannedItems.unshift(newItem);
+            console.log('✅ Added to scanned items:', newItem);
+            saveData();
+            renderTable();
+            showStatus(`${newItem.name} added to scanned items`, 'success');
+            setTimeout(hideStatus, 3000);
+        }
+
+        // Make functions globally accessible
+        window.addProductToOrder = addProductToOrder;
+        window.addProductToOrderFromButton = addProductToOrderFromButton;
+
         function renderManualProductList(searchTerm) {
             const grid = document.getElementById('libraryTableBody');
             const totalCountEl = document.getElementById('totalProductsCount');
@@ -21378,7 +21546,15 @@
                         <div class="product-card-header">
                             <h3 class="product-card-name">${escapeHtml(item.name)}</h3>
                             <div class="product-card-actions">
-                                <button class="product-card-btn product-card-btn-add" onclick="addManualProductToScans('${item.id}')" title="Add to Scan">
+                                <button class="product-card-btn product-card-btn-add" 
+                                        onclick="event.stopPropagation(); addProductToOrderFromButton(event.currentTarget)" 
+                                        data-product-id="${item.id.replace(/"/g, '&quot;')}"
+                                        data-product-name="${escapeHtml(item.name).replace(/"/g, '&quot;')}"
+                                        data-product-item-number="${(item.itemNumber || '').replace(/"/g, '&quot;')}"
+                                        data-product-upc="${(item.upcCode || '').replace(/"/g, '&quot;')}"
+                                        data-product-size="${(item.size || '').replace(/"/g, '&quot;')}"
+                                        data-product-from-db="${item.fromDatabase ? 'true' : 'false'}"
+                                        title="Add to Order">
                                     <i class="fas fa-plus"></i>
                             </button>
                                 ${item.fromDatabase ? '' : `
