@@ -2887,7 +2887,7 @@
                             id="webhookUrlInput" 
                             class="upload-file-input" 
                             placeholder="Webhook URL"
-                            value="https://jackwilde.app.n8n.cloud/webhook/0efeec17-0878-454e-9f26-691cf6525645"
+                            value="https://flower-pushing-competing-stage.trycloudflare.com/webhook/77f38f4b-d30d-404c-b51c-b83a9626603b"
                             style="font-size: 11px; padding: 6px 8px; border-radius: 4px; border: 1px solid #d1d5db; width: 100%;"
                         >
                     </div>
@@ -23045,13 +23045,13 @@
                 ? webhookUrlInput.value.trim() 
                 : localStorage.getItem('webhookUrl');
             
-            const newDefaultUrl = 'https://jackwilde.app.n8n.cloud/webhook/0efeec17-0878-454e-9f26-691cf6525645';
+            const newDefaultUrl = 'https://flower-pushing-competing-stage.trycloudflare.com/webhook/77f38f4b-d30d-404c-b51c-b83a9626603b';
             
             // Auto-update if using old webhook ID or path
             if (webhookUrl) {
                 let updated = false;
-                if (webhookUrl.includes('1cbe4a45-ae17-403c-a140-3c1f160f101c')) {
-                    webhookUrl = webhookUrl.replace('1cbe4a45-ae17-403c-a140-3c1f160f101c', '0efeec17-0878-454e-9f26-691cf6525645');
+                if (webhookUrl.includes('1cbe4a45-ae17-403c-a140-3c1f160f101c') || webhookUrl.includes('0efeec17-0878-454e-9f26-691cf6525645')) {
+                    webhookUrl = newDefaultUrl;
                     updated = true;
                 }
                 if (webhookUrl.includes('/webhook-test/')) {
@@ -23639,7 +23639,7 @@
         async function sendDataToWebhook() {
             // Get webhook URL from input field or use default
             const webhookUrlInput = document.getElementById('webhookUrlInput');
-            const newWebhookUrl = 'https://jackwilde.app.n8n.cloud/webhook/0efeec17-0878-454e-9f26-691cf6525645';
+            const newWebhookUrl = 'https://flower-pushing-competing-stage.trycloudflare.com/webhook/77f38f4b-d30d-404c-b51c-b83a9626603b';
             
             let webhookUrl = webhookUrlInput && webhookUrlInput.value.trim() 
                 ? webhookUrlInput.value.trim() 
@@ -23657,8 +23657,8 @@
             
             // Check if using old webhook ID or path and update it
             let updated = false;
-            if (webhookUrl.includes('1cbe4a45-ae17-403c-a140-3c1f160f101c')) {
-                webhookUrl = webhookUrl.replace('1cbe4a45-ae17-403c-a140-3c1f160f101c', '0efeec17-0878-454e-9f26-691cf6525645');
+            if (webhookUrl.includes('1cbe4a45-ae17-403c-a140-3c1f160f101c') || webhookUrl.includes('0efeec17-0878-454e-9f26-691cf6525645') || webhookUrl.includes('jackwilde.app.n8n.cloud')) {
+                webhookUrl = newWebhookUrl;
                 updated = true;
             }
             if (webhookUrl.includes('/webhook-test/')) {
@@ -23856,7 +23856,7 @@
                 // Log full payload JSON for debugging - can copy this to test with curl/postman
                 console.log('📋 Full payload JSON (copy this to test):', payloadString);
                 console.log('📋 To test with curl, run this command:');
-                console.log(`curl -X POST https://jackwilde.app.n8n.cloud/webhook/0efeec17-0878-454e-9f26-691cf6525645 -H "Content-Type: application/json" -d '${payloadString.replace(/'/g, "'\\''")}'`);
+                console.log(`curl -X POST ${webhookUrl} -H "Content-Type: application/json" -d '${payloadString.replace(/'/g, "'\\''")}'`);
                 
                 // Also create a minimal test payload to help diagnose
                 const testPayload = {
@@ -23865,7 +23865,7 @@
                     message: "Test payload to verify webhook is working"
                 };
                 console.log('📋 Minimal test payload (use this to test if server accepts basic JSON):', JSON.stringify(testPayload));
-                console.log(`📋 Test with curl: curl -X POST https://jackwilde.app.n8n.cloud/webhook/0efeec17-0878-454e-9f26-691cf6525645 -H "Content-Type: application/json" -d '${JSON.stringify(testPayload).replace(/'/g, "'\\''")}'`);
+                console.log(`📋 Test with curl: curl -X POST ${webhookUrl} -H "Content-Type: application/json" -d '${JSON.stringify(testPayload).replace(/'/g, "'\\''")}'`);
 
                 // Store payload in console for manual inspection
                 console.log('📋 Full payload available in console as: window.lastWebhookPayload');
@@ -24880,7 +24880,7 @@
             const webhookUrlInput = document.getElementById('webhookUrlInput');
             if (webhookUrlInput) {
                 const savedWebhookUrl = localStorage.getItem('webhookUrl');
-                const newDefaultUrl = 'https://jackwilde.app.n8n.cloud/webhook/0efeec17-0878-454e-9f26-691cf6525645';
+                const newDefaultUrl = 'https://flower-pushing-competing-stage.trycloudflare.com/webhook/77f38f4b-d30d-404c-b51c-b83a9626603b';
                 
                 // Always migrate from localhost to cloud URL
                 if (savedWebhookUrl && (savedWebhookUrl.includes('localhost:5678') || savedWebhookUrl.includes('127.0.0.1') || savedWebhookUrl.includes('http://localhost'))) {
