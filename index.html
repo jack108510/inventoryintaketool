@@ -2887,7 +2887,7 @@
                             id="webhookUrlInput" 
                             class="upload-file-input" 
                             placeholder="Webhook URL"
-                            value="https://flower-pushing-competing-stage.trycloudflare.com/webhook/77f38f4b-d30d-404c-b51c-b83a9626603b"
+                            value="https://rvautomation.wildeautomations.com/webhook/77f38f4b-d30d-404c-b51c-b83a9626603b"
                             style="font-size: 11px; padding: 6px 8px; border-radius: 4px; border: 1px solid #d1d5db; width: 100%;"
                         >
                     </div>
@@ -23045,7 +23045,7 @@
                 ? webhookUrlInput.value.trim() 
                 : localStorage.getItem('webhookUrl');
             
-            const newDefaultUrl = 'https://flower-pushing-competing-stage.trycloudflare.com/webhook/77f38f4b-d30d-404c-b51c-b83a9626603b';
+            const newDefaultUrl = 'https://rvautomation.wildeautomations.com/webhook/77f38f4b-d30d-404c-b51c-b83a9626603b';
             
             // Auto-update if using old webhook ID or path
             if (webhookUrl) {
@@ -23639,7 +23639,7 @@
         async function sendDataToWebhook() {
             // Get webhook URL from input field or use default
             const webhookUrlInput = document.getElementById('webhookUrlInput');
-            const newWebhookUrl = 'https://flower-pushing-competing-stage.trycloudflare.com/webhook/77f38f4b-d30d-404c-b51c-b83a9626603b';
+            const newWebhookUrl = 'https://rvautomation.wildeautomations.com/webhook/77f38f4b-d30d-404c-b51c-b83a9626603b';
             
             let webhookUrl = webhookUrlInput && webhookUrlInput.value.trim() 
                 ? webhookUrlInput.value.trim() 
@@ -23694,6 +23694,10 @@
                 sendBtn.disabled = true;
                 sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
             }
+
+            // Declare variables outside try block for error handling
+            let payloadSizeKB = 'unknown';
+            let payloadSizeMB = 'unknown';
 
             try {
                 // Check if running from file:// protocol (which causes CORS issues)
@@ -23788,8 +23792,8 @@
                 // Calculate and log payload size
                 const payloadString = JSON.stringify(payload);
                 const payloadSizeBytes = new Blob([payloadString]).size;
-                const payloadSizeKB = (payloadSizeBytes / 1024).toFixed(2);
-                const payloadSizeMB = (payloadSizeBytes / (1024 * 1024)).toFixed(2);
+                payloadSizeKB = (payloadSizeBytes / 1024).toFixed(2);
+                payloadSizeMB = (payloadSizeBytes / (1024 * 1024)).toFixed(2);
                 
                 console.log(`📦 Payload size: ${payloadSizeKB} KB (${payloadSizeMB} MB)`);
                 console.log(`📦 Payload contains: ${scannedItems.length} items, ${uploadedDocuments.length} documents, ${capturedPhotos.length} photos (metadata only), ${orderForms.length} order forms`);
@@ -24375,22 +24379,27 @@
                 // Provide helpful error messages
                 let errorMessage = error.message;
                 
-                // If it's a 404 error (webhook not registered)
-                if (error.message.includes('404') || error.message.includes('Webhook not found') || error.message.includes('not registered')) {
-                    errorMessage = `Webhook Not Found (404): The webhook at localhost:5678 is not registered or the workflow is not active. ` +
+                // Check for DNS/network errors
+                if (error.message.includes('ERR_NAME_NOT_RESOLVED') || error.message.includes('Failed to fetch') && error.message.includes('net::ERR_NAME_NOT_RESOLVED')) {
+                    errorMessage = `Network Error: Cannot resolve webhook URL "${webhookUrl}". ` +
+                        `The Cloudflare tunnel may be down or the URL is incorrect. ` +
+                        `Please verify the webhook URL is correct and that the tunnel is running. ` +
+                        `If using Cloudflare Tunnel, make sure it's active and the URL matches your tunnel configuration.`;
+                } else if (error.message.includes('404') || error.message.includes('Webhook not found') || error.message.includes('not registered')) {
+                    errorMessage = `Webhook Not Found (404): The webhook at "${webhookUrl}" is not registered or the workflow is not active. ` +
                         `You need to activate the workflow in your automation platform (n8n/Zapier/make.com). ` +
                         `Check the hint in the console above for instructions on how to activate it.`;
                 } else if (error.message.includes('500') || error.message.includes('Server error')) {
-                    errorMessage = `Server Error (500): The webhook server at localhost:5678 received the request but encountered an error processing it. ` +
+                    errorMessage = `Server Error (500): The webhook server at "${webhookUrl}" received the request but encountered an error processing it. ` +
                         `Payload size: ${payloadSizeKB} KB. ` +
-                        `Check the server logs at localhost:5678 for the actual error. ` +
+                        `Check the server logs for the actual error. ` +
                         `The payload JSON is logged in the console above - you can test it manually with curl or Postman.`;
                 } else if (error.message.includes('Failed to fetch') || error.message.includes('CORS')) {
                     errorMessage = 'CORS Error: The webhook server needs to allow cross-origin requests. ';
                     if (window.location.protocol === 'file:') {
                         errorMessage += 'Using no-cors mode should bypass this, but if it still fails, consider running this HTML file from a local server (e.g., `python -m http.server 8000`) instead of opening it directly.';
                     } else {
-                        errorMessage += 'Make sure the server at localhost:5678 has CORS headers configured (Access-Control-Allow-Origin: * or your domain).';
+                        errorMessage += `Make sure the server at "${webhookUrl}" has CORS headers configured (Access-Control-Allow-Origin: * or your domain).`;
                     }
                 }
                 
@@ -24880,7 +24889,7 @@
             const webhookUrlInput = document.getElementById('webhookUrlInput');
             if (webhookUrlInput) {
                 const savedWebhookUrl = localStorage.getItem('webhookUrl');
-                const newDefaultUrl = 'https://flower-pushing-competing-stage.trycloudflare.com/webhook/77f38f4b-d30d-404c-b51c-b83a9626603b';
+                const newDefaultUrl = 'https://rvautomation.wildeautomations.com/webhook/77f38f4b-d30d-404c-b51c-b83a9626603b';
                 
                 // Always migrate from localhost to cloud URL
                 if (savedWebhookUrl && (savedWebhookUrl.includes('localhost:5678') || savedWebhookUrl.includes('127.0.0.1') || savedWebhookUrl.includes('http://localhost'))) {
