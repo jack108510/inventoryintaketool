@@ -2887,7 +2887,7 @@
                             id="webhookUrlInput" 
                             class="upload-file-input" 
                             placeholder="Webhook URL"
-                            value="https://rvautomation.wildeautomations.com/webhook/77f38f4b-d30d-404c-b51c-b83a9626603b"
+                            value="https://jackwilde.app.n8n.cloud/webhook/0efeec17-0878-454e-9f26-691cf6525645"
                             style="font-size: 11px; padding: 6px 8px; border-radius: 4px; border: 1px solid #d1d5db; width: 100%;"
                         >
                     </div>
@@ -23045,7 +23045,7 @@
                 ? webhookUrlInput.value.trim() 
                 : localStorage.getItem('webhookUrl');
             
-            const newDefaultUrl = 'https://rvautomation.wildeautomations.com/webhook/77f38f4b-d30d-404c-b51c-b83a9626603b';
+            const newDefaultUrl = 'https://jackwilde.app.n8n.cloud/webhook/0efeec17-0878-454e-9f26-691cf6525645';
             
             // Auto-update if using old webhook ID or path
             if (webhookUrl) {
@@ -23639,7 +23639,7 @@
         async function sendDataToWebhook() {
             // Get webhook URL from input field or use default
             const webhookUrlInput = document.getElementById('webhookUrlInput');
-            const newWebhookUrl = 'https://rvautomation.wildeautomations.com/webhook/77f38f4b-d30d-404c-b51c-b83a9626603b';
+            const newWebhookUrl = 'https://jackwilde.app.n8n.cloud/webhook/0efeec17-0878-454e-9f26-691cf6525645';
             
             let webhookUrl = webhookUrlInput && webhookUrlInput.value.trim() 
                 ? webhookUrlInput.value.trim() 
@@ -24889,7 +24889,7 @@
             const webhookUrlInput = document.getElementById('webhookUrlInput');
             if (webhookUrlInput) {
                 const savedWebhookUrl = localStorage.getItem('webhookUrl');
-                const newDefaultUrl = 'https://rvautomation.wildeautomations.com/webhook/77f38f4b-d30d-404c-b51c-b83a9626603b';
+                const newDefaultUrl = 'https://jackwilde.app.n8n.cloud/webhook/0efeec17-0878-454e-9f26-691cf6525645';
                 
                 // Always migrate from localhost to cloud URL
                 if (savedWebhookUrl && (savedWebhookUrl.includes('localhost:5678') || savedWebhookUrl.includes('127.0.0.1') || savedWebhookUrl.includes('http://localhost'))) {
