@@ -522,6 +522,122 @@
             }
         }
 
+        /* Saved Badge - Discreet but obvious indicator */
+        .saved-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+            margin-left: 8px;
+            box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+            animation: fadeInScale 0.3s ease;
+            vertical-align: middle;
+        }
+
+        .saved-badge i {
+            font-size: 10px;
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Saved indicator in upload area */
+        .upload-saved-indicator {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: none;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+            z-index: 10;
+            animation: slideInRight 0.4s ease;
+        }
+
+        .upload-saved-indicator.show {
+            display: flex;
+        }
+
+        .upload-saved-indicator i {
+            font-size: 14px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        /* Order Form Count Badge */
+        .order-form-count-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 4px 8px;
+            font-size: 11px;
+            font-weight: 700;
+            min-width: 24px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+            border: 2px solid white;
+            animation: bounceIn 0.3s ease;
+        }
+
+        .order-form-count-badge.show {
+            display: inline-block !important;
+        }
+
+        @keyframes bounceIn {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
         .upload-status {
             margin-top: 15px;
             padding: 10px;
@@ -2852,9 +2968,10 @@
                         <i class="fas fa-bolt"></i> Quick Actions
                     </h2>
                     <div class="button-group" style="justify-content: center; gap: 6px; flex-wrap: wrap;">
-                        <button class="btn btn-primary" id="wddcOrderBtn" onclick="toggleWDDCOrderSection()" style="width: 100%;">
+                        <button class="btn btn-primary" id="wddcOrderBtn" onclick="toggleWDDCOrderSection()" style="width: 100%; position: relative;">
                             <i class="fas fa-file-upload"></i>
                             <span>Upload Order Form</span>
+                            <span class="order-form-count-badge" id="orderFormCountBadge" style="display: none;">0</span>
                         </button>
                         
                         <button class="btn btn-success" id="barcodeScannerBtn" onclick="toggleBarcodeScannerSection()" style="width: 100%;">
@@ -2933,7 +3050,11 @@
                 <!-- Upload Tab -->
                 <div class="wddc-tab-content active" id="wddcUploadTab">
                     <div class="wddc-upload-container">
-                        <div class="wddc-dropzone" id="uploadDropzone">
+                        <div class="wddc-dropzone" id="uploadDropzone" style="position: relative;">
+                            <div class="upload-saved-indicator" id="uploadSavedIndicator">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Saved to Site</span>
+                            </div>
                             <div class="wddc-dropzone-content">
                                 <div class="wddc-dropzone-icon">
                                     <i class="fas fa-cloud-upload-alt"></i>
@@ -20656,6 +20777,43 @@
             }, 150);
         }
 
+        // Save barcode-to-product mapping permanently
+        function saveBarcodeMapping(barcode, product) {
+            try {
+                const mappingKey = 'barcodeProductMappings';
+                let mappings = JSON.parse(localStorage.getItem(mappingKey) || '{}');
+                
+                // Store mapping: barcode -> product info
+                mappings[barcode] = {
+                    productId: product.id,
+                    productName: product.name,
+                    itemNumber: product.itemNumber || '',
+                    upcCode: product.upcCode || '',
+                    size: product.size || '',
+                    notes: product.notes || '',
+                    fromDatabase: product.fromDatabase || false,
+                    mappedAt: new Date().toISOString()
+                };
+                
+                localStorage.setItem(mappingKey, JSON.stringify(mappings));
+                console.log('💾 Saved barcode mapping:', barcode, '->', product.name);
+            } catch (error) {
+                console.error('Error saving barcode mapping:', error);
+            }
+        }
+
+        // Load barcode-to-product mapping
+        function loadBarcodeMapping(barcode) {
+            try {
+                const mappingKey = 'barcodeProductMappings';
+                const mappings = JSON.parse(localStorage.getItem(mappingKey) || '{}');
+                return mappings[barcode] || null;
+            } catch (error) {
+                console.error('Error loading barcode mapping:', error);
+                return null;
+            }
+        }
+
         // Lookup product information by UPC Code OR Item #
         // This function can match either a UPC Code or an Item Number
         function lookupProduct(code) {
@@ -20667,7 +20825,57 @@
             console.log('📦 Item # database:', Object.keys(itemNumberDatabase).length, 'items');
             console.log('📚 Manual product library:', manualProducts.length, 'items');
             
-            // FIRST: Check manual product library (user-saved products)
+            // FIRST: Check saved barcode mappings (permanently linked codes)
+            const savedMapping = loadBarcodeMapping(normalizedCode);
+            if (savedMapping) {
+                console.log('✅ Found in saved barcode mappings:', savedMapping);
+                // Try to find the actual product from library or database
+                let product = null;
+                
+                if (savedMapping.fromDatabase) {
+                    // Find in database
+                    const dbProduct = productDatabase[savedMapping.upcCode] || itemNumberDatabase[savedMapping.itemNumber];
+                    if (dbProduct) {
+                        product = {
+                            itemNumber: dbProduct.itemNumber || savedMapping.itemNumber,
+                            name: dbProduct.name || savedMapping.productName,
+                            upcCode: dbProduct.upcCode || savedMapping.upcCode || normalizedCode,
+                            notes: savedMapping.notes
+                        };
+                    }
+                } else {
+                    // Find in manual products
+                    product = manualProducts.find(p => 
+                        p.id === savedMapping.productId ||
+                        (p.itemNumber && p.itemNumber === savedMapping.itemNumber) ||
+                        (p.upcCode && p.upcCode === savedMapping.upcCode)
+                    );
+                    if (product) {
+                        const fullName = product.size ? `${product.name} (${product.size})` : product.name;
+                        product = {
+                            itemNumber: product.itemNumber || savedMapping.itemNumber,
+                            name: fullName,
+                            upcCode: product.upcCode || savedMapping.upcCode || normalizedCode,
+                            notes: product.notes || savedMapping.notes
+                        };
+                    }
+                }
+                
+                // If product found, return it; otherwise use saved mapping data
+                if (product) {
+                    return product;
+                } else {
+                    // Fallback to saved mapping data
+                    return {
+                        itemNumber: savedMapping.itemNumber || normalizedCode,
+                        name: savedMapping.productName,
+                        upcCode: savedMapping.upcCode || normalizedCode,
+                        notes: savedMapping.notes
+                    };
+                }
+            }
+            
+            // SECOND: Check manual product library (user-saved products)
             // This allows users to save custom products that will be remembered
             for (const product of manualProducts) {
                 // Check by Item Number
@@ -20810,12 +21018,27 @@
             };
 
             if (!newItem.name) {
-                openMissingProductModal(newItem);
+                // Store the scanned barcode to link it to a product from the library
+                pendingScannedBarcode = barcode;
+                // Open product library instead of missing product modal
+                toggleProductLibrarySection();
+                showStatus('Product not found. Please search and add from the Product Library.', 'error');
                 return;
             }
 
             console.log('✨ Creating new item:', newItem);
             scannedItems.unshift(newItem);
+            
+            // Track product usage for "recently used" feature
+            if (productInfo) {
+                trackProductUsage({
+                    name: productInfo.name,
+                    itemNumber: productInfo.itemNumber,
+                    upcCode: barcode,
+                    fromDatabase: true
+                });
+            }
+            
             saveData();
             
             console.log('✅ Item added with database info');
@@ -21379,15 +21602,301 @@
             
             scannedItems.unshift(newItem);
             console.log('✅ Added to scanned items:', newItem);
+            
+            // If there's a pending scanned barcode, link it to this product permanently
+            if (pendingScannedBarcode) {
+                console.log('🔗 Linking scanned barcode to product:', pendingScannedBarcode, '->', product.name);
+                saveBarcodeMapping(pendingScannedBarcode, product);
+                pendingScannedBarcode = null; // Clear pending barcode
+                showStatus(`${newItem.name} added and barcode linked permanently`, 'success');
+            } else {
+                showStatus(`${newItem.name} added to scanned items`, 'success');
+            }
+            
+            // Track product usage for "recently used" feature
+            trackProductUsage(product);
+            
             saveData();
             renderTable();
-            showStatus(`${newItem.name} added to scanned items`, 'success');
             setTimeout(hideStatus, 3000);
+        }
+
+        // Track product usage for recently used feature
+        function trackProductUsage(product) {
+            try {
+                const usageKey = 'productUsageHistory';
+                let usageHistory = JSON.parse(localStorage.getItem(usageKey) || '{}');
+                
+                // Use UPC code or item number as key, fallback to product ID
+                const productKey = product.upcCode || product.itemNumber || product.id;
+                if (!productKey) return;
+                
+                // Update usage timestamp
+                usageHistory[productKey] = {
+                    timestamp: new Date().toISOString(),
+                    name: product.name || '',
+                    upcCode: product.upcCode || '',
+                    itemNumber: product.itemNumber || '',
+                    fromDatabase: product.fromDatabase || false
+                };
+                
+                // Keep only last 1000 entries to prevent localStorage bloat
+                const entries = Object.entries(usageHistory);
+                if (entries.length > 1000) {
+                    // Sort by timestamp and keep most recent 1000
+                    const sorted = entries.sort((a, b) => 
+                        new Date(b[1].timestamp) - new Date(a[1].timestamp)
+                    );
+                    usageHistory = Object.fromEntries(sorted.slice(0, 1000));
+                }
+                
+                localStorage.setItem(usageKey, JSON.stringify(usageHistory));
+            } catch (error) {
+                console.error('Error tracking product usage:', error);
+            }
+        }
+
+        // Get recently used products (top 25)
+        function getRecentlyUsedProducts(limit = 25) {
+            try {
+                const usageKey = 'productUsageHistory';
+                const usageHistory = JSON.parse(localStorage.getItem(usageKey) || '{}');
+                
+                if (Object.keys(usageHistory).length === 0) {
+                    return null; // No usage history
+                }
+                
+                // Sort by timestamp (most recent first)
+                const entries = Object.entries(usageHistory)
+                    .sort((a, b) => new Date(b[1].timestamp) - new Date(a[1].timestamp))
+                    .slice(0, limit);
+                
+                // Convert to product format
+                return entries.map(([key, usage]) => {
+                    // Try to find the product in database or manual products
+                    let product = null;
+                    
+                    if (usage.fromDatabase) {
+                        // Find in database
+                        const upcCode = usage.upcCode || key;
+                        const dbProduct = productDatabase[upcCode] || itemNumberDatabase[upcCode];
+                        if (dbProduct) {
+                            product = {
+                                id: 'db_' + upcCode,
+                                name: dbProduct.name || usage.name,
+                                itemNumber: dbProduct.itemNumber || usage.itemNumber,
+                                upcCode: dbProduct.upcCode || upcCode,
+                                size: '',
+                                notes: '',
+                                createdAt: null,
+                                fromDatabase: true,
+                                lastUsed: usage.timestamp
+                            };
+                        }
+                    } else {
+                        // Find in manual products
+                        product = manualProducts.find(p => 
+                            (p.upcCode && p.upcCode === key) || 
+                            (p.itemNumber && p.itemNumber === key) ||
+                            p.id === key
+                        );
+                        if (product) {
+                            product = { ...product, lastUsed: usage.timestamp };
+                        }
+                    }
+                    
+                    // If product not found, create from usage data
+                    if (!product) {
+                        product = {
+                            id: 'usage_' + key,
+                            name: usage.name || 'Unknown Product',
+                            itemNumber: usage.itemNumber || '',
+                            upcCode: usage.upcCode || key,
+                            size: '',
+                            notes: '',
+                            createdAt: null,
+                            fromDatabase: usage.fromDatabase || false,
+                            lastUsed: usage.timestamp
+                        };
+                    }
+                    
+                    return product;
+                }).filter(p => p !== null);
+            } catch (error) {
+                console.error('Error getting recently used products:', error);
+                return null;
+            }
+        }
+
+        // Get random products from database (fallback when no usage history)
+        function getRandomProducts(limit = 25) {
+            try {
+                const allProducts = Object.keys(productDatabase);
+                if (allProducts.length === 0) return [];
+                
+                // Shuffle and take limit
+                const shuffled = [...allProducts].sort(() => Math.random() - 0.5);
+                const selected = shuffled.slice(0, Math.min(limit, allProducts.length));
+                
+                return selected.map(upcCode => {
+                    const dbProduct = productDatabase[upcCode];
+                    return {
+                        id: 'db_' + upcCode,
+                        name: dbProduct.name || '',
+                        itemNumber: dbProduct.itemNumber || '',
+                        upcCode: upcCode,
+                        size: '',
+                        notes: '',
+                        createdAt: null,
+                        fromDatabase: true
+                    };
+                });
+            } catch (error) {
+                console.error('Error getting random products:', error);
+                return [];
+            }
         }
 
         // Make functions globally accessible
         window.addProductToOrder = addProductToOrder;
         window.addProductToOrderFromButton = addProductToOrderFromButton;
+
+        // Fuzzy search with word-based matching and relevance scoring
+        function fuzzySearchScore(searchTerm, text) {
+            if (!searchTerm || !text) return 0;
+            
+            const searchLower = searchTerm.toLowerCase().trim();
+            const textLower = text.toLowerCase().trim();
+            
+            // Exact match gets highest score
+            if (textLower === searchLower) return 1000;
+            
+            // Starts with gets very high score
+            if (textLower.startsWith(searchLower)) return 800;
+            
+            // Word-based matching - split into words
+            const searchWords = searchLower.split(/\s+/).filter(w => w.length > 0);
+            const textWords = textLower.split(/\s+/).filter(w => w.length > 0);
+            
+            if (searchWords.length === 0) return 0;
+            
+            let score = 0;
+            let matchedWords = 0;
+            
+            // Check each search word against text words
+            for (const searchWord of searchWords) {
+                let bestMatch = 0;
+                
+                for (const textWord of textWords) {
+                    // Exact word match
+                    if (textWord === searchWord) {
+                        bestMatch = Math.max(bestMatch, 100);
+                    }
+                    // Word starts with search term
+                    else if (textWord.startsWith(searchWord)) {
+                        bestMatch = Math.max(bestMatch, 80);
+                    }
+                    // Word contains search term
+                    else if (textWord.includes(searchWord)) {
+                        bestMatch = Math.max(bestMatch, 50);
+                    }
+                    // Fuzzy match - check if similar (for typos)
+                    else {
+                        const similarity = calculateSimilarity(searchWord, textWord);
+                        if (similarity > 0.7) {
+                            bestMatch = Math.max(bestMatch, similarity * 40);
+                        }
+                    }
+                }
+                
+                // Also check if search word appears as substring anywhere
+                if (textLower.includes(searchWord)) {
+                    bestMatch = Math.max(bestMatch, 30);
+                }
+                
+                if (bestMatch > 0) {
+                    score += bestMatch;
+                    matchedWords++;
+                }
+            }
+            
+            // Bonus for matching all words
+            if (matchedWords === searchWords.length) {
+                score *= 1.5;
+            }
+            
+            // Penalty if not all words matched
+            const matchRatio = matchedWords / searchWords.length;
+            score *= matchRatio;
+            
+            return Math.round(score);
+        }
+
+        // Calculate similarity between two strings (Levenshtein-based)
+        function calculateSimilarity(str1, str2) {
+            if (str1 === str2) return 1;
+            if (str1.length === 0 || str2.length === 0) return 0;
+            
+            const longer = str1.length > str2.length ? str1 : str2;
+            const shorter = str1.length > str2.length ? str2 : str1;
+            
+            // If one string is much longer, similarity is low
+            if (longer.length > shorter.length * 2) return 0;
+            
+            // Simple similarity: check how many characters match
+            let matches = 0;
+            const minLen = Math.min(str1.length, str2.length);
+            
+            for (let i = 0; i < minLen; i++) {
+                if (str1[i] === str2[i]) matches++;
+            }
+            
+            // Also check if one contains the other
+            if (longer.includes(shorter)) {
+                return 0.8;
+            }
+            
+            // Character-based similarity
+            const charSimilarity = matches / Math.max(str1.length, str2.length);
+            
+            // Levenshtein distance for typo tolerance
+            const distance = levenshteinDistance(str1, str2);
+            const maxLen = Math.max(str1.length, str2.length);
+            const levenshteinSimilarity = 1 - (distance / maxLen);
+            
+            // Combine both metrics
+            return (charSimilarity * 0.4 + levenshteinSimilarity * 0.6);
+        }
+
+        // Levenshtein distance calculation for typo tolerance
+        function levenshteinDistance(str1, str2) {
+            const m = str1.length;
+            const n = str2.length;
+            
+            // Create a matrix
+            const dp = Array(m + 1).fill(null).map(() => Array(n + 1).fill(0));
+            
+            // Initialize base cases
+            for (let i = 0; i <= m; i++) dp[i][0] = i;
+            for (let j = 0; j <= n; j++) dp[0][j] = j;
+            
+            // Fill the matrix
+            for (let i = 1; i <= m; i++) {
+                for (let j = 1; j <= n; j++) {
+                    if (str1[i - 1] === str2[j - 1]) {
+                        dp[i][j] = dp[i - 1][j - 1];
+                    } else {
+                        dp[i][j] = Math.min(
+                            dp[i - 1][j] + 1,     // deletion
+                            dp[i][j - 1] + 1,     // insertion
+                            dp[i - 1][j - 1] + 1  // substitution
+                        );
+                    }
+                }
+            }
+            
+            return dp[m][n];
+        }
 
         function renderManualProductList(searchTerm) {
             const grid = document.getElementById('libraryTableBody');
@@ -21420,58 +21929,97 @@
             let totalAvailable = 0;
             
             if (searchTermNormalized && searchTermNormalized.length > 0) {
-                // SEARCH MODE: Search both user products and database products
+                // SEARCH MODE: Search both user products and database products with fuzzy matching
                 
-                // 1. Search user-added products (always search these, even with short terms)
-                const manualFiltered = userProductsOnly.filter(item => {
-                    const haystack = `${item.name || ''} ${item.size || ''} ${item.notes || ''} ${item.itemNumber || ''} ${item.upcCode || ''}`.toLowerCase();
-                    return haystack.includes(searchTermNormalized);
-                });
+                // 1. Search user-added products with fuzzy matching (always search these, even with short terms)
+                const manualFilteredWithScores = userProductsOnly.map(item => {
+                    const searchText = `${item.name || ''} ${item.size || ''} ${item.notes || ''} ${item.itemNumber || ''} ${item.upcCode || ''}`;
+                    const score = fuzzySearchScore(searchTermNormalized, searchText);
+                    return { item, score };
+                }).filter(result => result.score > 0); // Only include items with a match score
                 
-                // 2. Search productDatabase using search index (much faster!)
+                // 2. Search productDatabase using search index with fuzzy matching
                 // OPTIMIZATION: Only search database if query is at least 2 characters
                 // Limit results to 50 for better performance
-                const databaseFiltered = [];
+                const databaseFilteredWithScores = [];
                 const MAX_DATABASE_RESULTS = 50;
                 
                 if (searchTermNormalized.length >= 2) {
-                    // Use pre-built search index instead of iterating productDatabase
-                    // This avoids repeated string concatenation and toLowerCase() calls
+                    // Use pre-built search index with fuzzy matching
                     for (let i = 0; i < productSearchIndex.length; i++) {
                         // Early exit if we have enough results
-                        if (databaseFiltered.length >= MAX_DATABASE_RESULTS) break;
+                        if (databaseFilteredWithScores.length >= MAX_DATABASE_RESULTS * 2) break; // Get more candidates for scoring
                         
                         const indexedItem = productSearchIndex[i];
-                        // Use pre-normalized searchText (already lowercased)
-                        if (indexedItem.searchText.includes(searchTermNormalized)) {
-                            databaseFiltered.push({
-                                id: 'db_' + indexedItem.upcCode,
-                                name: indexedItem.name,
-                                size: '',
-                                notes: '',
-                                upcCode: indexedItem.upcCode,
-                                itemNumber: indexedItem.itemNumber,
-                                createdAt: null,
-                                fromDatabase: true
+                        // Use fuzzy search score instead of simple includes
+                        const score = fuzzySearchScore(searchTermNormalized, indexedItem.searchText);
+                        
+                        if (score > 0) {
+                            databaseFilteredWithScores.push({
+                                item: {
+                                    id: 'db_' + indexedItem.upcCode,
+                                    name: indexedItem.name,
+                                    size: '',
+                                    notes: '',
+                                    upcCode: indexedItem.upcCode,
+                                    itemNumber: indexedItem.itemNumber,
+                                    createdAt: null,
+                                    fromDatabase: true
+                                },
+                                score: score
                             });
                         }
                     }
                 }
                 
-                // Combine and sort (user products first, then database)
-                filteredList = [...manualFiltered, ...databaseFiltered].sort((a, b) => {
-                    // Sort: user products first, then database products
-                    if (a.fromDatabase !== b.fromDatabase) {
-                        return a.fromDatabase ? 1 : -1;
+                // Sort by score (highest first) and take top results
+                databaseFilteredWithScores.sort((a, b) => b.score - a.score);
+                const topDatabaseResults = databaseFilteredWithScores.slice(0, MAX_DATABASE_RESULTS);
+                
+                // Combine all results with scores
+                const allResults = [
+                    ...manualFilteredWithScores.map(r => ({ ...r.item, score: r.score, fromDatabase: false })),
+                    ...topDatabaseResults.map(r => ({ ...r.item, score: r.score }))
+                ];
+                
+                // Sort by: user products first (if scores are close), then by score (highest first)
+                filteredList = allResults.sort((a, b) => {
+                    // If scores are very close (within 10%), prioritize user products
+                    const scoreDiff = Math.abs(a.score - b.score);
+                    if (scoreDiff < Math.max(a.score, b.score) * 0.1) {
+                        if (a.fromDatabase !== b.fromDatabase) {
+                            return a.fromDatabase ? 1 : -1;
+                        }
                     }
-                    return (a.name || '').localeCompare(b.name || '');
+                    // Otherwise sort by score (highest first)
+                    return b.score - a.score;
+                }).map(result => {
+                    // Remove score from final result (it was just for sorting)
+                    const { score, ...item } = result;
+                    return item;
                 });
                 
                 totalAvailable = userProductsOnly.length + Object.keys(productDatabase).length;
             } else {
-                // NO SEARCH: Only show user-added products, NEVER database products
-                filteredList = userProductsOnly;
-                totalAvailable = userProductsOnly.length;
+                // NO SEARCH: Show recently used products (top 25), or random products if no usage history
+                const recentlyUsed = getRecentlyUsedProducts(25);
+                
+                if (recentlyUsed && recentlyUsed.length > 0) {
+                    // Show recently used products
+                    filteredList = recentlyUsed;
+                    totalAvailable = userProductsOnly.length + Object.keys(productDatabase).length;
+                } else {
+                    // No usage history - show random products from database
+                    const randomProducts = getRandomProducts(25);
+                    if (randomProducts.length > 0) {
+                        filteredList = randomProducts;
+                        totalAvailable = userProductsOnly.length + Object.keys(productDatabase).length;
+                    } else {
+                        // Fallback to user products only
+                        filteredList = userProductsOnly;
+                        totalAvailable = userProductsOnly.length;
+                    }
+                }
             }
 
             // Update stats
@@ -22784,9 +23332,27 @@
                     }
                     
                     renderOrderForms();
+                    updateOrderFormCount();
                 } catch (err) {
                     console.error('Error loading order forms:', err);
                     orderForms = [];
+                    updateOrderFormCount();
+                }
+            }
+        }
+
+        // Update order form count badge
+        function updateOrderFormCount() {
+            const badge = document.getElementById('orderFormCountBadge');
+            if (badge) {
+                const count = orderForms.length;
+                if (count > 0) {
+                    badge.textContent = count;
+                    badge.classList.add('show');
+                    badge.style.display = 'inline-block';
+                } else {
+                    badge.classList.remove('show');
+                    badge.style.display = 'none';
                 }
             }
         }
@@ -22843,14 +23409,25 @@
                 return;
             }
 
-            orderFormsBody.innerHTML = orderForms.map((form, index) => `
+            orderFormsBody.innerHTML = orderForms.map((form, index) => {
+                // Check if form is saved (has dataUrl in Map or IndexedDB)
+                const hasDataUrl = orderFormDataUrls.has(form.id) || form.dataUrl;
+                const isSaved = hasDataUrl || form.publicUrl;
+                
+                return `
                 <tr>
                     <td>
                         <i class="fas ${form.type === 'photo' ? 'fa-camera' : 'fa-file-upload'}" style="color: ${form.type === 'photo' ? '#10b981' : '#3b82f6'};"></i>
                         ${form.type === 'photo' ? 'Photo' : 'File'}
                     </td>
-                    <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${form.name}">
+                    <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; position: relative;" title="${form.name}">
                         ${form.name}
+                        ${isSaved ? `
+                            <span class="saved-badge" title="Saved to site">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Saved</span>
+                            </span>
+                        ` : ''}
                     </td>
                     <td>${formatFileSize(form.size)}</td>
                     <td>${new Date(form.date).toLocaleString()}</td>
@@ -22876,7 +23453,8 @@
                         </button>
                     </td>
                 </tr>
-            `).join('');
+            `;
+            }).join('');
         }
 
         async function addOrderForm(type, name, size, dataUrl = null) {
@@ -22961,13 +23539,29 @@
             orderForms.unshift(orderForm);
             saveOrderForms();
             renderOrderForms();
+            updateOrderFormCount();
 
             // Show success message - file is ready to send as binary data
             console.log(`✅ File ready: ${name} - binary data stored in memory`);
             
+            // Show saved indicator in upload area
+            showSavedIndicator();
+            
             // Note: Public URL upload is optional - files will be sent as binary data
             // Files are ready to send via "Check for Discrepencies" button
             // Don't auto-send - let user control when to send all files together
+        }
+
+        // Show saved indicator when order form is uploaded
+        function showSavedIndicator() {
+            const indicator = document.getElementById('uploadSavedIndicator');
+            if (indicator) {
+                indicator.classList.add('show');
+                // Hide after 3 seconds
+                setTimeout(() => {
+                    indicator.classList.remove('show');
+                }, 3000);
+            }
         }
 
         // Helper function to convert dataUrl to Blob
@@ -23222,6 +23816,7 @@
             orderForms.splice(index, 1);
             saveOrderForms();
             renderOrderForms();
+            updateOrderFormCount();
             showStatus('Order form deleted', 'success');
         }
 
@@ -24611,6 +25206,9 @@
                         searchInput.value = '';
                     }
                     renderManualProductList('');
+                    // Note: Don't clear pendingScannedBarcode here - it should only be cleared when:
+                    // 1. A product is successfully added (in addProductToOrder)
+                    // 2. The modal is closed without adding (in closeProductLibraryModal)
                 }
             }
 
@@ -24618,6 +25216,11 @@
                 const modal = document.getElementById('productLibraryModal');
                 if (modal) {
                     modal.classList.remove('active');
+                    // Clear pending scanned barcode if modal is closed without adding a product
+                    if (pendingScannedBarcode) {
+                        console.log('⚠️ Product library closed without linking barcode:', pendingScannedBarcode);
+                        pendingScannedBarcode = null;
+                    }
                 }
             }
 
@@ -24925,6 +25528,7 @@
         // Initialize on page load
         // Modal prompt for missing product info
         let pendingProduct = null;
+        let pendingScannedBarcode = null; // Store barcode when product not found, to link to product from library
         const missingModal = document.getElementById('missingProductModal');
         const missingForm = document.getElementById('missingProductForm');
         document.getElementById('missingProductClose').addEventListener('click', closeMissingProductModal);
