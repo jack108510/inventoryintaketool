@@ -20777,6 +20777,43 @@
             }, 150);
         }
 
+        // Save barcode-to-product mapping permanently
+        function saveBarcodeMapping(barcode, product) {
+            try {
+                const mappingKey = 'barcodeProductMappings';
+                let mappings = JSON.parse(localStorage.getItem(mappingKey) || '{}');
+                
+                // Store mapping: barcode -> product info
+                mappings[barcode] = {
+                    productId: product.id,
+                    productName: product.name,
+                    itemNumber: product.itemNumber || '',
+                    upcCode: product.upcCode || '',
+                    size: product.size || '',
+                    notes: product.notes || '',
+                    fromDatabase: product.fromDatabase || false,
+                    mappedAt: new Date().toISOString()
+                };
+                
+                localStorage.setItem(mappingKey, JSON.stringify(mappings));
+                console.log('💾 Saved barcode mapping:', barcode, '->', product.name);
+            } catch (error) {
+                console.error('Error saving barcode mapping:', error);
+            }
+        }
+
+        // Load barcode-to-product mapping
+        function loadBarcodeMapping(barcode) {
+            try {
+                const mappingKey = 'barcodeProductMappings';
+                const mappings = JSON.parse(localStorage.getItem(mappingKey) || '{}');
+                return mappings[barcode] || null;
+            } catch (error) {
+                console.error('Error loading barcode mapping:', error);
+                return null;
+            }
+        }
+
         // Lookup product information by UPC Code OR Item #
         // This function can match either a UPC Code or an Item Number
         function lookupProduct(code) {
@@ -20788,7 +20825,57 @@
             console.log('📦 Item # database:', Object.keys(itemNumberDatabase).length, 'items');
             console.log('📚 Manual product library:', manualProducts.length, 'items');
             
-            // FIRST: Check manual product library (user-saved products)
+            // FIRST: Check saved barcode mappings (permanently linked codes)
+            const savedMapping = loadBarcodeMapping(normalizedCode);
+            if (savedMapping) {
+                console.log('✅ Found in saved barcode mappings:', savedMapping);
+                // Try to find the actual product from library or database
+                let product = null;
+                
+                if (savedMapping.fromDatabase) {
+                    // Find in database
+                    const dbProduct = productDatabase[savedMapping.upcCode] || itemNumberDatabase[savedMapping.itemNumber];
+                    if (dbProduct) {
+                        product = {
+                            itemNumber: dbProduct.itemNumber || savedMapping.itemNumber,
+                            name: dbProduct.name || savedMapping.productName,
+                            upcCode: dbProduct.upcCode || savedMapping.upcCode || normalizedCode,
+                            notes: savedMapping.notes
+                        };
+                    }
+                } else {
+                    // Find in manual products
+                    product = manualProducts.find(p => 
+                        p.id === savedMapping.productId ||
+                        (p.itemNumber && p.itemNumber === savedMapping.itemNumber) ||
+                        (p.upcCode && p.upcCode === savedMapping.upcCode)
+                    );
+                    if (product) {
+                        const fullName = product.size ? `${product.name} (${product.size})` : product.name;
+                        product = {
+                            itemNumber: product.itemNumber || savedMapping.itemNumber,
+                            name: fullName,
+                            upcCode: product.upcCode || savedMapping.upcCode || normalizedCode,
+                            notes: product.notes || savedMapping.notes
+                        };
+                    }
+                }
+                
+                // If product found, return it; otherwise use saved mapping data
+                if (product) {
+                    return product;
+                } else {
+                    // Fallback to saved mapping data
+                    return {
+                        itemNumber: savedMapping.itemNumber || normalizedCode,
+                        name: savedMapping.productName,
+                        upcCode: savedMapping.upcCode || normalizedCode,
+                        notes: savedMapping.notes
+                    };
+                }
+            }
+            
+            // SECOND: Check manual product library (user-saved products)
             // This allows users to save custom products that will be remembered
             for (const product of manualProducts) {
                 // Check by Item Number
@@ -20931,7 +21018,11 @@
             };
 
             if (!newItem.name) {
-                openMissingProductModal(newItem);
+                // Store the scanned barcode to link it to a product from the library
+                pendingScannedBarcode = barcode;
+                // Open product library instead of missing product modal
+                toggleProductLibrarySection();
+                showStatus('Product not found. Please search and add from the Product Library.', 'error');
                 return;
             }
 
@@ -21512,12 +21603,21 @@
             scannedItems.unshift(newItem);
             console.log('✅ Added to scanned items:', newItem);
             
+            // If there's a pending scanned barcode, link it to this product permanently
+            if (pendingScannedBarcode) {
+                console.log('🔗 Linking scanned barcode to product:', pendingScannedBarcode, '->', product.name);
+                saveBarcodeMapping(pendingScannedBarcode, product);
+                pendingScannedBarcode = null; // Clear pending barcode
+                showStatus(`${newItem.name} added and barcode linked permanently`, 'success');
+            } else {
+                showStatus(`${newItem.name} added to scanned items`, 'success');
+            }
+            
             // Track product usage for "recently used" feature
             trackProductUsage(product);
             
             saveData();
             renderTable();
-            showStatus(`${newItem.name} added to scanned items`, 'success');
             setTimeout(hideStatus, 3000);
         }
 
@@ -21661,6 +21761,143 @@
         window.addProductToOrder = addProductToOrder;
         window.addProductToOrderFromButton = addProductToOrderFromButton;
 
+        // Fuzzy search with word-based matching and relevance scoring
+        function fuzzySearchScore(searchTerm, text) {
+            if (!searchTerm || !text) return 0;
+            
+            const searchLower = searchTerm.toLowerCase().trim();
+            const textLower = text.toLowerCase().trim();
+            
+            // Exact match gets highest score
+            if (textLower === searchLower) return 1000;
+            
+            // Starts with gets very high score
+            if (textLower.startsWith(searchLower)) return 800;
+            
+            // Word-based matching - split into words
+            const searchWords = searchLower.split(/\s+/).filter(w => w.length > 0);
+            const textWords = textLower.split(/\s+/).filter(w => w.length > 0);
+            
+            if (searchWords.length === 0) return 0;
+            
+            let score = 0;
+            let matchedWords = 0;
+            
+            // Check each search word against text words
+            for (const searchWord of searchWords) {
+                let bestMatch = 0;
+                
+                for (const textWord of textWords) {
+                    // Exact word match
+                    if (textWord === searchWord) {
+                        bestMatch = Math.max(bestMatch, 100);
+                    }
+                    // Word starts with search term
+                    else if (textWord.startsWith(searchWord)) {
+                        bestMatch = Math.max(bestMatch, 80);
+                    }
+                    // Word contains search term
+                    else if (textWord.includes(searchWord)) {
+                        bestMatch = Math.max(bestMatch, 50);
+                    }
+                    // Fuzzy match - check if similar (for typos)
+                    else {
+                        const similarity = calculateSimilarity(searchWord, textWord);
+                        if (similarity > 0.7) {
+                            bestMatch = Math.max(bestMatch, similarity * 40);
+                        }
+                    }
+                }
+                
+                // Also check if search word appears as substring anywhere
+                if (textLower.includes(searchWord)) {
+                    bestMatch = Math.max(bestMatch, 30);
+                }
+                
+                if (bestMatch > 0) {
+                    score += bestMatch;
+                    matchedWords++;
+                }
+            }
+            
+            // Bonus for matching all words
+            if (matchedWords === searchWords.length) {
+                score *= 1.5;
+            }
+            
+            // Penalty if not all words matched
+            const matchRatio = matchedWords / searchWords.length;
+            score *= matchRatio;
+            
+            return Math.round(score);
+        }
+
+        // Calculate similarity between two strings (Levenshtein-based)
+        function calculateSimilarity(str1, str2) {
+            if (str1 === str2) return 1;
+            if (str1.length === 0 || str2.length === 0) return 0;
+            
+            const longer = str1.length > str2.length ? str1 : str2;
+            const shorter = str1.length > str2.length ? str2 : str1;
+            
+            // If one string is much longer, similarity is low
+            if (longer.length > shorter.length * 2) return 0;
+            
+            // Simple similarity: check how many characters match
+            let matches = 0;
+            const minLen = Math.min(str1.length, str2.length);
+            
+            for (let i = 0; i < minLen; i++) {
+                if (str1[i] === str2[i]) matches++;
+            }
+            
+            // Also check if one contains the other
+            if (longer.includes(shorter)) {
+                return 0.8;
+            }
+            
+            // Character-based similarity
+            const charSimilarity = matches / Math.max(str1.length, str2.length);
+            
+            // Levenshtein distance for typo tolerance
+            const distance = levenshteinDistance(str1, str2);
+            const maxLen = Math.max(str1.length, str2.length);
+            const levenshteinSimilarity = 1 - (distance / maxLen);
+            
+            // Combine both metrics
+            return (charSimilarity * 0.4 + levenshteinSimilarity * 0.6);
+        }
+
+        // Levenshtein distance calculation for typo tolerance
+        function levenshteinDistance(str1, str2) {
+            const m = str1.length;
+            const n = str2.length;
+            
+            // Create a matrix
+            const dp = Array(m + 1).fill(null).map(() => Array(n + 1).fill(0));
+            
+            // Initialize base cases
+            for (let i = 0; i <= m; i++) dp[i][0] = i;
+            for (let j = 0; j <= n; j++) dp[0][j] = j;
+            
+            // Fill the matrix
+            for (let i = 1; i <= m; i++) {
+                for (let j = 1; j <= n; j++) {
+                    if (str1[i - 1] === str2[j - 1]) {
+                        dp[i][j] = dp[i - 1][j - 1];
+                    } else {
+                        dp[i][j] = Math.min(
+                            dp[i - 1][j] + 1,     // deletion
+                            dp[i][j - 1] + 1,     // insertion
+                            dp[i - 1][j - 1] + 1  // substitution
+                        );
+                    }
+                }
+            }
+            
+            return dp[m][n];
+        }
+
         function renderManualProductList(searchTerm) {
             const grid = document.getElementById('libraryTableBody');
             const totalCountEl = document.getElementById('totalProductsCount');
@@ -21692,51 +21929,74 @@
             let totalAvailable = 0;
             
             if (searchTermNormalized && searchTermNormalized.length > 0) {
-                // SEARCH MODE: Search both user products and database products
+                // SEARCH MODE: Search both user products and database products with fuzzy matching
                 
-                // 1. Search user-added products (always search these, even with short terms)
-                const manualFiltered = userProductsOnly.filter(item => {
-                    const haystack = `${item.name || ''} ${item.size || ''} ${item.notes || ''} ${item.itemNumber || ''} ${item.upcCode || ''}`.toLowerCase();
-                    return haystack.includes(searchTermNormalized);
-                });
+                // 1. Search user-added products with fuzzy matching (always search these, even with short terms)
+                const manualFilteredWithScores = userProductsOnly.map(item => {
+                    const searchText = `${item.name || ''} ${item.size || ''} ${item.notes || ''} ${item.itemNumber || ''} ${item.upcCode || ''}`;
+                    const score = fuzzySearchScore(searchTermNormalized, searchText);
+                    return { item, score };
+                }).filter(result => result.score > 0); // Only include items with a match score
                 
-                // 2. Search productDatabase using search index (much faster!)
+                // 2. Search productDatabase using search index with fuzzy matching
                 // OPTIMIZATION: Only search database if query is at least 2 characters
                 // Limit results to 50 for better performance
-                const databaseFiltered = [];
+                const databaseFilteredWithScores = [];
                 const MAX_DATABASE_RESULTS = 50;
                 
                 if (searchTermNormalized.length >= 2) {
-                    // Use pre-built search index instead of iterating productDatabase
-                    // This avoids repeated string concatenation and toLowerCase() calls
+                    // Use pre-built search index with fuzzy matching
                     for (let i = 0; i < productSearchIndex.length; i++) {
                         // Early exit if we have enough results
-                        if (databaseFiltered.length >= MAX_DATABASE_RESULTS) break;
+                        if (databaseFilteredWithScores.length >= MAX_DATABASE_RESULTS * 2) break; // Get more candidates for scoring
                         
                         const indexedItem = productSearchIndex[i];
-                        // Use pre-normalized searchText (already lowercased)
-                        if (indexedItem.searchText.includes(searchTermNormalized)) {
-                            databaseFiltered.push({
-                                id: 'db_' + indexedItem.upcCode,
-                                name: indexedItem.name,
-                                size: '',
-                                notes: '',
-                                upcCode: indexedItem.upcCode,
-                                itemNumber: indexedItem.itemNumber,
-                                createdAt: null,
-                                fromDatabase: true
+                        // Use fuzzy search score instead of simple includes
+                        const score = fuzzySearchScore(searchTermNormalized, indexedItem.searchText);
+                        
+                        if (score > 0) {
+                            databaseFilteredWithScores.push({
+                                item: {
+                                    id: 'db_' + indexedItem.upcCode,
+                                    name: indexedItem.name,
+                                    size: '',
+                                    notes: '',
+                                    upcCode: indexedItem.upcCode,
+                                    itemNumber: indexedItem.itemNumber,
+                                    createdAt: null,
+                                    fromDatabase: true
+                                },
+                                score: score
                             });
                         }
                     }
                 }
                 
-                // Combine and sort (user products first, then database)
-                filteredList = [...manualFiltered, ...databaseFiltered].sort((a, b) => {
-                    // Sort: user products first, then database products
-                    if (a.fromDatabase !== b.fromDatabase) {
-                        return a.fromDatabase ? 1 : -1;
+                // Sort by score (highest first) and take top results
+                databaseFilteredWithScores.sort((a, b) => b.score - a.score);
+                const topDatabaseResults = databaseFilteredWithScores.slice(0, MAX_DATABASE_RESULTS);
+                
+                // Combine all results with scores
+                const allResults = [
+                    ...manualFilteredWithScores.map(r => ({ ...r.item, score: r.score, fromDatabase: false })),
+                    ...topDatabaseResults.map(r => ({ ...r.item, score: r.score }))
+                ];
+                
+                // Sort by: user products first (if scores are close), then by score (highest first)
+                filteredList = allResults.sort((a, b) => {
+                    // If scores are very close (within 10%), prioritize user products
+                    const scoreDiff = Math.abs(a.score - b.score);
+                    if (scoreDiff < Math.max(a.score, b.score) * 0.1) {
+                        if (a.fromDatabase !== b.fromDatabase) {
+                            return a.fromDatabase ? 1 : -1;
+                        }
                     }
-                    return (a.name || '').localeCompare(b.name || '');
+                    // Otherwise sort by score (highest first)
+                    return b.score - a.score;
+                }).map(result => {
+                    // Remove score from final result (it was just for sorting)
+                    const { score, ...item } = result;
+                    return item;
                 });
                 
                 totalAvailable = userProductsOnly.length + Object.keys(productDatabase).length;
@@ -24946,6 +25206,9 @@
                         searchInput.value = '';
                     }
                     renderManualProductList('');
+                    // Note: Don't clear pendingScannedBarcode here - it should only be cleared when:
+                    // 1. A product is successfully added (in addProductToOrder)
+                    // 2. The modal is closed without adding (in closeProductLibraryModal)
                 }
             }
 
@@ -24953,6 +25216,11 @@
                 const modal = document.getElementById('productLibraryModal');
                 if (modal) {
                     modal.classList.remove('active');
+                    // Clear pending scanned barcode if modal is closed without adding a product
+                    if (pendingScannedBarcode) {
+                        console.log('⚠️ Product library closed without linking barcode:', pendingScannedBarcode);
+                        pendingScannedBarcode = null;
+                    }
                 }
             }
 
@@ -25260,6 +25528,7 @@
         // Initialize on page load
         // Modal prompt for missing product info
         let pendingProduct = null;
+        let pendingScannedBarcode = null; // Store barcode when product not found, to link to product from library
         const missingModal = document.getElementById('missingProductModal');
         const missingForm = document.getElementById('missingProductForm');
         document.getElementById('missingProductClose').addEventListener('click', closeMissingProductModal);
