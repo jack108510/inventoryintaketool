@@ -2974,6 +2974,12 @@
                             <span class="order-form-count-badge" id="orderFormCountBadge" style="display: none;">0</span>
                         </button>
                         
+                        <button class="btn btn-secondary" id="manageOrderFormsBtn" onclick="openManageOrderForms()" style="width: 100%; position: relative;">
+                            <i class="fas fa-list"></i>
+                            <span>Manage Order Forms</span>
+                            <span class="order-form-count-badge" id="orderFormCountBadgeMain" style="display: none;">0</span>
+                        </button>
+                        
                         <button class="btn btn-success" id="barcodeScannerBtn" onclick="toggleBarcodeScannerSection()" style="width: 100%;">
                             <i class="fas fa-qrcode"></i>
                             <span>Barcode Scanner</span>
@@ -3044,6 +3050,11 @@
                     <button class="wddc-tab-btn" data-tab="camera" onclick="switchWDDCTab('camera')">
                         <i class="fas fa-camera"></i>
                         <span>Capture Photo</span>
+                    </button>
+                    <button class="wddc-tab-btn" data-tab="manage" onclick="switchWDDCTab('manage')">
+                        <i class="fas fa-list"></i>
+                        <span>Manage Order Forms</span>
+                        <span class="order-form-count-badge" id="orderFormCountBadgeManage" style="display: none; margin-left: 6px;">0</span>
                     </button>
                             </div>
 
@@ -3148,6 +3159,46 @@
                     </div>
                 </div>
             </div>
+
+                <!-- Manage Order Forms Tab -->
+                <div class="wddc-tab-content" id="wddcManageTab">
+                    <div class="wddc-manage-container" style="padding: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h3 style="margin: 0; display: flex; align-items: center; gap: 10px;">
+                                <i class="fas fa-file-alt"></i>
+                                <span>Order Forms (<span id="orderFormCountDisplay">0</span>)</span>
+                            </h3>
+                            <button class="btn btn-danger btn-sm" onclick="clearAllOrderForms()" style="display: flex; align-items: center; gap: 6px;">
+                                <i class="fas fa-trash"></i>
+                                <span>Clear All</span>
+                            </button>
+                        </div>
+                        <div id="orderFormsContainerManage" style="overflow-x: auto;">
+                            <table class="data-table" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>Name</th>
+                                        <th>Size</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="orderFormsBodyManage">
+                                    <tr>
+                                        <td colspan="6">
+                                            <div class="empty-state">
+                                                <i class="fas fa-file-alt"></i>
+                                                <p>No order forms yet. Upload or capture a WDDC order form to get started!</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -22449,6 +22500,7 @@
                                 document.getElementById('fileInput').value = '';
                                 // Refresh order forms display
                                 renderOrderForms();
+                                renderOrderFormsManage();
                             }
                         } catch (err) {
                             errorCount++;
@@ -23344,8 +23396,12 @@
         // Update order form count badge
         function updateOrderFormCount() {
             const badge = document.getElementById('orderFormCountBadge');
+            const badgeMain = document.getElementById('orderFormCountBadgeMain');
+            const badgeManage = document.getElementById('orderFormCountBadgeManage');
+            const countDisplay = document.getElementById('orderFormCountDisplay');
+            const count = orderForms.length;
+            
             if (badge) {
-                const count = orderForms.length;
                 if (count > 0) {
                     badge.textContent = count;
                     badge.classList.add('show');
@@ -23354,6 +23410,32 @@
                     badge.classList.remove('show');
                     badge.style.display = 'none';
                 }
+            }
+            
+            if (badgeMain) {
+                if (count > 0) {
+                    badgeMain.textContent = count;
+                    badgeMain.classList.add('show');
+                    badgeMain.style.display = 'inline-block';
+                } else {
+                    badgeMain.classList.remove('show');
+                    badgeMain.style.display = 'none';
+                }
+            }
+            
+            if (badgeManage) {
+                if (count > 0) {
+                    badgeManage.textContent = count;
+                    badgeManage.classList.add('show');
+                    badgeManage.style.display = 'inline-block';
+                } else {
+                    badgeManage.classList.remove('show');
+                    badgeManage.style.display = 'none';
+                }
+            }
+            
+            if (countDisplay) {
+                countDisplay.textContent = count;
             }
         }
 
@@ -23389,6 +23471,79 @@
             const sizes = ['B', 'KB', 'MB'];
             const i = Math.floor(Math.log(bytes) / Math.log(k));
             return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+        }
+
+        // Render order forms in the manage tab
+        function renderOrderFormsManage() {
+            const orderFormsBody = document.getElementById('orderFormsBodyManage');
+            const orderFormCountDisplay = document.getElementById('orderFormCountDisplay');
+            if (!orderFormsBody) return;
+
+            // Update count display
+            if (orderFormCountDisplay) {
+                orderFormCountDisplay.textContent = orderForms.length;
+            }
+
+            if (orderForms.length === 0) {
+                orderFormsBody.innerHTML = `
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <i class="fas fa-file-alt"></i>
+                                <p>No order forms yet. Upload or capture a WDDC order form to get started!</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            orderFormsBody.innerHTML = orderForms.map((form, index) => {
+                // Check if form is saved (has dataUrl in Map or IndexedDB)
+                const hasDataUrl = orderFormDataUrls.has(form.id) || form.dataUrl;
+                const isSaved = hasDataUrl || form.publicUrl;
+                
+                return `
+                <tr>
+                    <td>
+                        <i class="fas ${form.type === 'photo' ? 'fa-camera' : 'fa-file-upload'}" style="color: ${form.type === 'photo' ? '#10b981' : '#3b82f6'};"></i>
+                        ${form.type === 'photo' ? 'Photo' : 'File'}
+                    </td>
+                    <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; position: relative;" title="${form.name}">
+                        ${form.name}
+                        ${isSaved ? `
+                            <span class="saved-badge" title="Saved to site">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Saved</span>
+                            </span>
+                        ` : ''}
+                    </td>
+                    <td>${formatFileSize(form.size)}</td>
+                    <td>${new Date(form.date).toLocaleString()}</td>
+                    <td>
+                        <span style="color: ${form.sent ? '#10b981' : '#f59e0b'};">
+                            <i class="fas fa-${form.sent ? 'check-circle' : 'clock'}"></i>
+                            ${form.sent ? 'Sent' : 'Pending'}
+                        </span>
+                        ${form.publicUrl ? `
+                            <br><small style="color: #667eea; font-size: 10px;">
+                                <i class="fas fa-link"></i> Public URL
+                            </small>
+                        ` : ''}
+                    </td>
+                    <td>
+                        ${form.publicUrl ? `
+                            <button class="btn-icon" onclick="copyPublicUrl('${form.publicUrl}', ${index})" title="Copy Public URL">
+                                <i class="fas fa-copy" style="color: #667eea;"></i>
+                            </button>
+                        ` : ''}
+                        <button class="btn-icon" onclick="deleteOrderForm(${index})" title="Delete">
+                            <i class="fas fa-trash" style="color: #ef4444;"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+            }).join('');
         }
 
         function renderOrderForms() {
@@ -23528,6 +23683,7 @@
                             // Update the display with public URL
                             saveOrderForms();
                             renderOrderForms();
+                            renderOrderFormsManage();
                         }
                     })
                     .catch(err => {
@@ -23539,6 +23695,7 @@
             orderForms.unshift(orderForm);
             saveOrderForms();
             renderOrderForms();
+            renderOrderFormsManage();
             updateOrderFormCount();
 
             // Show success message - file is ready to send as binary data
@@ -23718,6 +23875,7 @@
                                 orderForm.sent = true;
                                 saveOrderForms();
                                 renderOrderForms();
+                                renderOrderFormsManage();
                                 console.log('✅ Order form sent to webhook as binary:', orderForm.name);
                                 return;
                             } else {
@@ -23735,6 +23893,7 @@
                             orderForm.sent = true;
                             saveOrderForms();
                             renderOrderForms();
+                            renderOrderFormsManage();
                             console.log('✅ Order form sent to webhook as binary (no-cors mode):', orderForm.name);
                             return;
                         }
@@ -23816,9 +23975,31 @@
             orderForms.splice(index, 1);
             saveOrderForms();
             renderOrderForms();
+            renderOrderFormsManage(); // Also update manage tab
             updateOrderFormCount();
             showStatus('Order form deleted', 'success');
         }
+
+        function clearAllOrderForms() {
+            if (!confirm('Are you sure you want to delete ALL order forms? This cannot be undone.')) return;
+            
+            // Clear all dataUrls from Map
+            orderForms.forEach(form => {
+                if (form.id) {
+                    orderFormDataUrls.delete(form.id);
+                }
+            });
+            
+            orderForms = [];
+            saveOrderForms();
+            renderOrderForms();
+            renderOrderFormsManage(); // Also update manage tab
+            updateOrderFormCount();
+            showStatus('All order forms deleted', 'success');
+        }
+
+        // Make function globally accessible
+        window.clearAllOrderForms = clearAllOrderForms;
 
         async function copyPublicUrl(url, index) {
             try {
@@ -25148,6 +25329,17 @@
                 }
             }
 
+            function openManageOrderForms() {
+                const modal = document.getElementById('wddcOrderModal');
+                if (modal) {
+                    modal.classList.add('active');
+                    // Close other modals
+                    closeProductLibraryModal();
+                    // Switch directly to manage tab
+                    switchWDDCTab('manage');
+                }
+            }
+
             function closeWDDCOrderModal() {
                 const modal = document.getElementById('wddcOrderModal');
                 if (modal) {
@@ -25173,8 +25365,18 @@
 
                 // Update tab content
                 const tabContents = document.querySelectorAll('.wddc-tab-content');
+                let tabId;
+                if (tabName === 'upload') {
+                    tabId = 'wddcUploadTab';
+                } else if (tabName === 'camera') {
+                    tabId = 'wddcCameraTab';
+                } else if (tabName === 'manage') {
+                    tabId = 'wddcManageTab';
+                    // Render order forms when switching to manage tab
+                    renderOrderFormsManage();
+                }
+                
                 tabContents.forEach(content => {
-                    const tabId = tabName === 'upload' ? 'wddcUploadTab' : 'wddcCameraTab';
                     if (content.id === tabId) {
                         content.classList.add('active');
                     } else {
@@ -25241,6 +25443,7 @@
 
             // Make functions available globally
             window.toggleWDDCOrderSection = toggleWDDCOrderSection;
+            window.openManageOrderForms = openManageOrderForms;
             window.closeWDDCOrderModal = closeWDDCOrderModal;
             window.toggleBarcodeScannerSection = toggleBarcodeScannerSection;
             window.toggleProductLibrarySection = toggleProductLibrarySection;
