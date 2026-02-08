@@ -2974,6 +2974,12 @@
                             <span class="order-form-count-badge" id="orderFormCountBadge" style="display: none;">0</span>
                         </button>
                         
+                        <button class="btn btn-secondary" id="manageOrderFormsBtn" onclick="openManageOrderForms()" style="width: 100%; position: relative;">
+                            <i class="fas fa-list"></i>
+                            <span>Manage Order Forms</span>
+                            <span class="order-form-count-badge" id="orderFormCountBadgeMain" style="display: none;">0</span>
+                        </button>
+                        
                         <button class="btn btn-success" id="barcodeScannerBtn" onclick="toggleBarcodeScannerSection()" style="width: 100%;">
                             <i class="fas fa-qrcode"></i>
                             <span>Barcode Scanner</span>
@@ -3044,6 +3050,11 @@
                     <button class="wddc-tab-btn" data-tab="camera" onclick="switchWDDCTab('camera')">
                         <i class="fas fa-camera"></i>
                         <span>Capture Photo</span>
+                    </button>
+                    <button class="wddc-tab-btn" data-tab="manage" onclick="switchWDDCTab('manage')">
+                        <i class="fas fa-list"></i>
+                        <span>Manage Order Forms</span>
+                        <span class="order-form-count-badge" id="orderFormCountBadgeManage" style="display: none; margin-left: 6px;">0</span>
                     </button>
                             </div>
 
@@ -3148,6 +3159,46 @@
                     </div>
                 </div>
             </div>
+
+                <!-- Manage Order Forms Tab -->
+                <div class="wddc-tab-content" id="wddcManageTab">
+                    <div class="wddc-manage-container" style="padding: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h3 style="margin: 0; display: flex; align-items: center; gap: 10px;">
+                                <i class="fas fa-file-alt"></i>
+                                <span>Order Forms (<span id="orderFormCountDisplay">0</span>)</span>
+                            </h3>
+                            <button class="btn btn-danger btn-sm" onclick="clearAllOrderForms()" style="display: flex; align-items: center; gap: 6px;">
+                                <i class="fas fa-trash"></i>
+                                <span>Clear All</span>
+                            </button>
+                        </div>
+                        <div id="orderFormsContainerManage" style="overflow-x: auto;">
+                            <table class="data-table" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>Name</th>
+                                        <th>Size</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="orderFormsBodyManage">
+                                    <tr>
+                                        <td colspan="6">
+                                            <div class="empty-state">
+                                                <i class="fas fa-file-alt"></i>
+                                                <p>No order forms yet. Upload or capture a WDDC order form to get started!</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -21769,10 +21820,10 @@
             const textLower = text.toLowerCase().trim();
             
             // Exact match gets highest score
-            if (textLower === searchLower) return 1000;
+            if (textLower === searchLower) return 10000;
             
-            // Starts with gets very high score
-            if (textLower.startsWith(searchLower)) return 800;
+            // Starts with gets very high score (prioritize matches at the beginning)
+            if (textLower.startsWith(searchLower)) return 8000;
             
             // Word-based matching - split into words
             const searchWords = searchLower.split(/\s+/).filter(w => w.length > 0);
@@ -21782,52 +21833,124 @@
             
             let score = 0;
             let matchedWords = 0;
+            let exactWordMatches = 0;
+            let startsWithMatches = 0;
+            let wordPositionBonus = 0;
             
             // Check each search word against text words
-            for (const searchWord of searchWords) {
+            for (let i = 0; i < searchWords.length; i++) {
+                const searchWord = searchWords[i];
                 let bestMatch = 0;
+                let bestMatchPosition = -1;
                 
-                for (const textWord of textWords) {
-                    // Exact word match
+                for (let j = 0; j < textWords.length; j++) {
+                    const textWord = textWords[j];
+                    let wordScore = 0;
+                    
+                    // Exact word match (highest priority)
                     if (textWord === searchWord) {
-                        bestMatch = Math.max(bestMatch, 100);
+                        wordScore = 500;
+                        exactWordMatches++;
+                        // Bonus if word is at the start of the product name
+                        if (j < 2) {
+                            wordScore += (2 - j) * 100; // First word gets +200, second gets +100
+                        }
                     }
-                    // Word starts with search term
+                    // Word starts with search term (high priority)
                     else if (textWord.startsWith(searchWord)) {
-                        bestMatch = Math.max(bestMatch, 80);
+                        wordScore = 300;
+                        startsWithMatches++;
+                        // Bonus if word is at the start
+                        if (j < 2) {
+                            wordScore += (2 - j) * 50;
+                        }
                     }
-                    // Word contains search term
+                    // Word contains search term (medium priority)
                     else if (textWord.includes(searchWord)) {
-                        bestMatch = Math.max(bestMatch, 50);
+                        wordScore = 150;
+                        // Bonus if word is at the start
+                        if (j < 2) {
+                            wordScore += (2 - j) * 25;
+                        }
                     }
-                    // Fuzzy match - check if similar (for typos)
+                    // Fuzzy match - check if similar (for typos) - lower priority
                     else {
                         const similarity = calculateSimilarity(searchWord, textWord);
                         if (similarity > 0.7) {
-                            bestMatch = Math.max(bestMatch, similarity * 40);
+                            wordScore = similarity * 80;
+                            // Small bonus if word is at the start
+                            if (j < 2) {
+                                wordScore += (2 - j) * 10;
+                            }
                         }
+                    }
+                    
+                    if (wordScore > bestMatch) {
+                        bestMatch = wordScore;
+                        bestMatchPosition = j;
                     }
                 }
                 
-                // Also check if search word appears as substring anywhere
+                // Also check if search word appears as substring anywhere (lowest priority)
                 if (textLower.includes(searchWord)) {
-                    bestMatch = Math.max(bestMatch, 30);
+                    const substringScore = 50;
+                    if (substringScore > bestMatch) {
+                        bestMatch = substringScore;
+                    }
                 }
                 
                 if (bestMatch > 0) {
                     score += bestMatch;
                     matchedWords++;
+                    // Position bonus: earlier matches are better
+                    if (bestMatchPosition >= 0 && bestMatchPosition < 3) {
+                        wordPositionBonus += (3 - bestMatchPosition) * 20;
+                    }
                 }
             }
             
-            // Bonus for matching all words
+            // Add position bonus
+            score += wordPositionBonus;
+            
+            // Bonus multipliers for quality matches
             if (matchedWords === searchWords.length) {
-                score *= 1.5;
+                // All words matched - significant bonus
+                score *= 2.0;
+                
+                // Extra bonus if all words are exact matches
+                if (exactWordMatches === searchWords.length) {
+                    score *= 1.5;
+                }
+                // Bonus if most words start with search terms
+                else if (startsWithMatches >= searchWords.length * 0.7) {
+                    score *= 1.3;
+                }
+            } else {
+                // Penalty if not all words matched
+                const matchRatio = matchedWords / searchWords.length;
+                score *= matchRatio;
             }
             
-            // Penalty if not all words matched
-            const matchRatio = matchedWords / searchWords.length;
-            score *= matchRatio;
+            // Bonus for shorter product names (more specific matches)
+            if (textWords.length <= 3 && matchedWords === searchWords.length) {
+                score *= 1.2;
+            }
+            
+            // Check if search words appear in order (bonus for maintaining word order)
+            let wordsInOrder = 0;
+            let lastMatchIndex = -1;
+            for (const searchWord of searchWords) {
+                for (let i = lastMatchIndex + 1; i < textWords.length; i++) {
+                    if (textWords[i].includes(searchWord) || textWords[i].startsWith(searchWord) || textWords[i] === searchWord) {
+                        wordsInOrder++;
+                        lastMatchIndex = i;
+                        break;
+                    }
+                }
+            }
+            if (wordsInOrder === searchWords.length && searchWords.length > 1) {
+                score *= 1.15; // Bonus for maintaining word order
+            }
             
             return Math.round(score);
         }
@@ -21982,17 +22105,22 @@
                     ...topDatabaseResults.map(r => ({ ...r.item, score: r.score }))
                 ];
                 
-                // Sort by: user products first (if scores are close), then by score (highest first)
+                // Sort by score (highest first) with small preference for user products when scores are very close
                 filteredList = allResults.sort((a, b) => {
-                    // If scores are very close (within 10%), prioritize user products
-                    const scoreDiff = Math.abs(a.score - b.score);
-                    if (scoreDiff < Math.max(a.score, b.score) * 0.1) {
+                    // Primary sort: by score (highest first)
+                    const scoreDiff = b.score - a.score;
+                    
+                    // If scores are very close (within 2% or less than 50 points difference), 
+                    // give small preference to user products
+                    if (Math.abs(scoreDiff) < 50 || Math.abs(scoreDiff) < Math.max(a.score, b.score) * 0.02) {
                         if (a.fromDatabase !== b.fromDatabase) {
-                            return a.fromDatabase ? 1 : -1;
+                            // User products get slight boost (add 1 to score for comparison)
+                            return (b.score + (b.fromDatabase ? 0 : 1)) - (a.score + (a.fromDatabase ? 0 : 1));
                         }
                     }
-                    // Otherwise sort by score (highest first)
-                    return b.score - a.score;
+                    
+                    // Otherwise sort strictly by score (highest first)
+                    return scoreDiff;
                 }).map(result => {
                     // Remove score from final result (it was just for sorting)
                     const { score, ...item } = result;
@@ -22449,6 +22577,7 @@
                                 document.getElementById('fileInput').value = '';
                                 // Refresh order forms display
                                 renderOrderForms();
+                                renderOrderFormsManage();
                             }
                         } catch (err) {
                             errorCount++;
@@ -23344,8 +23473,12 @@
         // Update order form count badge
         function updateOrderFormCount() {
             const badge = document.getElementById('orderFormCountBadge');
+            const badgeMain = document.getElementById('orderFormCountBadgeMain');
+            const badgeManage = document.getElementById('orderFormCountBadgeManage');
+            const countDisplay = document.getElementById('orderFormCountDisplay');
+            const count = orderForms.length;
+            
             if (badge) {
-                const count = orderForms.length;
                 if (count > 0) {
                     badge.textContent = count;
                     badge.classList.add('show');
@@ -23354,6 +23487,32 @@
                     badge.classList.remove('show');
                     badge.style.display = 'none';
                 }
+            }
+            
+            if (badgeMain) {
+                if (count > 0) {
+                    badgeMain.textContent = count;
+                    badgeMain.classList.add('show');
+                    badgeMain.style.display = 'inline-block';
+                } else {
+                    badgeMain.classList.remove('show');
+                    badgeMain.style.display = 'none';
+                }
+            }
+            
+            if (badgeManage) {
+                if (count > 0) {
+                    badgeManage.textContent = count;
+                    badgeManage.classList.add('show');
+                    badgeManage.style.display = 'inline-block';
+                } else {
+                    badgeManage.classList.remove('show');
+                    badgeManage.style.display = 'none';
+                }
+            }
+            
+            if (countDisplay) {
+                countDisplay.textContent = count;
             }
         }
 
@@ -23389,6 +23548,79 @@
             const sizes = ['B', 'KB', 'MB'];
             const i = Math.floor(Math.log(bytes) / Math.log(k));
             return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+        }
+
+        // Render order forms in the manage tab
+        function renderOrderFormsManage() {
+            const orderFormsBody = document.getElementById('orderFormsBodyManage');
+            const orderFormCountDisplay = document.getElementById('orderFormCountDisplay');
+            if (!orderFormsBody) return;
+
+            // Update count display
+            if (orderFormCountDisplay) {
+                orderFormCountDisplay.textContent = orderForms.length;
+            }
+
+            if (orderForms.length === 0) {
+                orderFormsBody.innerHTML = `
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <i class="fas fa-file-alt"></i>
+                                <p>No order forms yet. Upload or capture a WDDC order form to get started!</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            orderFormsBody.innerHTML = orderForms.map((form, index) => {
+                // Check if form is saved (has dataUrl in Map or IndexedDB)
+                const hasDataUrl = orderFormDataUrls.has(form.id) || form.dataUrl;
+                const isSaved = hasDataUrl || form.publicUrl;
+                
+                return `
+                <tr>
+                    <td>
+                        <i class="fas ${form.type === 'photo' ? 'fa-camera' : 'fa-file-upload'}" style="color: ${form.type === 'photo' ? '#10b981' : '#3b82f6'};"></i>
+                        ${form.type === 'photo' ? 'Photo' : 'File'}
+                    </td>
+                    <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; position: relative;" title="${form.name}">
+                        ${form.name}
+                        ${isSaved ? `
+                            <span class="saved-badge" title="Saved to site">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Saved</span>
+                            </span>
+                        ` : ''}
+                    </td>
+                    <td>${formatFileSize(form.size)}</td>
+                    <td>${new Date(form.date).toLocaleString()}</td>
+                    <td>
+                        <span style="color: ${form.sent ? '#10b981' : '#f59e0b'};">
+                            <i class="fas fa-${form.sent ? 'check-circle' : 'clock'}"></i>
+                            ${form.sent ? 'Sent' : 'Pending'}
+                        </span>
+                        ${form.publicUrl ? `
+                            <br><small style="color: #667eea; font-size: 10px;">
+                                <i class="fas fa-link"></i> Public URL
+                            </small>
+                        ` : ''}
+                    </td>
+                    <td>
+                        ${form.publicUrl ? `
+                            <button class="btn-icon" onclick="copyPublicUrl('${form.publicUrl}', ${index})" title="Copy Public URL">
+                                <i class="fas fa-copy" style="color: #667eea;"></i>
+                            </button>
+                        ` : ''}
+                        <button class="btn-icon" onclick="deleteOrderForm(${index})" title="Delete">
+                            <i class="fas fa-trash" style="color: #ef4444;"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+            }).join('');
         }
 
         function renderOrderForms() {
@@ -23528,6 +23760,7 @@
                             // Update the display with public URL
                             saveOrderForms();
                             renderOrderForms();
+                            renderOrderFormsManage();
                         }
                     })
                     .catch(err => {
@@ -23539,6 +23772,7 @@
             orderForms.unshift(orderForm);
             saveOrderForms();
             renderOrderForms();
+            renderOrderFormsManage();
             updateOrderFormCount();
 
             // Show success message - file is ready to send as binary data
@@ -23718,6 +23952,7 @@
                                 orderForm.sent = true;
                                 saveOrderForms();
                                 renderOrderForms();
+                                renderOrderFormsManage();
                                 console.log('✅ Order form sent to webhook as binary:', orderForm.name);
                                 return;
                             } else {
@@ -23735,6 +23970,7 @@
                             orderForm.sent = true;
                             saveOrderForms();
                             renderOrderForms();
+                            renderOrderFormsManage();
                             console.log('✅ Order form sent to webhook as binary (no-cors mode):', orderForm.name);
                             return;
                         }
@@ -23816,9 +24052,31 @@
             orderForms.splice(index, 1);
             saveOrderForms();
             renderOrderForms();
+            renderOrderFormsManage(); // Also update manage tab
             updateOrderFormCount();
             showStatus('Order form deleted', 'success');
         }
+
+        function clearAllOrderForms() {
+            if (!confirm('Are you sure you want to delete ALL order forms? This cannot be undone.')) return;
+            
+            // Clear all dataUrls from Map
+            orderForms.forEach(form => {
+                if (form.id) {
+                    orderFormDataUrls.delete(form.id);
+                }
+            });
+            
+            orderForms = [];
+            saveOrderForms();
+            renderOrderForms();
+            renderOrderFormsManage(); // Also update manage tab
+            updateOrderFormCount();
+            showStatus('All order forms deleted', 'success');
+        }
+
+        // Make function globally accessible
+        window.clearAllOrderForms = clearAllOrderForms;
 
         async function copyPublicUrl(url, index) {
             try {
@@ -24231,49 +24489,16 @@
             }
         });
         
+        // Discrepancy check always sends to this webhook
+        const DISCREPANCY_CHECK_WEBHOOK_URL = 'https://jackwilde.app.n8n.cloud/webhook/0efeec17-0878-454e-9f26-691cf6525645';
+
         async function sendDataToWebhook() {
-            // Get webhook URL from input field or use default
+            // Discrepancy check always uses the dedicated webhook URL
+            const webhookUrl = DISCREPANCY_CHECK_WEBHOOK_URL;
             const webhookUrlInput = document.getElementById('webhookUrlInput');
-            const newWebhookUrl = 'https://jackwilde.app.n8n.cloud/webhook/0efeec17-0878-454e-9f26-691cf6525645';
-            
-            let webhookUrl = webhookUrlInput && webhookUrlInput.value.trim() 
-                ? webhookUrlInput.value.trim() 
-                : (localStorage.getItem('webhookUrl') || newWebhookUrl);
-            
-            // Always update to new cloud URL if it's localhost
-            if (webhookUrl.includes('localhost:5678') || webhookUrl.includes('127.0.0.1')) {
-                webhookUrl = newWebhookUrl;
-                if (webhookUrlInput) {
-                    webhookUrlInput.value = webhookUrl;
-                }
-                localStorage.setItem('webhookUrl', webhookUrl);
-                console.log('⚠️ Updated webhook URL to cloud:', webhookUrl);
+            if (webhookUrlInput) {
+                webhookUrlInput.value = webhookUrl;
             }
-            
-            // Check if using old webhook ID or path and update it
-            let updated = false;
-            if (webhookUrl.includes('1cbe4a45-ae17-403c-a140-3c1f160f101c') || webhookUrl.includes('0efeec17-0878-454e-9f26-691cf6525645') || webhookUrl.includes('jackwilde.app.n8n.cloud')) {
-                webhookUrl = newWebhookUrl;
-                updated = true;
-            }
-            if (webhookUrl.includes('/webhook-test/')) {
-                webhookUrl = webhookUrl.replace('/webhook-test/', '/webhook/');
-                updated = true;
-            }
-            if (updated) {
-                if (webhookUrlInput) {
-                    webhookUrlInput.value = webhookUrl;
-                }
-                localStorage.setItem('webhookUrl', webhookUrl);
-                console.log('⚠️ Updated webhook URL:', webhookUrl);
-            }
-            
-            if (!webhookUrl || !webhookUrl.startsWith('http')) {
-                showStatus('Please enter a valid webhook URL', 'error');
-                return;
-            }
-            
-            // Save webhook URL to localStorage
             localStorage.setItem('webhookUrl', webhookUrl);
             const sendBtn = document.getElementById('sendToWebhookBtn');
             const loadingOverlay = document.getElementById('loadingOverlay');
@@ -25148,6 +25373,17 @@
                 }
             }
 
+            function openManageOrderForms() {
+                const modal = document.getElementById('wddcOrderModal');
+                if (modal) {
+                    modal.classList.add('active');
+                    // Close other modals
+                    closeProductLibraryModal();
+                    // Switch directly to manage tab
+                    switchWDDCTab('manage');
+                }
+            }
+
             function closeWDDCOrderModal() {
                 const modal = document.getElementById('wddcOrderModal');
                 if (modal) {
@@ -25173,8 +25409,18 @@
 
                 // Update tab content
                 const tabContents = document.querySelectorAll('.wddc-tab-content');
+                let tabId;
+                if (tabName === 'upload') {
+                    tabId = 'wddcUploadTab';
+                } else if (tabName === 'camera') {
+                    tabId = 'wddcCameraTab';
+                } else if (tabName === 'manage') {
+                    tabId = 'wddcManageTab';
+                    // Render order forms when switching to manage tab
+                    renderOrderFormsManage();
+                }
+                
                 tabContents.forEach(content => {
-                    const tabId = tabName === 'upload' ? 'wddcUploadTab' : 'wddcCameraTab';
                     if (content.id === tabId) {
                         content.classList.add('active');
                     } else {
@@ -25241,6 +25487,7 @@
 
             // Make functions available globally
             window.toggleWDDCOrderSection = toggleWDDCOrderSection;
+            window.openManageOrderForms = openManageOrderForms;
             window.closeWDDCOrderModal = closeWDDCOrderModal;
             window.toggleBarcodeScannerSection = toggleBarcodeScannerSection;
             window.toggleProductLibrarySection = toggleProductLibrarySection;
