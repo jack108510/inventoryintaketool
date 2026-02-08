@@ -24470,7 +24470,8 @@
         });
         
         async function sendDataToWebhook() {
-            const webhookUrl = N8N_WEBHOOK_URL;
+            // Always use this URL only (ignore input/localStorage so stale/cached values never win)
+            const webhookUrl = 'https://jackwilde.app.n8n.cloud/webhook/0efeec17-0878-454e-9f26-691cf6525645';
             const webhookUrlInput = document.getElementById('webhookUrlInput');
             if (webhookUrlInput) {
                 webhookUrlInput.value = webhookUrl;
