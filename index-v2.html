@@ -23867,37 +23867,11 @@
         }
 
         async function sendOrderFormToWebhook(orderForm, dataUrl = null) {
-            // Get webhook URL from input field, localStorage, or use default
+            // Always send to the configured n8n webhook
+            const webhookUrl = N8N_WEBHOOK_URL;
             const webhookUrlInput = document.getElementById('webhookUrlInput');
-            let webhookUrl = webhookUrlInput && webhookUrlInput.value.trim() 
-                ? webhookUrlInput.value.trim() 
-                : localStorage.getItem('webhookUrl');
-            
-            const newDefaultUrl = 'https://jackwilde.app.n8n.cloud/webhook/0efeec17-0878-454e-9f26-691cf6525645';
-            
-            // Auto-update if using old webhook ID or path
-            if (webhookUrl) {
-                let updated = false;
-                if (webhookUrl.includes('1cbe4a45-ae17-403c-a140-3c1f160f101c') || webhookUrl.includes('0efeec17-0878-454e-9f26-691cf6525645')) {
-                    webhookUrl = newDefaultUrl;
-                    updated = true;
-                }
-                if (webhookUrl.includes('/webhook-test/')) {
-                    webhookUrl = webhookUrl.replace('/webhook-test/', '/webhook/');
-                    updated = true;
-                }
-                if (updated) {
-                    if (webhookUrlInput) {
-                        webhookUrlInput.value = webhookUrl;
-                    }
-                    localStorage.setItem('webhookUrl', webhookUrl);
-                    console.log('⚠️ Auto-updated webhook URL:', webhookUrl);
-                }
-            }
-            
-            if (!webhookUrl) {
-                webhookUrl = newDefaultUrl;
-            }
+            if (webhookUrlInput) webhookUrlInput.value = webhookUrl;
+            localStorage.setItem('webhookUrl', webhookUrl);
             
             try {
                 const publicUrl = orderForm.publicUrl;
@@ -24475,6 +24449,12 @@
         }
         
         // Close modal when clicking outside the response content
+        const N8N_WEBHOOK_URL = 'https://jackwilde.app.n8n.cloud/webhook/0efeec17-0878-454e-9f26-691cf6525645';
+        document.addEventListener('DOMContentLoaded', function() {
+            const webhookUrlInput = document.getElementById('webhookUrlInput');
+            if (webhookUrlInput) webhookUrlInput.value = N8N_WEBHOOK_URL;
+            localStorage.setItem('webhookUrl', N8N_WEBHOOK_URL);
+        });
         document.addEventListener('DOMContentLoaded', function() {
             const loadingOverlay = document.getElementById('loadingOverlay');
             const responseContent = document.getElementById('responseContent');
@@ -24489,12 +24469,8 @@
             }
         });
         
-        // Discrepancy check always sends to this webhook
-        const DISCREPANCY_CHECK_WEBHOOK_URL = 'https://jackwilde.app.n8n.cloud/webhook/0efeec17-0878-454e-9f26-691cf6525645';
-
         async function sendDataToWebhook() {
-            // Discrepancy check always uses the dedicated webhook URL
-            const webhookUrl = DISCREPANCY_CHECK_WEBHOOK_URL;
+            const webhookUrl = N8N_WEBHOOK_URL;
             const webhookUrlInput = document.getElementById('webhookUrlInput');
             if (webhookUrlInput) {
                 webhookUrlInput.value = webhookUrl;
