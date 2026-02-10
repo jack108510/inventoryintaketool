@@ -23790,38 +23790,11 @@
         }
 
         async function sendOrderFormToWebhook(orderForm, dataUrl = null) {
-            // Get webhook URL from input field, localStorage, or use default
+            // Always send to the configured n8n webhook
+            const webhookUrl = N8N_WEBHOOK_URL;
             const webhookUrlInput = document.getElementById('webhookUrlInput');
-            let webhookUrl = webhookUrlInput && webhookUrlInput.value.trim() 
-                ? webhookUrlInput.value.trim() 
-                : localStorage.getItem('webhookUrl');
-            
-            const newDefaultUrl = 'https://jackwilde.app.n8n.cloud/webhook/0efeec17-0878-454e-9f26-691cf6525645';
-            
-            // Auto-update if using old webhook ID or path
-            if (webhookUrl) {
-                let updated = false;
-                if (webhookUrl.includes('1cbe4a45-ae17-403c-a140-3c1f160f101c') || webhookUrl.includes('0efeec17-0878-454e-9f26-691cf6525645')) {
-                    webhookUrl = newDefaultUrl;
-                    updated = true;
-                }
-                if (webhookUrl.includes('/webhook-test/')) {
-                    webhookUrl = webhookUrl.replace('/webhook-test/', '/webhook/');
-                    updated = true;
-                }
-                if (updated) {
-                    if (webhookUrlInput) {
-                        webhookUrlInput.value = webhookUrl;
-                    }
-                    localStorage.setItem('webhookUrl', webhookUrl);
-                    console.log('⚠️ Auto-updated webhook URL:', webhookUrl);
-                }
-            }
-            
-            if (!webhookUrl) {
-                webhookUrl = newDefaultUrl;
-            }
-            
+            if (webhookUrlInput) webhookUrlInput.value = webhookUrl;
+            localStorage.setItem('webhookUrl', webhookUrl);
             try {
                 const publicUrl = orderForm.publicUrl;
                 // Get dataUrl from parameter, Map (primary), or form object (fallback)
@@ -24397,6 +24370,12 @@
             }
         }
         
+        const N8N_WEBHOOK_URL = 'https://jackwilde.app.n8n.cloud/webhook/0efeec17-0878-454e-9f26-691cf6525645';
+        document.addEventListener('DOMContentLoaded', function() {
+            const webhookUrlInput = document.getElementById('webhookUrlInput');
+            if (webhookUrlInput) webhookUrlInput.value = N8N_WEBHOOK_URL;
+            localStorage.setItem('webhookUrl', N8N_WEBHOOK_URL);
+        });
         // Close modal when clicking outside the response content
         document.addEventListener('DOMContentLoaded', function() {
             const loadingOverlay = document.getElementById('loadingOverlay');
@@ -24413,48 +24392,12 @@
         });
         
         async function sendDataToWebhook() {
-            // Get webhook URL from input field or use default
+            // Always use n8n cloud URL only - never read from input/localStorage (avoids stale tunnel URLs)
+            const webhookUrl = N8N_WEBHOOK_URL;
             const webhookUrlInput = document.getElementById('webhookUrlInput');
-            const newWebhookUrl = 'https://jackwilde.app.n8n.cloud/webhook/0efeec17-0878-454e-9f26-691cf6525645';
-            
-            let webhookUrl = webhookUrlInput && webhookUrlInput.value.trim() 
-                ? webhookUrlInput.value.trim() 
-                : (localStorage.getItem('webhookUrl') || newWebhookUrl);
-            
-            // Always update to new cloud URL if it's localhost
-            if (webhookUrl.includes('localhost:5678') || webhookUrl.includes('127.0.0.1')) {
-                webhookUrl = newWebhookUrl;
-                if (webhookUrlInput) {
-                    webhookUrlInput.value = webhookUrl;
-                }
-                localStorage.setItem('webhookUrl', webhookUrl);
-                console.log('⚠️ Updated webhook URL to cloud:', webhookUrl);
+            if (webhookUrlInput) {
+                webhookUrlInput.value = webhookUrl;
             }
-            
-            // Check if using old webhook ID or path and update it
-            let updated = false;
-            if (webhookUrl.includes('1cbe4a45-ae17-403c-a140-3c1f160f101c') || webhookUrl.includes('0efeec17-0878-454e-9f26-691cf6525645') || webhookUrl.includes('jackwilde.app.n8n.cloud')) {
-                webhookUrl = newWebhookUrl;
-                updated = true;
-            }
-            if (webhookUrl.includes('/webhook-test/')) {
-                webhookUrl = webhookUrl.replace('/webhook-test/', '/webhook/');
-                updated = true;
-            }
-            if (updated) {
-                if (webhookUrlInput) {
-                    webhookUrlInput.value = webhookUrl;
-                }
-                localStorage.setItem('webhookUrl', webhookUrl);
-                console.log('⚠️ Updated webhook URL:', webhookUrl);
-            }
-            
-            if (!webhookUrl || !webhookUrl.startsWith('http')) {
-                showStatus('Please enter a valid webhook URL', 'error');
-                return;
-            }
-            
-            // Save webhook URL to localStorage
             localStorage.setItem('webhookUrl', webhookUrl);
             const sendBtn = document.getElementById('sendToWebhookBtn');
             const loadingOverlay = document.getElementById('loadingOverlay');
@@ -25691,36 +25634,11 @@
             loadUploadedDocuments();
             loadOrderForms();
             
-            // Load saved webhook URL
+            // Always use the n8n cloud webhook URL (never restore old tunnel/custom URLs)
             const webhookUrlInput = document.getElementById('webhookUrlInput');
             if (webhookUrlInput) {
-                const savedWebhookUrl = localStorage.getItem('webhookUrl');
-                const newDefaultUrl = 'https://jackwilde.app.n8n.cloud/webhook/0efeec17-0878-454e-9f26-691cf6525645';
-                
-                // Always migrate from localhost to cloud URL
-                if (savedWebhookUrl && (savedWebhookUrl.includes('localhost:5678') || savedWebhookUrl.includes('127.0.0.1') || savedWebhookUrl.includes('http://localhost'))) {
-                    webhookUrlInput.value = newDefaultUrl;
-                    localStorage.setItem('webhookUrl', newDefaultUrl);
-                    console.log('⚠️ Auto-migrated webhook URL from localhost to cloud on page load');
-                } else {
-                    // Only use saved URL if it exists and is not the old webhook ID or path
-                let shouldUseSaved = savedWebhookUrl && 
-                    !savedWebhookUrl.includes('1cbe4a45-ae17-403c-a140-3c1f160f101c') &&
-                    !savedWebhookUrl.includes('/webhook-test/');
-                
-                if (shouldUseSaved) {
-                    webhookUrlInput.value = savedWebhookUrl;
-                } else {
-                    // Update to new default if field is empty or has old webhook ID/path
-                    if (!webhookUrlInput.value || 
-                        webhookUrlInput.value.includes('1cbe4a45-ae17-403c-a140-3c1f160f101c') ||
-                        webhookUrlInput.value.includes('/webhook-test/')) {
-                        webhookUrlInput.value = newDefaultUrl;
-                        localStorage.setItem('webhookUrl', newDefaultUrl);
-                        console.log('✅ Updated webhook URL to new default:', newDefaultUrl);
-                        }
-                    }
-                }
+                webhookUrlInput.value = N8N_WEBHOOK_URL;
+                localStorage.setItem('webhookUrl', N8N_WEBHOOK_URL);
             }
 
             // Clean up localStorage before loading to ensure no database products leak through
