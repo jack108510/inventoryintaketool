@@ -28,23 +28,33 @@
         }
 
         :root {
-            --clinic-primary: #00b6e8;
-            --clinic-primary-hover: #00a3d6;
-            --clinic-secondary: #0c8db6;
-            --clinic-ink: #0f172a;
-            --clinic-bg: #f6f8fb;
-            --clinic-card: #ffffff;
-            --clinic-border: #e6ebf2;
-            --clinic-muted: #64748b;
-            --clinic-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
-            --clinic-shadow-sm: 0 6px 18px rgba(15, 23, 42, 0.06);
+            --clinic-primary: #38bdf8;
+            --clinic-primary-hover: #22a3f0;
+            --clinic-secondary: #0ea5e9;
+            --clinic-primary-rgb: 56, 189, 248;
+            --clinic-secondary-rgb: 14, 165, 233;
+            --clinic-ink: #e9f2ff;
+            --clinic-bg: #050b1f;
+            --clinic-card: rgba(255, 255, 255, 0.06);
+            --clinic-border: rgba(148, 163, 184, 0.22);
+            --clinic-border-strong: rgba(148, 163, 184, 0.32);
+            --clinic-muted: rgba(226, 232, 240, 0.70);
+            --clinic-muted-2: rgba(226, 232, 240, 0.52);
+            --clinic-surface-0: rgba(6, 12, 34, 0.62);
+            --clinic-surface-1: rgba(255, 255, 255, 0.06);
+            --clinic-surface-2: rgba(255, 255, 255, 0.10);
+            --clinic-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+            --clinic-shadow-sm: 0 10px 32px rgba(0, 0, 0, 0.32);
         }
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: var(--clinic-bg);
+            background: radial-gradient(circle at 20% 0%, rgba(56, 189, 248, 0.14) 0%, rgba(5, 11, 31, 0.0) 48%),
+                        radial-gradient(circle at 90% 20%, rgba(14, 165, 233, 0.12) 0%, rgba(5, 11, 31, 0.0) 55%),
+                        linear-gradient(180deg, #050b1f 0%, #05071a 100%);
+            color: var(--clinic-ink);
             min-height: 100vh;
-            padding: 8px;
+            padding: 10px;
             position: relative;
             overflow: hidden;
             margin: 0;
@@ -58,10 +68,10 @@
             max-width: 100%;
             height: calc(100vh - 16px);
             margin: 0 auto;
-            background: #ffffff;
-            border-radius: 8px;
-            border: 1px solid #d1d5db;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            background: rgba(10, 18, 46, 0.72);
+            border-radius: 14px;
+            border: 1px solid rgba(148, 163, 184, 0.20);
+            box-shadow: var(--clinic-shadow);
             overflow: hidden;
             position: relative;
             z-index: 1;
@@ -78,20 +88,95 @@
         .topbar {
             display: flex;
             align-items: center;
+            justify-content: space-between;
+            padding: 18px 18px;
+            background: var(--clinic-surface-0);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+        }
+
+        .cliniciq-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--clinic-ink);
+            font-weight: 900;
+            letter-spacing: -0.02em;
+            flex: 0 0 auto;
+        }
+
+        .cliniciq-brand-mark {
+            height: clamp(92px, 9vw, 156px);
+            display: inline-flex;
+            align-items: center;
             justify-content: center;
-            padding: 14px 18px;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--clinic-border);
+        }
+
+        .cliniciq-brand-logo {
+            height: clamp(92px, 9vw, 156px);
+            width: auto;
+            display: block;
+        }
+
+        .cliniciq-brand-mark svg {
+            width: 22px;
+            height: 22px;
+            display: block;
+        }
+
+        .cliniciq-brand-text {
+            display: inline-flex;
+            align-items: baseline;
+            gap: 2px;
+            font-size: 14px;
+            line-height: 1;
+            white-space: nowrap;
+        }
+
+        .cliniciq-brand-text .iq {
+            color: var(--clinic-primary);
+        }
+
+        @media (max-width: 780px) {
+            .cliniciq-brand-text {
+                display: none;
+            }
         }
 
         .topbar-min {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 14px;
+            gap: 10px;
             width: 100%;
             flex-wrap: wrap;
+        }
+
+        .topbar-min .meta-chip {
+            min-width: 160px;
+            flex: 1 1 160px;
+            max-width: 260px;
+            padding: 10px 12px;
+            border-radius: 14px;
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+        }
+
+        @media (max-width: 720px) {
+            .topbar-min .meta-chip {
+                min-width: 140px;
+                flex: 1 1 140px;
+                max-width: 100%;
+            }
+        }
+
+        .topbar-min .meta-chip-label {
+            font-size: 9px;
+            letter-spacing: 0.1em;
+        }
+
+        .topbar-min .meta-chip-value {
+            font-size: 13px;
         }
 
         .topbar-left {
@@ -106,7 +191,7 @@
             height: 36px;
             border-radius: 10px;
             background: linear-gradient(135deg, var(--clinic-primary) 0%, var(--clinic-secondary) 100%);
-            box-shadow: 0 8px 18px rgba(0, 182, 232, 0.22);
+            box-shadow: 0 8px 18px rgba(var(--clinic-primary-rgb), 0.22);
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -157,11 +242,11 @@
             display: flex;
             flex-direction: column;
             gap: 2px;
-            padding: 8px 10px;
-            border: 1px solid var(--clinic-border);
-            background: var(--clinic-card);
+            padding: 6px 8px;
+            border: 1px solid rgba(148, 163, 184, 0.12);
+            background: transparent;
             border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+            box-shadow: none;
             min-width: 150px;
         }
 
@@ -235,7 +320,7 @@
             padding: 6px 10px;
             border: 1px solid var(--clinic-border);
             border-radius: 12px;
-            background: rgba(255, 255, 255, 0.75);
+            background: rgba(255, 255, 255, 0.06);
         }
 
         .topbar-actions .topbar-webhook input {
@@ -244,7 +329,7 @@
             background: transparent;
             font-size: 12px;
             min-width: 280px;
-            color: #1f2937;
+            color: rgba(226, 232, 240, 0.88);
         }
 
         @media (max-width: 1100px) {
@@ -258,8 +343,8 @@
         }
 
         .panel-card {
-            background: var(--clinic-card);
-            border: 1px solid var(--clinic-border);
+            background: var(--clinic-surface-1);
+            border: 1px solid rgba(148, 163, 184, 0.18);
             border-radius: 14px;
             box-shadow: var(--clinic-shadow-sm);
             padding: 12px;
@@ -341,14 +426,22 @@
         }
 
         .scanner-input-container:focus-within {
-            border-color: rgba(0, 182, 232, 0.55);
-            box-shadow: 0 10px 28px rgba(0, 182, 232, 0.12);
+            border-color: rgba(var(--clinic-primary-rgb), 0.55);
+            box-shadow: 0 10px 28px rgba(var(--clinic-primary-rgb), 0.12);
             transform: translateY(-1px);
         }
 
         .scanner-instructions {
             margin-top: 8px;
             color: var(--clinic-muted);
+        }
+
+        .scanner-instructions {
+            display: none;
+        }
+
+        .recon-scanbox .scanner-instructions {
+            display: none;
         }
 
         .data-list {
@@ -391,38 +484,38 @@
         }
 
         .metric-card {
-            background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(246, 248, 251, 0.9) 100%);
-            border: 1px solid var(--clinic-border);
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.72) 0%, rgba(8, 13, 33, 0.80) 100%);
+            border: 1px solid rgba(148, 163, 184, 0.18);
             border-radius: 14px;
-            padding: 12px;
-            box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+            padding: 14px 14px 13px;
+            box-shadow: 0 10px 26px rgba(0, 0, 0, 0.28);
             min-height: 70px;
         }
 
         .metric-label {
             font-size: 10px;
             font-weight: 700;
-            color: var(--clinic-muted);
+            color: rgba(226, 232, 240, 0.62);
             text-transform: uppercase;
             letter-spacing: 0.08em;
         }
 
         .metric-value {
             margin-top: 6px;
-            font-size: 20px;
+            font-size: 26px;
             font-weight: 900;
-            color: var(--clinic-ink);
+            color: rgba(226, 232, 240, 0.92);
             letter-spacing: -0.02em;
         }
 
         .metric-value.accent {
-            color: var(--clinic-secondary);
+            color: var(--clinic-primary);
         }
 
         .metric-hint {
             margin-top: 4px;
             font-size: 11px;
-            color: var(--clinic-muted);
+            color: rgba(226, 232, 240, 0.62);
             font-weight: 500;
             white-space: nowrap;
             overflow: hidden;
@@ -443,21 +536,21 @@
         }
 
         .badge-success {
-            background: rgba(16, 185, 129, 0.12);
-            color: #065f46;
-            border-color: rgba(16, 185, 129, 0.22);
+            background: rgba(16, 185, 129, 0.14);
+            color: rgba(167, 243, 208, 0.95);
+            border-color: rgba(16, 185, 129, 0.26);
         }
 
         .badge-warning {
             background: rgba(245, 158, 11, 0.14);
-            color: #92400e;
-            border-color: rgba(245, 158, 11, 0.28);
+            color: rgba(253, 230, 138, 0.96);
+            border-color: rgba(245, 158, 11, 0.30);
         }
 
         .badge-info {
-            background: rgba(59, 130, 246, 0.12);
-            color: #1d4ed8;
-            border-color: rgba(59, 130, 246, 0.22);
+            background: rgba(var(--clinic-primary-rgb), 0.14);
+            color: rgba(186, 230, 253, 0.96);
+            border-color: rgba(var(--clinic-primary-rgb), 0.26);
         }
 
         .badge-danger {
@@ -467,9 +560,9 @@
         }
 
         .badge-neutral {
-            background: rgba(100, 116, 139, 0.12);
-            color: #334155;
-            border-color: rgba(100, 116, 139, 0.22);
+            background: rgba(148, 163, 184, 0.12);
+            color: rgba(226, 232, 240, 0.78);
+            border-color: rgba(148, 163, 184, 0.22);
         }
 
         .workflow-stage {
@@ -587,7 +680,7 @@
         .preinvoice-spinner {
             width: 16px;
             height: 16px;
-            border: 2px solid rgba(0, 182, 232, 0.25);
+            border: 2px solid rgba(var(--clinic-primary-rgb), 0.25);
             border-top-color: var(--clinic-primary);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
@@ -629,8 +722,8 @@
         }
 
         .progress-step.active .progress-dot {
-            border-color: rgba(0, 182, 232, 0.55);
-            background: rgba(0, 182, 232, 0.18);
+            border-color: rgba(var(--clinic-primary-rgb), 0.55);
+            background: rgba(var(--clinic-primary-rgb), 0.18);
         }
 
         .progress-step.complete .progress-dot {
@@ -682,38 +775,196 @@
 
         .recon-top {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: space-between;
             gap: 12px;
-            flex-wrap: wrap;
+            margin-bottom: 12px;
         }
 
-        .recon-scanbox {
-            flex: 1;
-            min-width: 280px;
-            background: linear-gradient(135deg, rgba(0, 182, 232, 0.10) 0%, rgba(12, 141, 182, 0.08) 100%);
-            border: 1px solid rgba(0, 182, 232, 0.25);
-            border-radius: 16px;
-            padding: 12px;
-            box-shadow: 0 10px 30px rgba(0, 182, 232, 0.08);
+        @media (max-width: 1100px) {
+            .recon-top {
+                align-items: stretch;
+            }
         }
 
-        .recon-scanbox h3 {
-            margin: 0;
-            font-size: 12px;
-            font-weight: 900;
-            letter-spacing: -0.01em;
-            color: var(--clinic-ink);
-            display: flex;
-            align-items: center;
+        .summary-grid {
+            margin-bottom: 0;
+        }
+
+        .recon-workflow {
+            width: 100%;
+            max-width: 980px;
+            display: grid;
+            gap: 12px;
+            justify-items: center;
+        }
+
+        .recon-workflow .summary-grid {
+            width: 100%;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 10px;
         }
 
-        .recon-scanbox p {
-            margin: 6px 0 0 0;
+        @media (max-width: 820px) {
+            .recon-workflow .summary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .metric-card {
+            padding: 10px 12px;
+            border-radius: 14px;
+            box-shadow: 0 10px 26px rgba(0, 0, 0, 0.28);
+        }
+
+        .metric-label {
+            font-size: 10px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .metric-value {
+            font-size: 26px;
+        }
+
+        .recon-scanbox {
+            width: 100%;
+            max-width: 980px;
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.78) 0%, rgba(8, 13, 33, 0.86) 100%);
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            border-radius: 18px;
+            padding: 18px;
+            box-shadow: 0 18px 46px rgba(0, 0, 0, 0.34);
+        }
+
+        .recon-scan-main {
+            margin-top: 10px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .recon-scanbox .scanner-input-container {
+            background: transparent;
+            padding: 0;
+            border: none;
+            box-shadow: none;
+        }
+
+        .recon-scanbox .scanner-input-container h3 {
+            display: none;
+        }
+
+        .recon-scanbox .barcode-input {
+            height: 64px;
+            font-size: 20px;
+            border-radius: 16px;
+            font-weight: 700;
+            background: rgba(2, 6, 23, 0.55);
+            color: rgba(226, 232, 240, 0.92);
+            border: 1px solid rgba(148, 163, 184, 0.22);
+            box-shadow: 0 14px 34px rgba(0, 0, 0, 0.30);
+        }
+
+        .recon-scanbox .barcode-input::placeholder {
+            color: rgba(148, 163, 184, 0.85);
+        }
+
+        .recon-scanbox .barcode-input:focus {
+            border-color: rgba(var(--clinic-primary-rgb), 0.65);
+            box-shadow:
+                0 0 0 4px rgba(var(--clinic-primary-rgb), 0.14),
+                0 14px 32px rgba(0, 0, 0, 0.22);
+        }
+
+        .recon-remaining {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 10px 12px;
+            border: 1px solid rgba(148, 163, 184, 0.45);
+            background: rgba(2, 6, 23, 0.35);
+            border-radius: 14px;
+        }
+
+        .recon-remaining-label {
             font-size: 11px;
             color: var(--clinic-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .recon-remaining-value {
+            font-size: 22px;
+            font-weight: 900;
+            color: rgba(226, 232, 240, 0.92);
+        }
+
+        .recon-table-scroll .data-table tbody tr.recon-last-scanned {
+            outline: 2px solid rgba(59, 130, 246, 0.45);
+            outline-offset: -2px;
+            background: rgba(59, 130, 246, 0.06) !important;
+        }
+
+        .recon-item-cell {
+            min-width: 260px;
+        }
+
+        .recon-item-title {
+            font-weight: 800;
+            color: rgba(226, 232, 240, 0.92);
+        }
+
+        .recon-item-meta {
+            font-size: 11px;
+            color: rgba(226, 232, 240, 0.62);
             font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .recon-details {
+            padding: 10px 12px;
+            border-top: 1px solid rgba(148, 163, 184, 0.35);
+            background: rgba(2, 6, 23, 0.35);
+        }
+
+        .recon-details-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        @media (max-width: 820px) {
+            .recon-details-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .recon-details-kv {
+            display: grid;
+            gap: 2px;
+        }
+
+        .recon-details-k {
+            font-size: 10px;
+            font-weight: 800;
+            color: var(--clinic-muted);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .recon-details-v {
+            font-size: 12px;
+            font-weight: 700;
+            color: rgba(226, 232, 240, 0.88);
+        }
+
+        .btn-receive {
+            padding: 8px 12px;
+            border-radius: 12px;
+            font-weight: 900;
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.18);
         }
 
         .scan-flash {
@@ -721,23 +972,23 @@
         }
 
         @keyframes scanFlash {
-            0% { box-shadow: 0 10px 30px rgba(0, 182, 232, 0.10); }
+            0% { box-shadow: 0 10px 30px rgba(var(--clinic-primary-rgb), 0.10); }
             35% { box-shadow: 0 12px 36px rgba(16, 185, 129, 0.25); }
-            100% { box-shadow: 0 10px 30px rgba(0, 182, 232, 0.10); }
+            100% { box-shadow: 0 10px 30px rgba(var(--clinic-primary-rgb), 0.10); }
         }
 
         .header {
-            background: #f9fafb;
-            color: #1f2937;
+            background: rgba(6, 12, 34, 0.62);
+            color: var(--clinic-ink);
             padding: 12px 20px;
             text-align: center;
             position: relative;
-            border-bottom: 1px solid #e5e7eb;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.18);
             flex-shrink: 0;
         }
 
         .header::before {
-            display: none;
+            display: none !important;
         }
 
         .header h1 {
@@ -745,7 +996,7 @@
             margin: 0;
             font-weight: 600;
             letter-spacing: -0.01em;
-            color: #1f2937;
+            color: var(--clinic-ink);
             position: relative;
             z-index: 1;
         }
@@ -779,13 +1030,13 @@
             flex: 1;
             overflow: hidden;
             display: grid;
-            grid-template-columns: 360px 1fr;
+            grid-template-columns: 1fr;
             gap: 16px;
         }
 
         @media (max-width: 1400px) {
             .content {
-                grid-template-columns: 340px 1fr;
+                grid-template-columns: 1fr;
             }
         }
 
@@ -800,19 +1051,18 @@
         }
 
         .scanner-section {
-            display: flex !important;
+            display: none !important;
         }
 
         .scanner-controls {
             display: flex;
-            gap: 8px;
-            margin-bottom: 8px;
+            justify-content: center;
             flex-wrap: wrap;
             align-items: center;
             padding: 8px;
-            background: #f9fafb;
+            background: rgba(255, 255, 255, 0.04);
             border-radius: 6px;
-            border: 1px solid #e5e7eb;
+            border: 1px solid rgba(148, 163, 184, 0.18);
         }
 
         /* Modern Button Design System - Enhanced for Usability */
@@ -944,7 +1194,7 @@
 
         .btn-secondary:hover,
         .btn-secondary:focus {
-            background: #e5e7eb;
+            background: rgba(255, 255, 255, 0.08);
             border-color: #9ca3af;
         }
 
@@ -977,16 +1227,12 @@
             filter: grayscale(50%);
         }
 
-        .btn:disabled::before {
-            display: none;
-        }
-
         .btn:focus-visible {
-            outline: 3px solid rgba(102, 126, 234, 0.6);
+            outline: 3px solid rgba(var(--clinic-primary-rgb), 0.55);
             outline-offset: 3px;
             box-shadow: 
-                0 0 0 4px rgba(102, 126, 234, 0.2),
-                var(--btn-shadow, 0 4px 16px rgba(102, 126, 234, 0.35));
+                0 0 0 2px rgba(255, 255, 255, 0.2),
+                var(--btn-shadow, 0 4px 16px rgba(var(--clinic-primary-rgb), 0.22));
         }
 
         .btn:focus:not(:focus-visible) {
@@ -994,17 +1240,24 @@
         }
 
         .scanner-input-container {
-            background: #f9fafb;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 8px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+        .scanner-input-container {
+            background: rgba(255, 255, 255, 0.04);
             padding: 8px;
             border-radius: 6px;
             margin-bottom: 8px;
             text-align: center;
-            border: 1px solid #e5e7eb;
+            border: 1px solid rgba(148, 163, 184, 0.18);
         }
 
         .scanner-input-container h3 {
             margin-bottom: 8px;
-            color: #1f2937;
+            color: rgba(226, 232, 240, 0.90);
             font-size: 0.9em;
             font-weight: 600;
             letter-spacing: 0;
@@ -1015,12 +1268,12 @@
             padding: 8px 12px;
             font-size: 14px;
             text-align: center;
-            border: 1px solid #d1d5db;
+            border: 1px solid rgba(148, 163, 184, 0.22);
             border-radius: 4px;
             font-weight: 500;
             letter-spacing: 1px;
-            background: #ffffff;
-            color: #1f2937;
+            background: rgba(255, 255, 255, 0.06);
+            color: rgba(226, 232, 240, 0.90);
             margin: 0 auto;
             display: block;
             transition: all 0.15s ease;
@@ -1036,15 +1289,15 @@
         .barcode-input:focus {
             outline: none;
             border-color: var(--clinic-primary);
-            box-shadow: 0 0 0 3px rgba(0, 182, 232, 0.18);
-            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(var(--clinic-primary-rgb), 0.18);
+            background: rgba(255, 255, 255, 0.08);
         }
 
         .scanner-input-container {
-            background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(246, 248, 251, 0.9) 100%);
-            border: 1px solid var(--clinic-border);
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(148, 163, 184, 0.18);
             border-radius: 14px;
-            box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.26);
             padding: 14px;
         }
 
@@ -1121,7 +1374,7 @@
         }
 
         .upload-dropzone {
-            border: 2px dashed rgba(99, 102, 241, 0.4);
+            border: 2px dashed rgba(var(--clinic-primary-rgb), 0.4);
             border-radius: 16px;
             padding: 50px 30px;
             background: rgba(255, 255, 255, 0.03);
@@ -1135,9 +1388,9 @@
         }
 
         .upload-dropzone:hover {
-            border-color: #6366f1;
+            border-color: var(--clinic-primary);
             background: rgba(255, 255, 255, 0.05);
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.15);
+            box-shadow: 0 6px 20px rgba(var(--clinic-primary-rgb), 0.15);
         }
 
         .upload-dropzone.dragover {
@@ -1157,13 +1410,13 @@
 
         .upload-dropzone i {
             font-size: 3.5em;
-            color: rgba(99, 102, 241, 0.7);
+            color: rgba(var(--clinic-primary-rgb), 0.75);
             transition: color 0.2s ease, transform 0.2s ease;
             will-change: transform;
         }
 
         .upload-dropzone:hover i {
-            color: #6366f1;
+            color: var(--clinic-primary);
             transform: scale(1.03);
         }
 
@@ -1441,8 +1694,8 @@
         .camera-capture-area {
             text-align: center;
             padding: 40px 20px;
-            background: white;
-            border: 3px dashed #667eea;
+            background: rgba(255, 255, 255, 0.04);
+            border: 3px dashed rgba(var(--clinic-primary-rgb), 0.55);
             border-radius: 12px;
             margin-bottom: 20px;
         }
@@ -1460,7 +1713,7 @@
 
         .camera-capture-content i {
             font-size: 3em;
-            color: #667eea;
+            color: var(--clinic-primary);
         }
 
         .captured-photos {
@@ -1469,7 +1722,7 @@
 
         .captured-photos h4 {
             margin-bottom: 15px;
-            color: #1f2937;
+            color: rgba(226, 232, 240, 0.90);
         }
 
         .photos-grid {
@@ -1484,7 +1737,7 @@
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            background: white;
+            background: rgba(255, 255, 255, 0.04);
         }
 
         .photo-item img {
@@ -1541,8 +1794,8 @@
         .barcode-scanner-area {
             text-align: center;
             padding: 40px 20px;
-            background: white;
-            border: 3px dashed #667eea;
+            background: rgba(255, 255, 255, 0.04);
+            border: 3px dashed rgba(var(--clinic-primary-rgb), 0.55);
             border-radius: 12px;
             margin-bottom: 20px;
         }
@@ -1636,7 +1889,7 @@
         }
 
         .scanned-data {
-            background: #f8fafc;
+            background: rgba(255, 255, 255, 0.04);
             padding: 20px;
             border-radius: 12px;
             margin-bottom: 20px;
@@ -1644,7 +1897,7 @@
 
         .scanned-data h3 {
             margin-bottom: 15px;
-            color: #1f2937;
+            color: rgba(226, 232, 240, 0.90);
         }
 
         .data-form {
@@ -1668,7 +1921,7 @@
         .form-group label {
             margin-bottom: 10px;
             font-weight: 600;
-            color: #374151;
+            color: rgba(226, 232, 240, 0.84);
             font-size: 15px;
             letter-spacing: -0.01em;
             display: flex;
@@ -1677,7 +1930,7 @@
         }
 
         .modal .form-group label {
-            color: #1f2937;
+            color: rgba(226, 232, 240, 0.90);
             font-weight: 700;
         }
 
@@ -1696,15 +1949,15 @@
         .form-group input,
         .form-group textarea {
             padding: 14px 18px;
-            border: 2px solid #e5e7eb;
+            border: 2px solid rgba(148, 163, 184, 0.22);
             border-radius: 12px;
             font-size: 15px;
             font-weight: 500;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: #ffffff;
-            color: #1f2937;
+            background: rgba(255, 255, 255, 0.06);
+            color: rgba(226, 232, 240, 0.90);
             will-change: border-color, background-color, transform;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
             width: 100%;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         }
@@ -1718,11 +1971,11 @@
         .form-group input:focus,
         .form-group textarea:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: rgba(var(--clinic-primary-rgb), 0.65);
             background: #ffffff;
             box-shadow: 
-                0 0 0 4px rgba(102, 126, 234, 0.1),
-                0 4px 16px rgba(102, 126, 234, 0.15),
+                0 0 0 4px rgba(var(--clinic-primary-rgb), 0.10),
+                0 4px 16px rgba(var(--clinic-primary-rgb), 0.15),
                 0 2px 8px rgba(0, 0, 0, 0.06);
             transform: translateY(-1px);
         }
@@ -1744,7 +1997,7 @@
 
         .data-list h3 {
             margin-bottom: 8px;
-            color: #1f2937;
+            color: rgba(226, 232, 240, 0.90);
             font-size: 0.9em;
             font-weight: 600;
             letter-spacing: 0;
@@ -1753,16 +2006,13 @@
         .data-table {
             width: 100%;
             border-collapse: collapse;
-            background: #ffffff;
-            border-radius: 4px;
-            overflow: hidden;
-            border: 1px solid #e5e7eb;
-            font-size: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            font-size: 13px;
         }
 
         .data-table thead {
-            background: #f3f4f6;
-            color: #1f2937;
+            background: rgba(255, 255, 255, 0.06);
+            color: rgba(226, 232, 240, 0.92);
         }
 
         .data-table {
@@ -1776,8 +2026,8 @@
         .data-table th {
             font-size: 11px;
             font-weight: 800;
-            color: #0f172a;
-            letter-spacing: 0.06em;
+            color: rgba(226, 232, 240, 0.92);
+            letter-spacing: 0.08em;
             text-transform: uppercase;
         }
 
@@ -1787,8 +2037,25 @@
 
         .data-table th,
         .data-table td {
-            padding: 6px 8px;
+            padding: 10px 12px;
             text-align: left;
+        }
+
+        .recon-table-scroll .data-table thead th {
+            position: sticky;
+            top: 0;
+            z-index: 3;
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.92) 0%, rgba(2, 6, 23, 0.92) 100%);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+            backdrop-filter: blur(6px);
+        }
+
+        .recon-table-scroll .data-table tbody tr:nth-child(even) {
+            background: rgba(148, 163, 184, 0.04);
+        }
+
+        .recon-table-scroll .data-table tbody tr:hover {
+            background: rgba(148, 163, 184, 0.10);
         }
 
         .data-table th {
@@ -1797,28 +2064,28 @@
         }
 
         .data-table tbody tr {
-            border-bottom: 1px solid #f3f4f6;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.14);
             transition: background-color 0.15s ease;
-            color: #374151;
+            color: rgba(226, 232, 240, 0.86);
         }
 
         .data-table tbody tr:hover {
-            background: rgba(2, 132, 199, 0.04);
+            background: rgba(148, 163, 184, 0.08);
         }
 
         .data-table tbody tr.row-selected {
-            background: rgba(99, 102, 241, 0.2);
-            border-left: 3px solid #6366f1;
+            background: rgba(var(--clinic-primary-rgb), 0.14);
+            border-left: 3px solid var(--clinic-primary);
         }
 
         .data-table tbody tr.row-selected:hover {
-            background: rgba(99, 102, 241, 0.25);
+            background: rgba(var(--clinic-primary-rgb), 0.18);
         }
 
         .data-table input[type="checkbox"] {
             width: 18px;
             height: 18px;
-            accent-color: #6366f1;
+            accent-color: var(--clinic-primary);
         }
 
         .data-table tbody tr:last-child {
@@ -1832,12 +2099,26 @@
             justify-content: flex-end;
         }
 
+        .action-buttons .btn.btn-icon {
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-buttons .btn.btn-icon i {
+            margin: 0;
+        }
+
         /* Small Button Variant - Still accessible */
         .btn-sm {
             padding: 6px 12px;
             min-height: 28px;
             font-size: 11px;
-            border-radius: 4px;
+            border-radius: 12px;
             gap: 4px;
         }
 
@@ -1977,13 +2258,13 @@
         }
 
         #productLibraryModal .library-table {
-            background: white;
+            background: rgba(255, 255, 255, 0.03);
         }
 
         #productLibraryModal .library-search {
-            background: white;
-            color: #1f2937;
-            border: 2px solid #e5e7eb;
+            background: rgba(255, 255, 255, 0.06);
+            color: rgba(226, 232, 240, 0.90);
+            border: 2px solid rgba(148, 163, 184, 0.22);
         }
 
         .collapsible-section {
@@ -2008,11 +2289,11 @@
             margin: 20px 0;
         }
 
-        .library-search {
+        .library-controls input[type="text"] {
             flex: 1;
             min-width: 220px;
             padding: 10px 14px;
-            border: 2px solid #e5e7eb;
+            border: 2px solid rgba(148, 163, 184, 0.22);
             border-radius: 8px;
             font-size: 14px;
         }
@@ -2041,7 +2322,7 @@
         .library-table {
             width: 100%;
             border-collapse: collapse;
-            border: 1px solid #e5e7eb;
+            border: 1px solid rgba(148, 163, 184, 0.18);
             border-radius: 12px;
             overflow: hidden;
         }
@@ -2059,7 +2340,7 @@
         }
 
         .library-table tbody tr:hover {
-            background: #f9fafb;
+            background: rgba(255, 255, 255, 0.04);
         }
 
         .library-empty {
@@ -2092,11 +2373,11 @@
         }
 
         .loading-content {
-            background: white;
+            background: rgba(6, 12, 34, 0.82);
             padding: 40px 50px;
             border-radius: 8px;
             text-align: center;
-            color: #333;
+            color: rgba(226, 232, 240, 0.90);
         }
 
         .loading-icon-container {
@@ -2108,8 +2389,8 @@
         .loading-spinner {
             width: 40px;
             height: 40px;
-            border: 4px solid #f3f3f3;
-            border-top-color: #333;
+            border: 4px solid rgba(255, 255, 255, 0.18);
+            border-top-color: rgba(var(--clinic-primary-rgb), 0.95);
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 0 auto;
@@ -2122,7 +2403,7 @@
         .loading-text {
             font-size: 18px;
             font-weight: 500;
-            color: #333;
+            color: rgba(226, 232, 240, 0.90);
             margin: 0;
         }
 
@@ -2137,12 +2418,12 @@
         /* Response Display */
         .response-content {
             display: none;
-            background: white;
+            background: rgba(6, 12, 34, 0.88);
             padding: 0;
             border-radius: 12px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
             text-align: left;
-            color: #1f2937;
+            color: rgba(226, 232, 240, 0.90);
             max-width: 700px;
             width: 90%;
             max-height: 85vh;
@@ -2172,7 +2453,7 @@
             justify-content: space-between;
             padding: 32px 36px;
             border-bottom: none;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--clinic-primary) 0%, var(--clinic-secondary) 100%);
             border-radius: 12px 12px 0 0;
             color: white;
         }
@@ -2255,14 +2536,14 @@
 
         .response-label {
             font-size: 16px;
-            color: #374151;
+            color: rgba(226, 232, 240, 0.80);
             margin-bottom: 16px;
             font-weight: 600;
             display: none;
         }
 
         .response-summary {
-            background: white;
+            background: rgba(255, 255, 255, 0.04);
             border-radius: 12px;
             padding: 24px;
             margin-bottom: 24px;
@@ -2271,21 +2552,21 @@
 
         .response-summary-title {
             font-size: 15px;
-            color: #6b7280;
+            color: rgba(226, 232, 240, 0.62);
             margin-bottom: 8px;
             font-weight: 500;
         }
 
         .response-summary-text {
             font-size: 17px;
-            color: #111827;
+            color: rgba(226, 232, 240, 0.92);
             font-weight: 600;
             line-height: 1.5;
         }
 
         .response-data {
-            background: white;
-            border: 2px solid #e5e7eb;
+            background: rgba(255, 255, 255, 0.04);
+            border: 2px solid rgba(148, 163, 184, 0.18);
             border-radius: 12px;
             padding: 24px;
             margin-top: 0;
@@ -2295,12 +2576,12 @@
             overflow-x: auto;
             max-height: 50vh;
             overflow-y: auto;
-            color: #374151;
+            color: rgba(226, 232, 240, 0.84);
         }
 
         .response-data pre {
             margin: 0;
-            color: #374151;
+            color: rgba(226, 232, 240, 0.84);
             white-space: pre-wrap;
             word-wrap: break-word;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -2338,7 +2619,7 @@
         }
 
         .modal-content {
-            background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+            background: rgba(6, 12, 34, 0.86);
             padding: 40px;
             border-radius: 24px;
             max-width: 650px;
@@ -2348,7 +2629,7 @@
             margin: auto;
             box-shadow: 
                 0 20px 60px rgba(0, 0, 0, 0.3),
-                0 8px 32px rgba(102, 126, 234, 0.2),
+                0 8px 32px rgba(var(--clinic-primary-rgb), 0.16),
                 inset 0 1px 0 rgba(255, 255, 255, 0.8);
             border: 1px solid rgba(255, 255, 255, 0.3);
             position: relative;
@@ -2362,7 +2643,170 @@
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(90deg, var(--clinic-primary) 0%, var(--clinic-secondary) 100%);
+        }
+
+        #receiveQtyModal .modal-content::before {
+            display: none;
+        }
+
+        #receiveQtyModal .modal-content {
+            padding: 0;
+        }
+
+        #receiveQtyModal .modal-header {
+            padding: 22px 24px;
+            margin-bottom: 0;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+        }
+
+        #receiveQtyModal .modal-header h2 {
+            font-size: 18px;
+            font-weight: 650;
+        }
+
+        #receiveQtyModal .receive-qty-body {
+            padding: 22px 24px 24px;
+            display: grid;
+            gap: 18px;
+        }
+
+        #receiveQtyModal .receive-qty-item {
+            font-weight: 600;
+            color: var(--clinic-ink);
+            font-size: 15px;
+            line-height: 1.3;
+            margin: 0;
+        }
+
+        #receiveQtyModal .receive-qty-remaining {
+            font-size: 12px;
+            color: var(--clinic-muted);
+            font-weight: 500;
+            margin-top: 6px;
+        }
+
+        #receiveQtyModal .receive-qty-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--clinic-ink);
+            letter-spacing: 0.02em;
+        }
+
+        #receiveQtyModal .receive-qty-stepper {
+            display: grid;
+            grid-template-columns: 44px 1fr 44px;
+            align-items: stretch;
+            border: 1px solid #d1d5db;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #ffffff;
+            box-shadow: 0 1px 0 rgba(17, 24, 39, 0.03);
+        }
+
+        #receiveQtyModal .receive-qty-stepper:focus-within {
+            border-color: rgba(var(--clinic-primary-rgb), 0.55);
+            box-shadow:
+                0 0 0 4px rgba(var(--clinic-primary-rgb), 0.12),
+                0 1px 0 rgba(17, 24, 39, 0.03);
+        }
+
+        #receiveQtyModal .receive-qty-stepper-btn {
+            border: none;
+            background: rgba(255, 255, 255, 0.06);
+            color: #374151;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        #receiveQtyModal .receive-qty-stepper-btn:hover {
+            background: #f3f4f6;
+        }
+
+        #receiveQtyModal .receive-qty-stepper-btn:active {
+            background: rgba(255, 255, 255, 0.10);
+        }
+
+        #receiveQtyModal .receive-qty-stepper-btn:focus-visible {
+            outline: none;
+        }
+
+        #receiveQtyModal .receive-qty-stepper-btn.minus {
+            border-right: 1px solid rgba(148, 163, 184, 0.18);
+        }
+
+        #receiveQtyModal .receive-qty-stepper-btn.plus {
+            border-left: 1px solid rgba(148, 163, 184, 0.18);
+        }
+
+        #receiveQtyModal .receive-qty-stepper-input {
+            width: 100%;
+            border: none;
+            outline: none;
+            text-align: center;
+            font-weight: 600;
+            font-size: 15px;
+            padding: 10px 12px;
+            background: transparent;
+            box-shadow: none;
+        }
+
+        #receiveQtyModal .receive-qty-stepper-input:focus {
+            outline: none;
+            box-shadow: none;
+        }
+
+        #receiveQtyModal .receive-qty-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            padding-top: 4px;
+        }
+
+        #receiveQtyModal .btn-outline {
+            background: transparent;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+
+        #receiveQtyModal .btn-outline:hover,
+        #receiveQtyModal .btn-outline:focus {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #9ca3af;
+        }
+
+        #receiveQtyModal .btn-outline:active {
+            background: #f3f4f6;
+        }
+
+        #receiveQtyModal .receive-qty-close {
+            background: #f3f4f6;
+            color: #6b7280;
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            font-size: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            box-shadow: none;
+        }
+
+        #receiveQtyModal .receive-qty-close:hover {
+            background: rgba(255, 255, 255, 0.10);
+            color: #374151;
+            transform: scale(1.03);
+        }
+
+        #receiveQtyModal .receive-qty-close:active {
+            transform: scale(0.98);
         }
 
         .modal-header {
@@ -2371,11 +2815,11 @@
             align-items: center;
             margin-bottom: 24px;
             padding-bottom: 20px;
-            border-bottom: 2px solid #e5e7eb;
+            border-bottom: 2px solid rgba(148, 163, 184, 0.18);
         }
 
         .modal-header h2 {
-            color: #1f2937;
+            color: rgba(226, 232, 240, 0.92);
             font-size: 1.75em;
             font-weight: 700;
             margin: 0;
@@ -2489,8 +2933,8 @@
         }
 
         .wddc-tab-btn.active {
-            color: #6366f1;
-            border-bottom-color: #6366f1;
+            color: rgba(255, 255, 255, 0.95);
+            border-bottom-color: var(--clinic-primary);
         }
 
         .wddc-tab-btn i {
@@ -2513,10 +2957,10 @@
 
         .wddc-dropzone {
             position: relative;
-            border: 3px dashed rgba(99, 102, 241, 0.4);
+            border: 3px dashed rgba(var(--clinic-primary-rgb), 0.45);
             border-radius: 20px;
             padding: 60px 40px;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
+            background: linear-gradient(135deg, rgba(var(--clinic-primary-rgb), 0.06) 0%, rgba(var(--clinic-secondary-rgb), 0.06) 100%);
             cursor: pointer;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             overflow: hidden;
@@ -2533,7 +2977,7 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(var(--clinic-primary-rgb), 0.12) 0%, transparent 70%);
             animation: rotate 20s linear infinite;
             opacity: 0;
             transition: opacity 0.3s ease;
@@ -2549,10 +2993,10 @@
         }
 
         .wddc-dropzone:hover {
-            border-color: #6366f1;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            border-color: var(--clinic-primary);
+            background: linear-gradient(135deg, rgba(var(--clinic-primary-rgb), 0.10) 0%, rgba(var(--clinic-secondary-rgb), 0.10) 100%);
             transform: translateY(-2px);
-            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.2);
+            box-shadow: 0 20px 40px rgba(var(--clinic-primary-rgb), 0.20);
         }
 
         .wddc-dropzone.dragover {
@@ -2578,7 +3022,7 @@
 
         .wddc-dropzone-icon i {
             font-size: 64px;
-            color: #6366f1;
+            color: var(--clinic-primary);
             animation: float 3s ease-in-out infinite;
         }
 
@@ -2668,7 +3112,7 @@
         }
 
         .wddc-btn-primary {
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            background: linear-gradient(135deg, var(--clinic-primary) 0%, var(--clinic-secondary) 100%);
             color: white;
             border: none;
             padding: 14px 32px;
@@ -2680,12 +3124,12 @@
             align-items: center;
             gap: 10px;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+            box-shadow: 0 4px 15px rgba(var(--clinic-primary-rgb), 0.24);
         }
 
         .wddc-btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+            box-shadow: 0 6px 20px rgba(var(--clinic-primary-rgb), 0.32);
         }
 
         .wddc-btn-primary:active {
@@ -2712,11 +3156,11 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            background: linear-gradient(135deg, rgba(var(--clinic-primary-rgb), 0.10) 0%, rgba(var(--clinic-secondary-rgb), 0.10) 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 2px dashed rgba(99, 102, 241, 0.3);
+            border: 2px dashed rgba(var(--clinic-primary-rgb), 0.32);
         }
 
         .wddc-camera-placeholder-content {
@@ -2730,7 +3174,7 @@
 
         .wddc-camera-icon i {
             font-size: 72px;
-            color: #6366f1;
+            color: var(--clinic-primary);
             animation: float 3s ease-in-out infinite;
         }
 
@@ -2854,14 +3298,14 @@
         }
 
         .wddc-btn-start {
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            background: linear-gradient(135deg, var(--clinic-primary) 0%, var(--clinic-secondary) 100%);
             color: white;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+            box-shadow: 0 4px 15px rgba(var(--clinic-primary-rgb), 0.24);
         }
 
         .wddc-btn-start:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+            box-shadow: 0 6px 20px rgba(var(--clinic-primary-rgb), 0.32);
         }
 
         .wddc-btn-capture {
@@ -2983,7 +3427,7 @@
         }
 
         .new-product-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--clinic-primary) 0%, var(--clinic-secondary) 100%);
             padding: 32px 40px;
             color: white;
             display: flex;
@@ -3063,13 +3507,13 @@
         }
 
         .new-product-info-banner {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
-            border-left: 4px solid #6366f1;
+            background: linear-gradient(135deg, rgba(var(--clinic-primary-rgb), 0.10) 0%, rgba(var(--clinic-secondary-rgb), 0.10) 100%);
+            border-left: 4px solid var(--clinic-primary);
             padding: 16px 40px;
             display: flex;
             align-items: center;
             gap: 12px;
-            color: #6366f1;
+            color: var(--clinic-secondary);
             font-size: 14px;
             font-weight: 500;
         }
@@ -3093,13 +3537,13 @@
             margin-bottom: 10px;
             font-size: 14px;
             font-weight: 600;
-            color: #1f2937;
+            color: rgba(226, 232, 240, 0.90);
         }
 
         .label-icon {
             width: 32px;
             height: 32px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--clinic-primary) 0%, var(--clinic-secondary) 100%);
             border-radius: 8px;
             display: flex;
             align-items: center;
@@ -3133,9 +3577,10 @@
             width: 100%;
             padding: 14px 16px;
             font-size: 16px;
-            border: 2px solid #e5e7eb;
+            border: 2px solid rgba(148, 163, 184, 0.22);
             border-radius: 12px;
-            background: white;
+            background: rgba(255, 255, 255, 0.06);
+            color: rgba(226, 232, 240, 0.90);
             transition: all 0.3s ease;
             font-family: inherit;
             box-sizing: border-box;
@@ -3144,8 +3589,8 @@
         .new-product-input:focus,
         .new-product-textarea:focus {
             outline: none;
-            border-color: #6366f1;
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+            border-color: rgba(var(--clinic-primary-rgb), 0.65);
+            box-shadow: 0 0 0 4px rgba(var(--clinic-primary-rgb), 0.10);
         }
 
         .new-product-textarea {
@@ -3160,7 +3605,7 @@
             left: 0;
             right: 0;
             height: 2px;
-            background: linear-gradient(90deg, #6366f1, #8b5cf6);
+            background: linear-gradient(90deg, var(--clinic-primary), var(--clinic-secondary));
             transform: scaleX(0);
             transition: transform 0.3s ease;
             border-radius: 2px;
@@ -3177,7 +3622,7 @@
             justify-content: flex-end;
             margin-top: 32px;
             padding-top: 32px;
-            border-top: 1px solid #e5e7eb;
+            border-top: 1px solid rgba(148, 163, 184, 0.18);
         }
 
         .new-product-btn-cancel,
@@ -3202,7 +3647,7 @@
         }
 
         .new-product-btn-cancel:hover {
-            background: #e5e7eb;
+            background: rgba(255, 255, 255, 0.10);
             color: #374151;
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -3255,7 +3700,7 @@
         }
 
         .product-library-header {
-            background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+            background: linear-gradient(135deg, var(--clinic-secondary) 0%, var(--clinic-primary) 100%);
             padding: 32px 40px;
             color: white;
             display: flex;
@@ -3336,8 +3781,8 @@
 
         .product-library-toolbar {
             padding: 24px 40px;
-            background: #f9fafb;
-            border-bottom: 1px solid #e5e7eb;
+            background: rgba(255, 255, 255, 0.04);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.18);
             display: flex;
             gap: 16px;
             align-items: center;
@@ -3355,7 +3800,7 @@
         .product-library-search-wrapper i {
             position: absolute;
             left: 16px;
-            color: #9ca3af;
+            color: rgba(226, 232, 240, 0.55);
             font-size: 16px;
             z-index: 1;
         }
@@ -3363,23 +3808,24 @@
         .product-library-search {
             width: 100%;
             padding: 12px 16px 12px 44px;
-            border: 2px solid #e5e7eb;
+            border: 2px solid rgba(148, 163, 184, 0.22);
             border-radius: 12px;
             font-size: 15px;
             transition: all 0.3s ease;
-            background: white;
+            background: rgba(255, 255, 255, 0.06);
+            color: rgba(226, 232, 240, 0.90);
         }
 
         .product-library-search:focus {
             outline: none;
-            border-color: #6366f1;
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+            border-color: rgba(var(--clinic-primary-rgb), 0.65);
+            box-shadow: 0 0 0 4px rgba(var(--clinic-primary-rgb), 0.10);
         }
 
         .search-clear {
             position: absolute;
             right: 12px;
-            background: #f3f4f6;
+            background: rgba(255, 255, 255, 0.06);
             border: none;
             width: 24px;
             height: 24px;
@@ -3388,18 +3834,18 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            color: #6b7280;
+            color: rgba(226, 232, 240, 0.62);
             font-size: 12px;
             transition: all 0.2s ease;
         }
 
         .search-clear:hover {
-            background: #e5e7eb;
-            color: #374151;
+            background: rgba(255, 255, 255, 0.10);
+            color: rgba(226, 232, 240, 0.86);
         }
 
         .product-library-btn-add {
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            background: linear-gradient(135deg, var(--clinic-primary) 0%, var(--clinic-secondary) 100%);
             color: white;
             border: none;
             padding: 12px 24px;
@@ -3411,18 +3857,18 @@
             align-items: center;
             gap: 8px;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            box-shadow: 0 4px 12px rgba(var(--clinic-primary-rgb), 0.24);
         }
 
         .product-library-btn-add:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+            box-shadow: 0 6px 20px rgba(var(--clinic-primary-rgb), 0.32);
         }
 
         .product-library-stats {
             padding: 20px 40px;
-            background: white;
-            border-bottom: 1px solid #e5e7eb;
+            background: rgba(255, 255, 255, 0.04);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.18);
             display: flex;
             gap: 32px;
         }
@@ -3436,12 +3882,12 @@
         .stat-value {
             font-size: 24px;
             font-weight: 700;
-            color: #6366f1;
+            color: var(--clinic-secondary);
         }
 
         .stat-label {
             font-size: 13px;
-            color: #6b7280;
+            color: rgba(226, 232, 240, 0.62);
             font-weight: 500;
         }
 
@@ -3474,7 +3920,7 @@
             flex: 1;
             overflow-y: auto;
             padding: 24px 40px;
-            background: #f9fafb;
+            background: rgba(255, 255, 255, 0.02);
         }
 
         .product-library-grid {
@@ -3484,12 +3930,12 @@
         }
 
         .product-library-card {
-            background: white;
+            background: rgba(255, 255, 255, 0.06);
             border-radius: 16px;
             padding: 24px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 14px 34px rgba(0, 0, 0, 0.26);
             transition: all 0.3s ease;
-            border: 1px solid #e5e7eb;
+            border: 1px solid rgba(148, 163, 184, 0.18);
             position: relative;
             overflow: hidden;
         }
@@ -3501,7 +3947,7 @@
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(90deg, #6366f1, #8b5cf6);
+            background: linear-gradient(90deg, var(--clinic-primary), var(--clinic-secondary));
             transform: scaleX(0);
             transition: transform 0.3s ease;
         }
@@ -3509,7 +3955,7 @@
         .product-library-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-            border-color: #6366f1;
+            border-color: var(--clinic-primary);
         }
 
         .product-library-card:hover::before {
@@ -3526,7 +3972,7 @@
         .product-card-name {
             font-size: 18px;
             font-weight: 700;
-            color: #1f2937;
+            color: rgba(226, 232, 240, 0.92);
             margin: 0;
             line-height: 1.4;
             flex: 1;
@@ -3592,7 +4038,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #6366f1;
+            color: var(--clinic-secondary);
             font-size: 11px;
             flex-shrink: 0;
             margin-top: 2px;
@@ -3611,7 +4057,7 @@
 
         .product-card-detail-value {
             font-size: 14px;
-            color: #1f2937;
+            color: rgba(226, 232, 240, 0.86);
             line-height: 1.5;
         }
 
@@ -3623,7 +4069,7 @@
         .product-card-footer {
             margin-top: 16px;
             padding-top: 16px;
-            border-top: 1px solid #f3f4f6;
+            border-top: 1px solid rgba(148, 163, 184, 0.14);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -3638,29 +4084,47 @@
             grid-column: 1 / -1;
             text-align: center;
             padding: 60px 40px;
-            background: white;
+            background: rgba(255, 255, 255, 0.04);
             border-radius: 16px;
-            border: 2px dashed #e5e7eb;
+            border: 2px dashed rgba(148, 163, 184, 0.20);
         }
 
         .empty-icon {
             width: 80px;
             height: 80px;
-            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            background: rgba(255, 255, 255, 0.06);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 24px;
             font-size: 36px;
-            color: #9ca3af;
+            color: rgba(226, 232, 240, 0.55);
         }
 
         .product-library-empty h3 {
             font-size: 22px;
             font-weight: 700;
-            color: #1f2937;
+            color: rgba(226, 232, 240, 0.92);
             margin: 0 0 8px 0;
+        }
+
+        .primary-actions h2 {
+            color: rgba(226, 232, 240, 0.92) !important;
+        }
+
+        .scanner-controls label[for="webhookUrlInput"] {
+            color: rgba(226, 232, 240, 0.84) !important;
+        }
+
+        #selectedCount {
+            color: rgba(226, 232, 240, 0.84) !important;
+        }
+
+        #webhookUrlInputLeft {
+            border: 1px solid rgba(148, 163, 184, 0.22) !important;
+            background: rgba(255, 255, 255, 0.06) !important;
+            color: rgba(226, 232, 240, 0.90) !important;
         }
 
         .product-library-empty p {
@@ -3670,7 +4134,7 @@
         }
 
         .product-library-btn-add-empty {
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            background: linear-gradient(135deg, var(--clinic-primary) 0%, var(--clinic-secondary) 100%);
             color: white;
             border: none;
             padding: 14px 28px;
@@ -3682,12 +4146,12 @@
             align-items: center;
             gap: 10px;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            box-shadow: 0 4px 12px rgba(var(--clinic-primary-rgb), 0.24);
         }
 
         .product-library-btn-add-empty:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+            box-shadow: 0 6px 20px rgba(var(--clinic-primary-rgb), 0.32);
         }
 
         /* Animation for modal appearance */
@@ -3700,6 +4164,11 @@
     <div class="container">
         <div class="dashboard-shell">
             <div class="topbar">
+                <a class="cliniciq-brand" href="#" aria-label="ClinicIQ">
+                    <span class="cliniciq-brand-mark" aria-hidden="true">
+                        <img class="cliniciq-brand-logo" src="cliniciq-logo.png" alt="ClinicIQ" />
+                    </span>
+                </a>
                 <div class="topbar-min" aria-label="Invoice header">
                     <div class="meta-chip">
                         <div class="meta-chip-label">Receipt #</div>
@@ -3725,7 +4194,7 @@
             <div class="scanner-section" style="overflow-y: auto;">
                 <!-- Quick Actions -->
                 <div class="primary-actions" style="margin-bottom: 8px;">
-                    <h2 style="color: #1f2937; text-align: center; margin-bottom: 8px; font-size: 0.9em; font-weight: 600;">
+                    <h2 style="color: rgba(226, 232, 240, 0.92); text-align: center; margin-bottom: 8px; font-size: 0.9em; font-weight: 600;">
                         <i class="fas fa-bolt"></i> Quick Actions
                     </h2>
                     <div class="button-group" style="justify-content: center; gap: 6px; flex-wrap: wrap;">
@@ -3763,7 +4232,7 @@
                         </button>
                     </div>
                     <div style="display: flex; flex-direction: column; gap: 4px;">
-                        <label for="webhookUrlInput" style="font-weight: 600; color: #1f2937; font-size: 11px;">
+                        <label for="webhookUrlInput" style="font-weight: 600; color: rgba(226, 232, 240, 0.84); font-size: 11px;">
                             <i class="fas fa-link"></i> Webhook URL
                         </label>
                         <input 
@@ -3772,7 +4241,7 @@
                             class="upload-file-input" 
                             placeholder="Webhook URL"
                             value="https://jackwilde.app.n8n.cloud/webhook/0efeec17-0878-454e-9f26-691cf6525645"
-                            style="font-size: 11px; padding: 6px 8px; border-radius: 4px; border: 1px solid #d1d5db; width: 100%;"
+                            style="font-size: 11px; padding: 6px 8px; border-radius: 4px; border: 1px solid rgba(148, 163, 184, 0.22); width: 100%;"
                         >
                     </div>
                 </div>
@@ -3780,7 +4249,7 @@
                 <div id="legacyScanViewWrapper">
                     <div id="scannerInputMountLeft">
                         <div class="scanner-input-container" id="scannerInputContainer">
-                            <h3><i class="fas fa-barcode"></i> Ready to Scan</h3>
+                            <h3><i class="fas fa-barcode"></i> Scan Item</h3>
                             <input 
                                 type="text" 
                                 id="barcodeInput" 
@@ -4138,38 +4607,35 @@
 
                 <div class="recon-shell" id="reconciliationShell">
                     <div class="recon-top">
-                        <div class="summary-grid" aria-label="Invoice Summary">
-                            <div class="metric-card">
-                                <div class="metric-label">Total Invoice Items</div>
-                                <div class="metric-value" id="metricInvoiceTotalItems">0</div>
-                                <div class="metric-hint">Expected from invoice</div>
+                        <div class="recon-workflow">
+                            <div class="recon-scanbox" id="reconScanBox">
+                                <h3><i class="fas fa-barcode"></i> Scan Item</h3>
+                                <div class="recon-scan-main">
+                                    <div id="reconScanMount"></div>
+                                    <div class="recon-remaining" aria-label="Remaining items">
+                                        <div class="recon-remaining-label">Remaining Items</div>
+                                        <div class="recon-remaining-value" id="reconRemainingCounter">0</div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="metric-card">
-                                <div class="metric-label">Fully Matched</div>
-                                <div class="metric-value accent" id="metricInvoiceFullyMatched">0</div>
-                                <div class="metric-hint">Completed lines</div>
-                            </div>
-                            <div class="metric-card">
-                                <div class="metric-label">Remaining</div>
-                                <div class="metric-value" id="metricInvoiceRemaining">0</div>
-                                <div class="metric-hint">Still to scan</div>
-                            </div>
-                            <div class="metric-card">
-                                <div class="metric-label">Variances</div>
-                                <div class="metric-value" id="metricInvoiceVariances">0</div>
-                                <div class="metric-hint">Qty/price issues</div>
-                            </div>
-                            <div class="metric-card">
-                                <div class="metric-label">Estimated Cost Impact</div>
-                                <div class="metric-value" id="metricInvoiceCostImpact">—</div>
-                                <div class="metric-hint">UI hook (pending)</div>
-                            </div>
-                        </div>
 
-                        <div class="recon-scanbox" id="reconScanBox">
-                            <h3><i class="fas fa-barcode"></i> Scan Items to Reconcile</h3>
-                            <p>Scan physical items to check them off against the invoice in real time.</p>
-                            <div id="reconScanMount"></div>
+                            <div class="summary-grid" aria-label="Invoice Summary">
+                                <div class="metric-card">
+                                    <div class="metric-label">Total Items</div>
+                                    <div class="metric-value" id="metricInvoiceTotalItems">0</div>
+                                    <div class="metric-hint">Expected</div>
+                                </div>
+                                <div class="metric-card">
+                                    <div class="metric-label">Fully Matched</div>
+                                    <div class="metric-value accent" id="metricInvoiceFullyMatched">0</div>
+                                    <div class="metric-hint">Completed</div>
+                                </div>
+                                <div class="metric-card">
+                                    <div class="metric-label">Remaining</div>
+                                    <div class="metric-value" id="metricInvoiceRemaining">0</div>
+                                    <div class="metric-hint">To scan</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -4183,25 +4649,16 @@
                                 <thead>
                                     <tr>
                                         <th>Status</th>
-                                        <th>Item ID</th>
-                                        <th>Description</th>
-                                        <th>Vendor</th>
-                                        <th>Ordered</th>
-                                        <th>Invoiced</th>
-                                        <th>Backorder</th>
-                                        <th>Unit Price</th>
-                                        <th>Ext Price</th>
-                                        <th>Lot #</th>
-                                        <th>Lot Qty</th>
-                                        <th>Expiry</th>
-                                        <th>Scanned Qty</th>
+                                        <th>Item</th>
+                                        <th>Expected</th>
+                                        <th>Scanned</th>
                                         <th>Variance</th>
-                                        <th>Actions</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody id="reconTableBody">
                                     <tr>
-                                        <td colspan="15">
+                                        <td colspan="6">
                                             <div class="empty-state">
                                                 <i class="fas fa-file-invoice"></i>
                                                 <p>No invoice items loaded yet. Upload and run Check to parse the invoice.</p>
@@ -4253,21 +4710,11 @@
                         <div class="metric-value" id="metricUnlinkedItems">0</div>
                         <div class="metric-hint">Needs mapping</div>
                     </div>
-                    <div class="metric-card">
-                        <div class="metric-label">Variance Detected</div>
-                        <div class="metric-value" id="metricVarianceDetected">0</div>
-                        <div class="metric-hint">Price/quantity flags</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-label">Estimated Cost Impact</div>
-                        <div class="metric-value" id="metricCostImpact">—</div>
-                        <div class="metric-hint">UI hook (pending)</div>
-                    </div>
                 </div>
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                     <h3 style="margin: 0; font-size: 0.9em;"><i class="fas fa-list"></i> Scanned Items</h3>
                     <div id="bulkActionsBar" style="display: none; align-items: center; gap: 6px;">
-                        <span id="selectedCount" style="color: #1f2937; font-weight: 600; font-size: 11px;"></span>
+                        <span id="selectedCount" style="color: rgba(226, 232, 240, 0.84); font-weight: 600; font-size: 11px;"></span>
                         <button class="btn btn-danger btn-sm" onclick="deleteSelectedItems()" id="bulkDeleteBtn" style="padding: 4px 8px; font-size: 11px;">
                             <i class="fas fa-trash"></i> Delete Selected
                         </button>
@@ -4371,6 +4818,41 @@
                     </button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <div class="modal" id="receiveQtyModal">
+        <div class="modal-content" style="max-width: 420px;">
+            <div class="modal-header">
+                <h2><i class="fas fa-dolly"></i> Receive Quantity</h2>
+                <button class="receive-qty-close" onclick="closeReceiveQtyModal()" aria-label="Close">&times;</button>
+            </div>
+            <div class="receive-qty-body">
+                <div>
+                    <div id="receiveQtyModalTitle" class="receive-qty-item">Item</div>
+                    <div id="receiveQtyModalHint" class="receive-qty-remaining">Remaining to receive: —</div>
+                </div>
+
+                <div style="display: grid; gap: 10px;">
+                    <label for="receiveQtyInput" class="receive-qty-label">Quantity</label>
+                    <div class="receive-qty-stepper" role="group" aria-label="Quantity stepper">
+                        <button type="button" class="receive-qty-stepper-btn minus" onclick="stepReceiveQty(-1)" aria-label="Decrease quantity">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <input id="receiveQtyInput" type="number" min="1" step="1" class="receive-qty-stepper-input" />
+                        <button type="button" class="receive-qty-stepper-btn plus" onclick="stepReceiveQty(1)" aria-label="Increase quantity">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="receive-qty-actions">
+                    <button type="button" class="btn btn-outline" onclick="closeReceiveQtyModal()">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="confirmReceiveQty()">
+                        <i class="fas fa-check"></i> Receive
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -4481,7 +4963,7 @@
                 <div class="data-form">
                     <div class="form-group">
                         <label for="addProductName">
-                            <i class="fas fa-tag" style="color: #667eea; font-size: 14px;"></i>
+                            <i class="fas fa-tag" style="color: var(--clinic-secondary); font-size: 14px;"></i>
                             Product Name
                         </label>
                         <input 
@@ -4495,7 +4977,7 @@
                     </div>
                     <div class="form-group">
                         <label for="addProductSize">
-                            <i class="fas fa-ruler-combined" style="color: #667eea; font-size: 14px;"></i>
+                            <i class="fas fa-ruler-combined" style="color: var(--clinic-secondary); font-size: 14px;"></i>
                             Size / Variant
                         </label>
                         <input 
@@ -4508,7 +4990,7 @@
                     </div>
                     <div class="form-group">
                         <label for="addProductNotes">
-                            <i class="fas fa-sticky-note" style="color: #667eea; font-size: 14px;"></i>
+                            <i class="fas fa-sticky-note" style="color: var(--clinic-secondary); font-size: 14px;"></i>
                             Notes
                         </label>
                         <textarea 
@@ -4859,7 +5341,7 @@
                 if (priceVariance) return { label: 'Price Variance', cls: 'badge-warning' };
                 return { label: 'Fully Matched', cls: 'badge-success' };
             }
-            if (qty > invoiceQty) return { label: 'Quantity Mismatch', cls: 'badge-danger' };
+            if (qty > invoiceQty) return { label: 'Quantity Mismatch', cls: 'badge-warning' };
             return { label: 'Not Scanned', cls: 'badge-neutral' };
         }
 
@@ -4877,6 +5359,20 @@
             return idx;
         }
 
+        let lastReconScannedKey = '';
+
+        function setLastReconScannedBy(itemNumber, upcCode, name) {
+            const key = normalizeKey(itemNumber || upcCode || name);
+            if (key) lastReconScannedKey = key;
+        }
+
+        function toggleReconDetails(rowIndex) {
+            const row = document.getElementById(`reconDetailsRow_${rowIndex}`);
+            if (!row) return;
+            const hidden = row.style.display === 'none' || row.style.display === '';
+            row.style.display = hidden ? 'table-row' : 'none';
+        }
+
         function renderReconciliation() {
             const body = document.getElementById('reconTableBody');
             if (!body) return;
@@ -4886,7 +5382,7 @@
             let variances = 0;
             let remaining = 0;
 
-            const rows = (reconciliationState.expectedItems || []).map((it) => {
+            const rows = (reconciliationState.expectedItems || []).map((it, idx) => {
                 const keys = [it.itemNumber, it.upcCode, it.name].filter(Boolean).map(normalizeKey);
                 let scannedQty = 0;
                 for (const k of keys) {
@@ -4900,6 +5396,9 @@
                 const variance = scannedQty - invoiceQty;
                 const status = computeReconStatus(it, scannedQty);
 
+                const rowKey = normalizeKey(it.itemNumber || it.upcCode || it.name);
+                const isLastScanned = rowKey && lastReconScannedKey && rowKey === lastReconScannedKey;
+
                 const isComplete = status.label === 'Fully Matched' || status.label === 'Price Variance';
                 if (isComplete) fullyMatched++;
                 if (status.label === 'Quantity Mismatch' || status.label === 'Price Variance') variances++;
@@ -4907,9 +5406,7 @@
 
                 const itemId = safeText(it.itemId || it.item_id || it.itemNumber, '—');
                 const desc = safeText(it.description || it.name, '—');
-                const vendor = (it.vendorName || it.vendorCode)
-                    ? `${safeText(it.vendorName, '—')}${it.vendorCode ? `<div style="font-size: 11px; color: var(--clinic-muted); font-weight: 600; margin-top: 2px;">Code ${safeText(it.vendorCode, '')}</div>` : ''}`
-                    : '—';
+                const vendorText = safeText(it.vendorName || it.vendorCode, '—');
 
                 const orderedQty = (it.orderedQty !== null && it.orderedQty !== undefined) ? Number(it.orderedQty) : (Number(it.raw?.ordered) || 0);
                 const invoicedQty = (it.invoicedQty !== null && it.invoicedQty !== undefined) ? Number(it.invoicedQty) : (Number(it.raw?.invoiced) || 0);
@@ -4926,29 +5423,59 @@
                 const lotQty = (it.lotQty !== null && it.lotQty !== undefined && it.lotQty !== 0) ? String(it.lotQty) : '—';
                 const expiryDate = safeText(it.expiryDate, '—');
 
-                const rowClass = status.label === 'Fully Matched' ? 'style="background: rgba(16, 185, 129, 0.08);"' : '';
-
                 return `
-                    <tr ${rowClass}>
+                    <tr class="${isLastScanned ? 'recon-last-scanned' : ''}">
                         <td><span class="badge ${status.cls}">${status.label}</span></td>
-                        <td><strong>${itemId}</strong></td>
-                        <td>${desc}${(it.upcCode || it.itemNumber) ? `<div style="font-size: 11px; color: var(--clinic-muted); font-weight: 600; margin-top: 2px;">${it.itemNumber ? `Item # ${safeText(it.itemNumber, '')}` : ''}${(it.itemNumber && it.upcCode) ? ' • ' : ''}${it.upcCode ? `UPC ${safeText(it.upcCode, '')}` : ''}</div>` : ''}</td>
-                        <td>${vendor}</td>
-                        <td>${orderedQty || 0}</td>
-                        <td>${invoicedQty || invoiceQty || 0}</td>
-                        <td>${backorderQty || 0}</td>
-                        <td>${unitPrice}</td>
-                        <td>${extPrice}</td>
-                        <td>${lotNumber}</td>
-                        <td>${lotQty}</td>
-                        <td>${expiryDate}</td>
+                        <td class="recon-item-cell">
+                            <div class="recon-item-title">${desc}</div>
+                            <div class="recon-item-meta">${it.itemNumber ? `Item # ${safeText(it.itemNumber, '')}` : 'Item # —'}${it.upcCode ? ` • UPC ${safeText(it.upcCode, '')}` : ''}</div>
+                        </td>
+                        <td><strong>${invoiceQty || 0}</strong></td>
                         <td><strong>${scannedQty || 0}</strong></td>
                         <td>${variance === 0 ? '0' : (variance > 0 ? `+${variance}` : `${variance}`)}</td>
                         <td>
-                            <div class="action-buttons">
-                                <button class="btn btn-primary btn-sm" onclick="toggleProductLibrarySection()">
-                                    <i class="fas fa-link"></i> Map
+                            <div class="action-buttons" style="justify-content: flex-end;">
+                                <button class="btn btn-success btn-sm btn-receive" onclick="receiveReconItem(${idx})">
+                                    <i class="fas fa-check"></i> Receive
                                 </button>
+                                <button class="btn btn-secondary btn-sm btn-icon" onclick="removeReconQty(${idx})" aria-label="Remove 1 received">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <button class="btn btn-secondary btn-sm btn-icon" onclick="toggleReconDetails(${idx})" aria-label="Show details">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr id="reconDetailsRow_${idx}" style="display: none;">
+                        <td colspan="6" style="padding: 0;">
+                            <div class="recon-details">
+                                <div class="recon-details-grid">
+                                    <div class="recon-details-kv">
+                                        <div class="recon-details-k">Item ID</div>
+                                        <div class="recon-details-v">${itemId}</div>
+                                    </div>
+                                    <div class="recon-details-kv">
+                                        <div class="recon-details-k">Vendor</div>
+                                        <div class="recon-details-v">${vendorText}</div>
+                                    </div>
+                                    <div class="recon-details-kv">
+                                        <div class="recon-details-k">Ordered / Backorder</div>
+                                        <div class="recon-details-v">${orderedQty || 0} / ${backorderQty || 0}</div>
+                                    </div>
+                                    <div class="recon-details-kv">
+                                        <div class="recon-details-k">Invoiced Qty</div>
+                                        <div class="recon-details-v">${invoicedQty || invoiceQty || 0}</div>
+                                    </div>
+                                    <div class="recon-details-kv">
+                                        <div class="recon-details-k">Unit / Ext Price</div>
+                                        <div class="recon-details-v">${unitPrice} / ${extPrice}</div>
+                                    </div>
+                                    <div class="recon-details-kv">
+                                        <div class="recon-details-k">Lot / Expiry</div>
+                                        <div class="recon-details-v">${lotNumber} (${lotQty}) • ${expiryDate}</div>
+                                    </div>
+                                </div>
                             </div>
                         </td>
                     </tr>
@@ -4957,7 +5484,7 @@
 
             body.innerHTML = rows || `
                 <tr>
-                    <td colspan="15">
+                    <td colspan="6">
                         <div class="empty-state">
                             <i class="fas fa-file-invoice"></i>
                             <p>No invoice items loaded yet. Upload and run Check to parse the invoice.</p>
@@ -4969,13 +5496,180 @@
             const totalEl = document.getElementById('metricInvoiceTotalItems');
             const matchedEl = document.getElementById('metricInvoiceFullyMatched');
             const remainingEl = document.getElementById('metricInvoiceRemaining');
-            const varianceEl = document.getElementById('metricInvoiceVariances');
+            const remainingCounter = document.getElementById('reconRemainingCounter');
             if (totalEl) totalEl.textContent = String((reconciliationState.expectedItems || []).length);
             if (matchedEl) matchedEl.textContent = String(fullyMatched);
             if (remainingEl) remainingEl.textContent = String(remaining);
-            if (varianceEl) varianceEl.textContent = String(variances);
+            if (remainingCounter) remainingCounter.textContent = String(remaining);
 
             renderNotOnInvoice(scannedIdx);
+        }
+
+        let pendingReceiveCtx = null;
+
+        function computeExpectedScannedQty(expectedItem, scannedIdx) {
+            const keys = [expectedItem.itemNumber, expectedItem.upcCode, expectedItem.name].filter(Boolean).map(normalizeKey);
+            for (const k of keys) {
+                if (scannedIdx[k]) return Number(scannedIdx[k]) || 0;
+            }
+            return 0;
+        }
+
+        function findScannedItemForExpected(expectedItem) {
+            const itemKey = normalizeKey(expectedItem.itemNumber);
+            const upcKey = normalizeKey(expectedItem.upcCode);
+            return (scannedItems || []).find((s) => {
+                if (!s) return false;
+                const sItemKey = normalizeKey(s.itemNumber);
+                const sUpcKey = normalizeKey(s.upcCode);
+                return (itemKey && sItemKey && itemKey === sItemKey) || (upcKey && sUpcKey && upcKey === sUpcKey);
+            });
+        }
+
+        function applyReceiveToExpected(expectedItem, qty) {
+            const receiveQty = Math.max(1, Math.floor(Number(qty) || 1));
+            setLastReconScannedBy(expectedItem.itemNumber, expectedItem.upcCode, expectedItem.name);
+            const existing = findScannedItemForExpected(expectedItem);
+            if (existing) {
+                existing.quantity = (Number(existing.quantity) || 0) + receiveQty;
+                existing.updatedAt = new Date().toISOString();
+            } else {
+                scannedItems.unshift({
+                    id: `recv_${Date.now()}_${Math.random().toString(16).slice(2)}`,
+                    itemNumber: expectedItem.itemNumber || '',
+                    upcCode: expectedItem.upcCode || '',
+                    name: expectedItem.description || expectedItem.name || 'Received Item',
+                    quantity: receiveQty,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                    scannedAt: new Date().toISOString()
+                });
+            }
+
+            saveData();
+            if (reconciliationState && reconciliationState.active) {
+                renderReconciliation();
+            }
+            showStatus(`Received ${receiveQty}`, 'success');
+            setTimeout(hideStatus, 2000);
+
+            setTimeout(() => {
+                const el = document.getElementById('barcodeInput');
+                if (el) el.focus();
+            }, 100);
+        }
+
+        function receiveReconItem(expectedIndex) {
+            const expectedItem = (reconciliationState.expectedItems || [])[expectedIndex];
+            if (!expectedItem) return;
+
+            const scannedIdx = buildScannedIndex();
+            const scannedQty = computeExpectedScannedQty(expectedItem, scannedIdx);
+            const invoiceQty = Number(expectedItem.invoiceQty) || 0;
+
+            const remaining = invoiceQty > 0 ? Math.max(0, invoiceQty - scannedQty) : 1;
+            if (invoiceQty > 1) {
+                openReceiveQtyModal(expectedItem, Math.max(1, remaining), 1);
+                return;
+            }
+            applyReceiveToExpected(expectedItem, 1);
+        }
+
+        function removeReconQty(expectedIndex, qty = 1) {
+            const expectedItem = (reconciliationState.expectedItems || [])[expectedIndex];
+            if (!expectedItem) return;
+
+            const existing = findScannedItemForExpected(expectedItem);
+            if (!existing) {
+                showStatus('Nothing to remove', 'error');
+                setTimeout(hideStatus, 1600);
+                return;
+            }
+
+            const removeQty = Math.max(1, Math.floor(Number(qty) || 1));
+            const nextQty = (Number(existing.quantity) || 0) - removeQty;
+
+            if (nextQty <= 0) {
+                const idx = (scannedItems || []).indexOf(existing);
+                if (idx >= 0) scannedItems.splice(idx, 1);
+            } else {
+                existing.quantity = nextQty;
+                existing.updatedAt = new Date().toISOString();
+            }
+
+            saveData();
+            if (reconciliationState && reconciliationState.active) {
+                renderReconciliation();
+            }
+            showStatus(`Removed ${removeQty}`, 'success');
+            setTimeout(hideStatus, 1600);
+
+            setTimeout(() => {
+                const el = document.getElementById('barcodeInput');
+                if (el) el.focus();
+            }, 100);
+        }
+
+        function openReceiveQtyModal(expectedItem, remaining, defaultQty = 1) {
+            const modal = document.getElementById('receiveQtyModal');
+            const title = document.getElementById('receiveQtyModalTitle');
+            const hint = document.getElementById('receiveQtyModalHint');
+            const input = document.getElementById('receiveQtyInput');
+            if (!modal || !input) return;
+
+            const rawLabel = safeText(expectedItem.description || expectedItem.name, 'Item');
+            const label = rawLabel ? (rawLabel.charAt(0).toUpperCase() + rawLabel.slice(1).toLowerCase()) : 'Item';
+            if (title) title.textContent = label;
+            if (hint) hint.textContent = `Remaining to receive: ${remaining}`;
+
+            input.value = String(defaultQty);
+            input.min = '1';
+            input.max = String(remaining);
+
+            pendingReceiveCtx = { expectedItem, remaining };
+            modal.classList.add('active');
+            setTimeout(() => input.focus(), 50);
+        }
+
+        function stepReceiveQty(delta) {
+            const input = document.getElementById('receiveQtyInput');
+            if (!input) return;
+            const min = Number(input.min) || 1;
+            const max = Number(input.max) || Number.MAX_SAFE_INTEGER;
+            const next = Math.min(max, Math.max(min, (Number(input.value) || min) + Number(delta || 0)));
+            input.value = String(next);
+            input.focus();
+        }
+
+        function closeReceiveQtyModal() {
+            const modal = document.getElementById('receiveQtyModal');
+            if (modal) modal.classList.remove('active');
+            pendingReceiveCtx = null;
+            setTimeout(() => {
+                const el = document.getElementById('barcodeInput');
+                if (el) el.focus();
+            }, 100);
+        }
+
+        function confirmReceiveQty() {
+            if (!pendingReceiveCtx) {
+                closeReceiveQtyModal();
+                return;
+            }
+            const input = document.getElementById('receiveQtyInput');
+            const raw = input ? Number(input.value) : 1;
+            const qty = Math.floor(raw);
+            const max = Number(pendingReceiveCtx.remaining) || 1;
+            if (!qty || qty < 1 || qty > max) {
+                showStatus(`Enter a quantity between 1 and ${max}`, 'error');
+                setTimeout(hideStatus, 2500);
+                if (input) input.focus();
+                return;
+            }
+
+            const expectedItem = pendingReceiveCtx.expectedItem;
+            closeReceiveQtyModal();
+            applyReceiveToExpected(expectedItem, qty);
         }
 
         function renderNotOnInvoice(scannedIdx) {
@@ -22481,27 +23175,28 @@
             
             // Determine Item # - use from database if found, otherwise use UPC as fallback
             const itemNumber = productInfo ? productInfo.itemNumber : barcode;
-            console.log('🏷️ Item Number determined:', itemNumber);
+            console.log(' Item Number determined:', itemNumber);
             
             // Check if this Item # already exists in our scanned items
             const existingItem = scannedItems.find(item => item.itemNumber === itemNumber);
-            console.log('🔎 Existing item check:', existingItem ? 'Found' : 'Not found');
+            console.log(' Existing item check:', existingItem ? 'Found' : 'Not found');
             
             if (existingItem) {
                 // If Item # exists, auto-increment quantity
-                console.log('➕ Incrementing quantity for existing item');
+                console.log(' Incrementing quantity for existing item');
                 existingItem.quantity = (existingItem.quantity || 1) + 1;
                 existingItem.updatedAt = new Date().toISOString();
                 saveData();
                 showStatus(`Item # ${itemNumber} quantity updated to ${existingItem.quantity}`, 'success');
                 if (reconciliationState && reconciliationState.active) {
                     const matched = evaluateIfScanMatchesInvoice(existingItem.itemNumber, existingItem.upcCode, existingItem.name);
+                    if (matched) setLastReconScannedBy(existingItem.itemNumber, existingItem.upcCode, existingItem.name);
                     onReconScanFeedback(matched);
                     renderReconciliation();
                 }
                 setTimeout(() => {
                     document.getElementById('barcodeInput').focus();
-                }, 100);
+                }, 200);
                 return;
             }
             
@@ -22524,13 +23219,14 @@
                 showStatus('Product not found. Please search and add from the Product Library.', 'error');
                 if (reconciliationState && reconciliationState.active) {
                     const matched = evaluateIfScanMatchesInvoice(newItem.itemNumber, newItem.upcCode, newItem.name);
+                    if (matched) setLastReconScannedBy(newItem.itemNumber, newItem.upcCode, newItem.name);
                     onReconScanFeedback(matched);
                     renderReconciliation();
                 }
                 return;
             }
 
-            console.log('✨ Creating new item:', newItem);
+            console.log(' Creating new item:', newItem);
             scannedItems.unshift(newItem);
             
             // Track product usage for "recently used" feature
@@ -22545,17 +23241,18 @@
             
             saveData();
             
-            console.log('✅ Item added with database info');
+            console.log(' Item added with database info');
             showStatus(`Item # ${itemNumber} added: ${newItem.name}`, 'success');
             if (reconciliationState && reconciliationState.active) {
                 const matched = evaluateIfScanMatchesInvoice(newItem.itemNumber, newItem.upcCode, newItem.name);
+                if (matched) setLastReconScannedBy(newItem.itemNumber, newItem.upcCode, newItem.name);
                 onReconScanFeedback(matched);
                 renderReconciliation();
             }
             
             setTimeout(() => {
                 document.getElementById('barcodeInput').focus();
-            }, 100);
+            }, 200);
         }
 
         // Show status message
@@ -22619,24 +23316,20 @@
                     const total = scannedItems.length;
                     let matched = 0;
                     let unlinked = 0;
-                    let variance = 0;
 
                     scannedItems.forEach((item) => {
                         const s = computeItemStatus(item).label;
                         if (s === 'Matched') matched++;
                         else if (s === 'Not Linked') unlinked++;
-                        else if (s === 'Price Variance' || s === 'Quantity Mismatch') variance++;
                     });
 
                     const elTotal = document.getElementById('metricTotalItems');
                     const elMatched = document.getElementById('metricMatchedItems');
                     const elUnlinked = document.getElementById('metricUnlinkedItems');
-                    const elVariance = document.getElementById('metricVarianceDetected');
 
                     if (elTotal) elTotal.textContent = String(total);
                     if (elMatched) elMatched.textContent = String(matched);
                     if (elUnlinked) elUnlinked.textContent = String(unlinked);
-                    if (elVariance) elVariance.textContent = String(variance);
                 } catch (e) {
                     // no-op
                 }
@@ -25097,7 +25790,7 @@
                             ${form.sent ? 'Sent' : 'Pending'}
                         </span>
                         ${form.publicUrl ? `
-                            <br><small style="color: #667eea; font-size: 10px;">
+                            <br><small style="color: var(--clinic-secondary); font-size: 10px;">
                                 <i class="fas fa-link"></i> Public URL
                             </small>
                         ` : ''}
@@ -25105,7 +25798,7 @@
                     <td>
                         ${form.publicUrl ? `
                             <button class="btn-icon" onclick="copyPublicUrl('${form.publicUrl}', ${index})" title="Copy Public URL">
-                                <i class="fas fa-copy" style="color: #667eea;"></i>
+                                <i class="fas fa-copy" style="color: var(--clinic-secondary);"></i>
                             </button>
                         ` : ''}
                         <button class="btn-icon" onclick="deleteOrderForm(${index})" title="Delete">
@@ -25163,7 +25856,7 @@
                             ${form.sent ? 'Sent' : 'Pending'}
                         </span>
                         ${form.publicUrl ? `
-                            <br><small style="color: #667eea; font-size: 10px;">
+                            <br><small style="color: var(--clinic-secondary); font-size: 10px;">
                                 <i class="fas fa-link"></i> Public URL
                             </small>
                         ` : ''}
@@ -25171,7 +25864,7 @@
                     <td>
                         ${form.publicUrl ? `
                             <button class="btn-icon" onclick="copyPublicUrl('${form.publicUrl}', ${index})" title="Copy Public URL">
-                                <i class="fas fa-copy" style="color: #667eea;"></i>
+                                <i class="fas fa-copy" style="color: var(--clinic-secondary);"></i>
                             </button>
                         ` : ''}
                         <button class="btn-icon" onclick="deleteOrderForm(${index})" title="Delete">
@@ -26944,6 +27637,38 @@
                     }
                 });
             }
+
+            const receiveQtyModal = document.getElementById('receiveQtyModal');
+            if (receiveQtyModal) {
+                receiveQtyModal.addEventListener('click', function(e) {
+                    if (e.target === receiveQtyModal) {
+                        closeReceiveQtyModal();
+                    }
+                });
+            }
+
+            const receiveQtyInput = document.getElementById('receiveQtyInput');
+            if (receiveQtyInput) {
+                receiveQtyInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        confirmReceiveQty();
+                    }
+                    if (e.key === 'Escape') {
+                        e.preventDefault();
+                        closeReceiveQtyModal();
+                    }
+                });
+            }
+
+            document.addEventListener('keydown', function(e) {
+                const modal = document.getElementById('receiveQtyModal');
+                if (!modal || !modal.classList.contains('active')) return;
+                if (e.key === 'Escape') {
+                    e.preventDefault();
+                    closeReceiveQtyModal();
+                }
+            });
 
             // Old manual form (kept for backward compatibility, but hidden)
             const manualForm = document.getElementById('manualProductForm');
