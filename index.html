@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventory Intake Tool</title>
+    <title>Clinic IQ | Inventory Intake Tool</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,9 +27,22 @@
             scroll-behavior: smooth;
         }
 
+        :root {
+            --clinic-primary: #00b6e8;
+            --clinic-primary-hover: #00a3d6;
+            --clinic-secondary: #0c8db6;
+            --clinic-ink: #0f172a;
+            --clinic-bg: #f6f8fb;
+            --clinic-card: #ffffff;
+            --clinic-border: #e6ebf2;
+            --clinic-muted: #64748b;
+            --clinic-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+            --clinic-shadow-sm: 0 6px 18px rgba(15, 23, 42, 0.06);
+        }
+
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: #f5f5f5;
+            background: var(--clinic-bg);
             min-height: 100vh;
             padding: 8px;
             position: relative;
@@ -56,6 +69,663 @@
             flex-direction: column;
         }
 
+        .dashboard-shell {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--clinic-border);
+        }
+
+        .topbar-min {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .topbar-mark {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--clinic-primary) 0%, var(--clinic-secondary) 100%);
+            box-shadow: 0 8px 18px rgba(0, 182, 232, 0.22);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 auto;
+        }
+
+        .topbar-mark i {
+            color: white;
+            font-size: 16px;
+        }
+
+        .topbar-titles {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .topbar-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--clinic-ink);
+            letter-spacing: -0.02em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.1;
+        }
+
+        .topbar-subtitle {
+            margin-top: 2px;
+            font-size: 12px;
+            color: var(--clinic-muted);
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .topbar-meta {
+            display: grid;
+            grid-auto-flow: column;
+            gap: 14px;
+            align-items: center;
+            justify-content: end;
+        }
+
+        .meta-chip {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            padding: 8px 10px;
+            border: 1px solid var(--clinic-border);
+            background: var(--clinic-card);
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+            min-width: 150px;
+        }
+
+        .meta-chip-label {
+            font-size: 10px;
+            color: var(--clinic-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .meta-chip-value {
+            font-size: 12px;
+            color: var(--clinic-ink);
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .content {
+            padding: 16px;
+            background: transparent;
+            flex: 1;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            min-height: 0;
+        }
+
+        @media (max-width: 1400px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 1100px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+            .topbar-meta {
+                display: none;
+            }
+        }
+
+        .scanner-section {
+            display: none !important;
+        }
+
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .topbar-actions .btn {
+            width: auto;
+            padding: 8px 10px;
+            font-size: 12px;
+            border-radius: 10px;
+            line-height: 1;
+        }
+
+        .topbar-actions .topbar-webhook {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border: 1px solid var(--clinic-border);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.75);
+        }
+
+        .topbar-actions .topbar-webhook input {
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 12px;
+            min-width: 280px;
+            color: #1f2937;
+        }
+
+        @media (max-width: 1100px) {
+            .topbar-actions {
+                justify-content: flex-start;
+            }
+            .topbar-actions .topbar-webhook input {
+                min-width: 180px;
+                width: 100%;
+            }
+        }
+
+        .panel-card {
+            background: var(--clinic-card);
+            border: 1px solid var(--clinic-border);
+            border-radius: 14px;
+            box-shadow: var(--clinic-shadow-sm);
+            padding: 12px;
+        }
+
+        .panel-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .panel-title h2,
+        .panel-title h3 {
+            margin: 0;
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--clinic-ink);
+            letter-spacing: -0.01em;
+        }
+
+        .panel-subtext {
+            margin-top: 4px;
+            font-size: 11px;
+            color: var(--clinic-muted);
+            font-weight: 500;
+        }
+
+        .scanner-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .primary-actions,
+        .scanner-controls {
+            background: var(--clinic-card) !important;
+            border: 1px solid var(--clinic-border) !important;
+            border-radius: 14px !important;
+            box-shadow: var(--clinic-shadow-sm) !important;
+        }
+
+        .primary-actions {
+            padding: 12px !important;
+        }
+
+        .primary-actions h2 {
+            margin-bottom: 10px !important;
+            text-align: left !important;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .primary-actions .button-group {
+            justify-content: stretch !important;
+            gap: 8px !important;
+        }
+
+        .primary-actions .btn {
+            justify-content: flex-start;
+            padding: 10px 12px;
+            border-radius: 12px;
+            min-height: 42px;
+        }
+
+        .primary-actions .btn i {
+            opacity: 0.95;
+        }
+
+        .scanner-controls {
+            padding: 12px !important;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(246, 248, 251, 0.9) 100%) !important;
+        }
+
+        .scanner-input-container {
+            border-color: var(--clinic-border);
+            transition: box-shadow 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+        }
+
+        .scanner-input-container:focus-within {
+            border-color: rgba(0, 182, 232, 0.55);
+            box-shadow: 0 10px 28px rgba(0, 182, 232, 0.12);
+            transform: translateY(-1px);
+        }
+
+        .scanner-instructions {
+            margin-top: 8px;
+            color: var(--clinic-muted);
+        }
+
+        .data-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .data-list {
+            margin-top: 0;
+            flex: 1;
+            min-height: calc(100vh - 140px);
+            position: relative;
+        }
+
+        @media (max-width: 1100px) {
+            body {
+                overflow: auto;
+            }
+            .container {
+                height: auto;
+                min-height: calc(100vh - 16px);
+            }
+            .content {
+                overflow: visible;
+            }
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        @media (max-width: 1200px) {
+            .summary-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        .metric-card {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(246, 248, 251, 0.9) 100%);
+            border: 1px solid var(--clinic-border);
+            border-radius: 14px;
+            padding: 12px;
+            box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+            min-height: 70px;
+        }
+
+        .metric-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--clinic-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .metric-value {
+            margin-top: 6px;
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--clinic-ink);
+            letter-spacing: -0.02em;
+        }
+
+        .metric-value.accent {
+            color: var(--clinic-secondary);
+        }
+
+        .metric-hint {
+            margin-top: 4px;
+            font-size: 11px;
+            color: var(--clinic-muted);
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: -0.01em;
+            border: 1px solid transparent;
+            white-space: nowrap;
+        }
+
+        .badge-success {
+            background: rgba(16, 185, 129, 0.12);
+            color: #065f46;
+            border-color: rgba(16, 185, 129, 0.22);
+        }
+
+        .badge-warning {
+            background: rgba(245, 158, 11, 0.14);
+            color: #92400e;
+            border-color: rgba(245, 158, 11, 0.28);
+        }
+
+        .badge-info {
+            background: rgba(59, 130, 246, 0.12);
+            color: #1d4ed8;
+            border-color: rgba(59, 130, 246, 0.22);
+        }
+
+        .badge-danger {
+            background: rgba(239, 68, 68, 0.12);
+            color: #991b1b;
+            border-color: rgba(239, 68, 68, 0.22);
+        }
+
+        .badge-neutral {
+            background: rgba(100, 116, 139, 0.12);
+            color: #334155;
+            border-color: rgba(100, 116, 139, 0.22);
+        }
+
+        .workflow-stage {
+            height: 100%;
+            min-height: 420px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #preInvoiceStage {
+            flex: 1;
+            min-height: calc(100vh - 160px);
+        }
+
+        #preInvoiceStage.active {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100vw;
+            height: 100vh;
+            min-height: 0;
+            z-index: 9000;
+            padding: 28px;
+            background: rgba(246, 248, 251, 0.92);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+
+        #preInvoiceStage.active .stage-card {
+            max-width: 760px;
+            width: min(760px, calc(100vw - 56px));
+        }
+
+        .workflow-stage.active {
+            display: flex;
+        }
+
+        .stage-card {
+            width: 100%;
+            max-width: 680px;
+            background: var(--clinic-card);
+            border: 1px solid var(--clinic-border);
+            border-radius: 18px;
+            box-shadow: var(--clinic-shadow);
+            padding: 26px;
+        }
+
+        .stage-title {
+            font-size: 20px;
+            font-weight: 900;
+            letter-spacing: -0.02em;
+            color: var(--clinic-ink);
+            margin: 0;
+        }
+
+        .stage-subtitle {
+            margin-top: 8px;
+            font-size: 13px;
+            color: var(--clinic-muted);
+            font-weight: 500;
+            line-height: 1.5;
+        }
+
+        .stage-actions {
+            margin-top: 16px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .stage-actions .btn {
+            min-height: 42px;
+        }
+
+        .preinvoice-loader {
+            display: none;
+            margin-top: 14px;
+            padding: 10px 12px;
+            border-radius: 14px;
+            border: 1px solid var(--clinic-border);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(246, 248, 251, 0.95) 100%);
+            color: var(--clinic-muted);
+            font-weight: 600;
+            font-size: 13px;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .preinvoice-loader.active {
+            display: flex;
+            width: 100%;
+        }
+
+        .invoice-error-banner {
+            display: none;
+            margin-top: 14px;
+            padding: 12px 14px;
+            border-radius: 14px;
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            background: rgba(239, 68, 68, 0.08);
+            color: rgba(239, 68, 68, 0.95);
+            font-weight: 700;
+            font-size: 13px;
+            line-height: 1.25;
+        }
+
+        .invoice-error-banner.active {
+            display: block;
+        }
+
+        .preinvoice-spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(0, 182, 232, 0.25);
+            border-top-color: var(--clinic-primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .progress-rail {
+            margin-top: 18px;
+            border-top: 1px solid var(--clinic-border);
+            padding-top: 16px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .progress-step {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 10px 12px;
+            border: 1px solid var(--clinic-border);
+            border-radius: 14px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(246, 248, 251, 0.95) 100%);
+        }
+
+        .progress-step-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .progress-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 999px;
+            border: 2px solid rgba(100, 116, 139, 0.45);
+            background: transparent;
+            flex: 0 0 auto;
+        }
+
+        .progress-step.active .progress-dot {
+            border-color: rgba(0, 182, 232, 0.55);
+            background: rgba(0, 182, 232, 0.18);
+        }
+
+        .progress-step.complete .progress-dot {
+            border-color: rgba(16, 185, 129, 0.55);
+            background: rgba(16, 185, 129, 0.18);
+        }
+
+        .progress-label {
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--clinic-ink);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .progress-status {
+            font-size: 11px;
+            color: var(--clinic-muted);
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .recon-shell {
+            display: none;
+            height: 100%;
+            overflow: hidden;
+            flex-direction: column;
+        }
+
+        .recon-shell.active {
+            display: flex;
+        }
+
+        .recon-table-card {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .recon-table-scroll {
+            flex: 1;
+            min-height: 0;
+            overflow: auto;
+            padding: 12px;
+            padding-top: 10px;
+        }
+
+        .recon-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .recon-scanbox {
+            flex: 1;
+            min-width: 280px;
+            background: linear-gradient(135deg, rgba(0, 182, 232, 0.10) 0%, rgba(12, 141, 182, 0.08) 100%);
+            border: 1px solid rgba(0, 182, 232, 0.25);
+            border-radius: 16px;
+            padding: 12px;
+            box-shadow: 0 10px 30px rgba(0, 182, 232, 0.08);
+        }
+
+        .recon-scanbox h3 {
+            margin: 0;
+            font-size: 12px;
+            font-weight: 900;
+            letter-spacing: -0.01em;
+            color: var(--clinic-ink);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .recon-scanbox p {
+            margin: 6px 0 0 0;
+            font-size: 11px;
+            color: var(--clinic-muted);
+            font-weight: 600;
+        }
+
+        .scan-flash {
+            animation: scanFlash 420ms ease;
+        }
+
+        @keyframes scanFlash {
+            0% { box-shadow: 0 10px 30px rgba(0, 182, 232, 0.10); }
+            35% { box-shadow: 0 12px 36px rgba(16, 185, 129, 0.25); }
+            100% { box-shadow: 0 10px 30px rgba(0, 182, 232, 0.10); }
+        }
+
         .header {
             background: #f9fafb;
             color: #1f2937;
@@ -80,28 +750,57 @@
             z-index: 1;
         }
 
+        .header h1 .brand-name {
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: var(--clinic-ink);
+        }
+
+        .header h1 .app-name {
+            font-weight: 600;
+            color: #4b5563;
+        }
+
+        .header h1 i {
+            color: var(--clinic-primary);
+        }
+
+        .header {
+            display: none;
+        }
+
         .header p {
             display: none;
         }
 
         .content {
-            padding: 12px;
-            background: #ffffff;
+            padding: 16px;
+            background: transparent;
             flex: 1;
             overflow: hidden;
             display: grid;
-            grid-template-columns: 400px 1fr;
-            gap: 12px;
+            grid-template-columns: 360px 1fr;
+            gap: 16px;
         }
 
         @media (max-width: 1400px) {
             .content {
-                grid-template-columns: 350px 1fr;
+                grid-template-columns: 340px 1fr;
+            }
+        }
+
+        @media (max-width: 1100px) {
+            .content {
+                grid-template-columns: 1fr;
             }
         }
 
         .scanner-section {
             margin-bottom: 0;
+        }
+
+        .scanner-section {
+            display: flex !important;
         }
 
         .scanner-controls {
@@ -187,19 +886,19 @@
 
         /* Primary Button - Neutral */
         .btn-primary {
-            background: #4b5563;
+            background: var(--clinic-primary);
             color: white;
-            border: 1px solid #374151;
+            border: 1px solid var(--clinic-secondary);
         }
 
         .btn-primary:hover,
         .btn-primary:focus {
-            background: #374151;
-            border-color: #1f2937;
+            background: var(--clinic-primary-hover);
+            border-color: var(--clinic-secondary);
         }
 
         .btn-primary:active {
-            background: #1f2937;
+            background: var(--clinic-secondary);
         }
 
         /* Success Button - Neutral Green */
@@ -336,9 +1035,33 @@
 
         .barcode-input:focus {
             outline: none;
-            border-color: #6b7280;
-            box-shadow: 0 0 0 2px rgba(107, 114, 128, 0.2);
+            border-color: var(--clinic-primary);
+            box-shadow: 0 0 0 3px rgba(0, 182, 232, 0.18);
             background: #ffffff;
+        }
+
+        .scanner-input-container {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(246, 248, 251, 0.9) 100%);
+            border: 1px solid var(--clinic-border);
+            border-radius: 14px;
+            box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+            padding: 14px;
+        }
+
+        .scanner-input-container h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+            font-weight: 900;
+            letter-spacing: -0.01em;
+            color: var(--clinic-ink);
+        }
+
+        .barcode-input {
+            min-height: 44px;
+            font-size: 15px;
+            border-radius: 12px;
         }
 
         .barcode-input:hover:not(:focus) {
@@ -1042,6 +1765,26 @@
             color: #1f2937;
         }
 
+        .data-table {
+            border: 1px solid var(--clinic-border);
+            border-radius: 14px;
+            overflow: hidden;
+            background: var(--clinic-card);
+            box-shadow: var(--clinic-shadow-sm);
+        }
+
+        .data-table th {
+            font-size: 11px;
+            font-weight: 800;
+            color: #0f172a;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .data-table td {
+            vertical-align: middle;
+        }
+
         .data-table th,
         .data-table td {
             padding: 6px 8px;
@@ -1060,7 +1803,7 @@
         }
 
         .data-table tbody tr:hover {
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(2, 132, 199, 0.04);
         }
 
         .data-table tbody tr.row-selected {
@@ -1602,13 +2345,14 @@
             width: 90%;
             max-height: 90vh;
             overflow-y: auto;
+            margin: auto;
             box-shadow: 
                 0 20px 60px rgba(0, 0, 0, 0.3),
                 0 8px 32px rgba(102, 126, 234, 0.2),
                 inset 0 1px 0 rgba(255, 255, 255, 0.8);
             border: 1px solid rgba(255, 255, 255, 0.3);
             position: relative;
-            overflow: hidden;
+            overflow: auto;
         }
 
         .modal-content::before {
@@ -2954,8 +3698,25 @@
 </head>
 <body>
     <div class="container">
+        <div class="dashboard-shell">
+            <div class="topbar">
+                <div class="topbar-min" aria-label="Invoice header">
+                    <div class="meta-chip">
+                        <div class="meta-chip-label">Receipt #</div>
+                        <div class="meta-chip-value" id="invoiceMetaReceipt">—</div>
+                    </div>
+                    <div class="meta-chip">
+                        <div class="meta-chip-label">Vendor</div>
+                        <div class="meta-chip-value" id="invoiceMetaName">—</div>
+                    </div>
+                    <div class="meta-chip">
+                        <div class="meta-chip-label">Date</div>
+                        <div class="meta-chip-value" id="invoiceMetaUploaded">—</div>
+                    </div>
+                </div>
+            </div>
         <div class="header">
-            <h1><i class="fas fa-barcode"></i> Inventory Intake Tool</h1>
+            <h1><i class="fas fa-barcode"></i> <span class="brand-name">Clinic IQ</span> <span class="app-name">| Inventory Intake Tool</span></h1>
             <p>Scan, store, and manage barcode data</p>
         </div>
 
@@ -2997,7 +3758,7 @@
                         <button class="btn btn-secondary" onclick="clearScannedData()" style="flex: 1;">
                             <i class="fas fa-trash"></i> Clear All
                         </button>
-                        <button class="btn btn-primary" id="sendToWebhookBtn" onclick="sendDataToWebhook()" style="flex: 1;">
+                        <button class="btn btn-primary" id="sendToWebhookBtnLeft" onclick="sendDataToWebhook()" style="flex: 1;">
                             <i class="fas fa-paper-plane"></i> Check
                         </button>
                     </div>
@@ -3007,7 +3768,7 @@
                         </label>
                         <input 
                             type="url" 
-                            id="webhookUrlInput" 
+                            id="webhookUrlInputLeft" 
                             class="upload-file-input" 
                             placeholder="Webhook URL"
                             value="https://jackwilde.app.n8n.cloud/webhook/0efeec17-0878-454e-9f26-691cf6525645"
@@ -3016,22 +3777,24 @@
                     </div>
                 </div>
 
-                <div class="scanner-input-container">
-                    <h3><i class="fas fa-barcode"></i> Ready to Scan</h3>
-                    <input 
-                        type="text" 
-                        id="barcodeInput" 
-                        class="barcode-input" 
-                        placeholder="Click here, then scan a barcode with your scanner..."
-                        autofocus
-                        autocomplete="off"
-                    >
-                    <p class="scanner-instructions">
-                        <i class="fas fa-lightbulb"></i>
-                        Tip: Scan barcode and code will appear automatically
-                    </p>
+                <div id="legacyScanViewWrapper">
+                    <div id="scannerInputMountLeft">
+                        <div class="scanner-input-container" id="scannerInputContainer">
+                            <h3><i class="fas fa-barcode"></i> Ready to Scan</h3>
+                            <input 
+                                type="text" 
+                                id="barcodeInput" 
+                                class="barcode-input" 
+                                placeholder="Click here, then scan a barcode with your scanner..."
+                                autofocus
+                            >
+                            <div class="scanner-instructions">
+                                <p><strong>Instructions:</strong> Click the input field above, then use your barcode scanner to scan items.</p>
+                                <p><strong>Tip:</strong> Most barcode scanners act like a keyboard and automatically press Enter after scanning.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
 
         <!-- WDDC Order Form Modal -->
         <div class="modal" id="wddcOrderModal">
@@ -3327,6 +4090,180 @@
             <!-- Data List -->
             <!-- Right Column: Scanned Items -->
             <div class="data-list" style="overflow-y: auto;">
+                <div class="workflow-stage" id="preInvoiceStage">
+                    <div class="stage-card">
+                        <h2 class="stage-title">Upload Invoice to Begin</h2>
+                        <div class="stage-subtitle">Upload a vendor order form to start reconciliation</div>
+                        <div class="invoice-error-banner" id="invoiceErrorBanner" aria-live="polite">
+                            <div id="invoiceErrorText"></div>
+                        </div>
+                        <div class="preinvoice-loader" id="preInvoiceLoader" aria-live="polite">
+                            <div class="preinvoice-spinner" aria-hidden="true"></div>
+                            <div id="preInvoiceLoaderText">Uploading…</div>
+                        </div>
+                        <div class="wddc-dropzone" id="preInvoiceDropzone" style="position: relative; margin-top: 18px;">
+                            <div class="wddc-dropzone-content">
+                                <div class="wddc-dropzone-icon">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                </div>
+                                <div class="wddc-dropzone-text">
+                                    <h3>Drag & Drop Your Order Form</h3>
+                                    <p>Drop PDF or image files here, or click to browse</p>
+                                </div>
+                                <div class="wddc-dropzone-features">
+                                    <span><i class="fas fa-check"></i> PDF Files</span>
+                                    <span><i class="fas fa-check"></i> Images (JPG, PNG)</span>
+                                </div>
+                            </div>
+                            <div class="wddc-dropzone-overlay">
+                                <div class="wddc-dropzone-overlay-content">
+                                    <i class="fas fa-file-upload"></i>
+                                    <p>Drop files here</p>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="file" id="preInvoiceFileInput" class="upload-file-input" accept=".pdf,image/*" style="display:none;">
+                        <div class="stage-actions" style="justify-content: center;">
+                            <button class="btn btn-primary" id="preInvoiceBrowseBtn" onclick="document.getElementById('preInvoiceFileInput').click()">
+                                <i class="fas fa-folder-open"></i>
+                                <span>Choose File</span>
+                            </button>
+                            <button class="btn btn-secondary" id="preInvoiceOpenUploadModalBtn" onclick="toggleWDDCOrderSection()">
+                                <i class="fas fa-sliders-h"></i>
+                                <span>More Upload Options</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recon-shell" id="reconciliationShell">
+                    <div class="recon-top">
+                        <div class="summary-grid" aria-label="Invoice Summary">
+                            <div class="metric-card">
+                                <div class="metric-label">Total Invoice Items</div>
+                                <div class="metric-value" id="metricInvoiceTotalItems">0</div>
+                                <div class="metric-hint">Expected from invoice</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">Fully Matched</div>
+                                <div class="metric-value accent" id="metricInvoiceFullyMatched">0</div>
+                                <div class="metric-hint">Completed lines</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">Remaining</div>
+                                <div class="metric-value" id="metricInvoiceRemaining">0</div>
+                                <div class="metric-hint">Still to scan</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">Variances</div>
+                                <div class="metric-value" id="metricInvoiceVariances">0</div>
+                                <div class="metric-hint">Qty/price issues</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">Estimated Cost Impact</div>
+                                <div class="metric-value" id="metricInvoiceCostImpact">—</div>
+                                <div class="metric-hint">UI hook (pending)</div>
+                            </div>
+                        </div>
+
+                        <div class="recon-scanbox" id="reconScanBox">
+                            <h3><i class="fas fa-barcode"></i> Scan Items to Reconcile</h3>
+                            <p>Scan physical items to check them off against the invoice in real time.</p>
+                            <div id="reconScanMount"></div>
+                        </div>
+                    </div>
+
+                    <div class="panel-card recon-table-card" style="padding: 0; overflow: hidden;">
+                        <div style="padding: 12px 12px 0 12px; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;">
+                            <h3 style="margin: 0; font-size: 0.9em;"><i class="fas fa-clipboard-check"></i> Reconciliation Table</h3>
+                            <div id="reconTableHint" style="font-size: 11px; color: var(--clinic-muted); font-weight: 600;">Expected items from invoice</div>
+                        </div>
+                        <div class="recon-table-scroll">
+                            <table class="data-table" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th>Status</th>
+                                        <th>Item ID</th>
+                                        <th>Description</th>
+                                        <th>Vendor</th>
+                                        <th>Ordered</th>
+                                        <th>Invoiced</th>
+                                        <th>Backorder</th>
+                                        <th>Unit Price</th>
+                                        <th>Ext Price</th>
+                                        <th>Lot #</th>
+                                        <th>Lot Qty</th>
+                                        <th>Expiry</th>
+                                        <th>Scanned Qty</th>
+                                        <th>Variance</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="reconTableBody">
+                                    <tr>
+                                        <td colspan="15">
+                                            <div class="empty-state">
+                                                <i class="fas fa-file-invoice"></i>
+                                                <p>No invoice items loaded yet. Upload and run Check to parse the invoice.</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="panel-card" id="notOnInvoicePanel" style="display: none; padding: 0; overflow: hidden;">
+                        <div style="padding: 12px 12px 0 12px; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;">
+                            <h3 style="margin: 0; font-size: 0.9em;"><i class="fas fa-triangle-exclamation"></i> Scanned Not on Invoice</h3>
+                            <div style="font-size: 11px; color: var(--clinic-muted); font-weight: 600;">Flagged for review / mapping</div>
+                        </div>
+                        <div style="padding: 12px; padding-top: 10px; overflow-x: auto;">
+                            <table class="data-table" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th>Status</th>
+                                        <th>Item #</th>
+                                        <th>UPC</th>
+                                        <th>Name</th>
+                                        <th>Scanned Qty</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="notOnInvoiceBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="legacyScanView">
+                <div class="summary-grid" aria-label="Invoice Summary">
+                    <div class="metric-card">
+                        <div class="metric-label">Total Items</div>
+                        <div class="metric-value" id="metricTotalItems">0</div>
+                        <div class="metric-hint">Scanned in this session</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Matched Items</div>
+                        <div class="metric-value accent" id="metricMatchedItems">0</div>
+                        <div class="metric-hint">Linked to catalog</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Unlinked Items</div>
+                        <div class="metric-value" id="metricUnlinkedItems">0</div>
+                        <div class="metric-hint">Needs mapping</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Variance Detected</div>
+                        <div class="metric-value" id="metricVarianceDetected">0</div>
+                        <div class="metric-hint">Price/quantity flags</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Estimated Cost Impact</div>
+                        <div class="metric-value" id="metricCostImpact">—</div>
+                        <div class="metric-hint">UI hook (pending)</div>
+                    </div>
+                </div>
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                     <h3 style="margin: 0; font-size: 0.9em;"><i class="fas fa-list"></i> Scanned Items</h3>
                     <div id="bulkActionsBar" style="display: none; align-items: center; gap: 6px;">
@@ -3343,6 +4280,7 @@
                                 <th style="width: 50px;">
                                     <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this.checked)" style="cursor: pointer;">
                                 </th>
+                                <th>Status</th>
                                 <th>Item #</th>
                                 <th>UPC CODE</th>
                                 <th>NAME</th>
@@ -3353,7 +4291,7 @@
                         </thead>
                         <tbody id="dataTableBody">
                             <tr>
-                                <td colspan="7">
+                                <td colspan="8">
                                     <div class="empty-state">
                                         <i class="fas fa-barcode"></i>
                                         <p>No scanned items yet. Start scanning to add items!</p>
@@ -3362,6 +4300,7 @@
                             </tr>
                         </tbody>
                     </table>
+                </div>
                 </div>
             </div>
 
@@ -3393,6 +4332,7 @@
                     </table>
                 </div>
             </div>
+        </div>
         </div>
     </div>
 
@@ -3598,6 +4538,505 @@
         let barcodeBuffer = '';
         let lastKeyTime = 0;
         let scanTimeout = null;
+
+        let reconciliationState = {
+            active: false,
+            invoice: null,
+            expectedItems: [],
+            expectedIndex: {},
+            notOnInvoice: [],
+            lastScan: null
+        };
+
+        const RECON_STORAGE_KEY = 'activeInvoiceReconciliation';
+
+        function safeText(value, fallback = '—') {
+            const v = (value === null || value === undefined) ? '' : String(value).trim();
+            return v ? v : fallback;
+        }
+
+        function normalizeKey(value) {
+            return String(value || '').trim().toLowerCase();
+        }
+
+        function setWorkflowStage(stage) {
+            const pre = document.getElementById('preInvoiceStage');
+            const recon = document.getElementById('reconciliationShell');
+            const legacy = document.getElementById('legacyScanView');
+
+            if (pre) pre.classList.toggle('active', stage === 'pre');
+            if (recon) recon.classList.toggle('active', stage === 'recon');
+            if (legacy) legacy.style.display = stage === 'legacy' ? 'block' : 'none';
+
+            const invoiceStatus = document.getElementById('invoiceMetaStatus');
+            if (invoiceStatus) {
+                invoiceStatus.textContent = stage === 'recon' ? 'Active' : 'Not Loaded';
+            }
+        }
+
+        function setProgress(step, statusText, stateClass) {
+            const map = {
+                uploading: { rowId: 'progressUploading', statusId: 'progressUploadingStatus' },
+                parsing: { rowId: 'progressParsing', statusId: 'progressParsingStatus' },
+                loaded: { rowId: 'progressLoaded', statusId: 'progressLoadedStatus' }
+            };
+            const meta = map[step];
+            if (!meta) return;
+
+            const row = document.getElementById(meta.rowId);
+            const status = document.getElementById(meta.statusId);
+            if (status) status.textContent = statusText;
+
+            if (row) {
+                row.classList.remove('active');
+                row.classList.remove('complete');
+                if (stateClass) row.classList.add(stateClass);
+            }
+        }
+
+        function resetProgress() {
+            setProgress('uploading', 'Waiting', null);
+            setProgress('parsing', 'Waiting', null);
+            setProgress('loaded', 'Waiting', null);
+        }
+
+        function setPreInvoiceUploading(isUploading, message = null) {
+            const preLoader = document.getElementById('preInvoiceLoader');
+            const preLoaderText = document.getElementById('preInvoiceLoaderText');
+            const preDropzone = document.getElementById('preInvoiceDropzone');
+            const browseBtn = document.getElementById('preInvoiceBrowseBtn');
+            const moreBtn = document.getElementById('preInvoiceOpenUploadModalBtn');
+            const stage = document.getElementById('preInvoiceStage');
+            const title = stage ? stage.querySelector('.stage-title') : null;
+            const subtitle = stage ? stage.querySelector('.stage-subtitle') : null;
+            const errBanner = document.getElementById('invoiceErrorBanner');
+
+            if (preLoader) preLoader.classList.toggle('active', !!isUploading);
+            if (preLoaderText && message) preLoaderText.textContent = message;
+            if (preDropzone) preDropzone.style.display = isUploading ? 'none' : '';
+            if (browseBtn) browseBtn.style.display = isUploading ? 'none' : '';
+            if (moreBtn) moreBtn.style.display = isUploading ? 'none' : '';
+            if (title) title.style.display = isUploading ? 'none' : '';
+            if (subtitle) subtitle.style.display = isUploading ? 'none' : '';
+            if (errBanner) errBanner.style.display = isUploading ? 'none' : '';
+        }
+
+        function setScanningEnabled(enabled) {
+            const input = document.getElementById('barcodeInput');
+            const container = document.getElementById('scannerInputContainer');
+            if (input) {
+                input.disabled = !enabled;
+                input.placeholder = enabled ? 'Click here, then scan a barcode with your scanner...' : 'Upload and load an invoice to enable scanning...';
+            }
+            if (container) {
+                container.style.opacity = enabled ? '1' : '0.55';
+                container.style.pointerEvents = enabled ? 'auto' : 'none';
+            }
+        }
+
+        function moveScannerInputToRecon() {
+            const mount = document.getElementById('reconScanMount');
+            const left = document.getElementById('scannerInputMountLeft');
+            const container = document.getElementById('scannerInputContainer');
+            if (!mount || !left || !container) return;
+
+            if (reconciliationState.active) {
+                if (mount.contains(container)) return;
+                mount.appendChild(container);
+            } else {
+                if (left.contains(container)) return;
+                left.appendChild(container);
+            }
+        }
+
+        function persistReconciliation() {
+            try {
+                const payload = {
+                    invoice: reconciliationState.invoice,
+                    expectedItems: reconciliationState.expectedItems
+                };
+                localStorage.setItem(RECON_STORAGE_KEY, JSON.stringify(payload));
+            } catch (e) {
+                // no-op
+            }
+        }
+
+        function restoreReconciliation() {
+            try {
+                const stored = localStorage.getItem(RECON_STORAGE_KEY);
+                if (!stored) return false;
+                const parsed = JSON.parse(stored);
+                if (!parsed || !Array.isArray(parsed.expectedItems) || parsed.expectedItems.length === 0) return false;
+                reconciliationState.invoice = parsed.invoice || null;
+                reconciliationState.expectedItems = parsed.expectedItems;
+                buildExpectedIndex();
+                reconciliationState.active = true;
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        function buildExpectedIndex() {
+            const index = {};
+            (reconciliationState.expectedItems || []).forEach((it) => {
+                const keys = [
+                    it.itemNumber,
+                    it.upcCode,
+                    it.upc,
+                    it.sku,
+                    it.code,
+                    it.barcode
+                ].filter(Boolean);
+                keys.forEach((k) => {
+                    const nk = normalizeKey(k);
+                    if (nk) index[nk] = it;
+                });
+                const nameKey = normalizeKey(it.name);
+                if (nameKey && !index[nameKey]) index[nameKey] = it;
+            });
+            reconciliationState.expectedIndex = index;
+        }
+
+        function extractInvoiceFromWebhook(parsedData) {
+            if (!parsedData) return null;
+
+            // n8n often responds with an array of items; treat the first item as the payload.
+            if (Array.isArray(parsedData)) {
+                if (parsedData.length === 0) return null;
+                parsedData = parsedData[0];
+            }
+
+            if (typeof parsedData !== 'object') return null;
+
+            const invoice = parsedData.invoice || parsedData.order || parsedData.document || {};
+            const receipt = parsedData.invoiceReceiptNumber
+                ?? parsedData.receiptNumber
+                ?? parsedData.receipt
+                ?? parsedData.invoiceReceipt
+                ?? parsedData.invoice_receipt
+                ?? invoice.invoiceReceiptNumber
+                ?? invoice.receiptNumber
+                ?? invoice.receipt
+                ?? invoice.invoiceReceipt
+                ?? invoice.invoice_receipt
+                ?? null;
+            if (receipt !== null && receipt !== undefined && receipt !== '') {
+                invoice.receiptNumber = receipt;
+            }
+            const candidateLists = [
+                parsedData.expectedItems,
+                parsedData.invoiceItems,
+                parsedData.items,
+                parsedData.lines,
+                parsedData.lineItems,
+                parsedData.products
+            ].filter(Boolean);
+
+            let items = null;
+            for (const list of candidateLists) {
+                if (Array.isArray(list) && list.length > 0) {
+                    items = list;
+                    break;
+                }
+                if (list && typeof list === 'object' && Array.isArray(list.items)) {
+                    items = list.items;
+                    break;
+                }
+            }
+            if (!Array.isArray(items) || items.length === 0) return null;
+
+            const normalized = items.map((raw, idx) => {
+                const obj = (raw && typeof raw === 'object') ? raw : { name: String(raw) };
+                const orderedQty = Number(obj.ordered ?? obj.orderedQty ?? obj.orderQty ?? obj.qtyOrdered ?? obj.quantityOrdered ?? obj.quantity_ordered) || 0;
+                const invoicedQty = Number(obj.invoiced ?? obj.invoiceQty ?? obj.invoicedQty ?? obj.qtyInvoiced ?? obj.quantityInvoiced ?? obj.quantity_invoiced ?? obj.qty ?? obj.quantity) || 0;
+                const backorderQty = Number(obj.backorder ?? obj.backordered ?? obj.backorderQty ?? obj.qtyBackorder ?? obj.qtyBackordered ?? obj.quantityBackorder ?? obj.quantity_backorder) || 0;
+
+                const unitPrice = obj.unit_price ?? obj.unitPrice ?? obj.invoicePrice ?? obj.price ?? obj.cost ?? null;
+                const extPrice = obj.ext_price ?? obj.extPrice ?? obj.extendedPrice ?? obj.totalPrice ?? null;
+                const lotNumber = obj.lot_number ?? obj.lotNumber ?? obj.lot ?? null;
+                const lotQty = Number(obj.lot_qty ?? obj.lotQty ?? obj.lotQuantity ?? obj.lot_quantity) || 0;
+                const expiryDate = obj.expiry_date ?? obj.expiryDate ?? obj.expirationDate ?? obj.expiration_date ?? null;
+                const vendorCode = obj.vendor_code ?? obj.vendorCode ?? obj.vendor ?? null;
+                const vendorName = obj.vendor_name ?? obj.vendorName ?? null;
+
+                const invoiceQty = invoicedQty || orderedQty || 0;
+                const priceInvoice = unitPrice;
+                const priceSystem = obj.systemPrice ?? obj.catalogPrice ?? null;
+
+                return {
+                    id: obj.id || obj.lineId || obj.itemId || ('inv_' + idx),
+                    itemId: safeText(obj.item_id || obj.itemId || obj.itemNumber || obj.itemNo || obj.item || obj.sku || obj.productCode, ''),
+                    description: safeText(obj.description || obj.name || obj.itemName || obj.productName, ''),
+                    vendorCode: safeText(vendorCode, ''),
+                    vendorName: safeText(vendorName, ''),
+                    orderedQty: orderedQty,
+                    invoicedQty: invoicedQty,
+                    backorderQty: backorderQty,
+                    unitPrice: unitPrice,
+                    extPrice: extPrice,
+                    lotNumber: lotNumber,
+                    lotQty: lotQty,
+                    expiryDate: expiryDate,
+
+                    name: safeText(obj.description || obj.name || obj.itemName || obj.productName, ''),
+                    itemNumber: safeText(obj.itemNumber || obj.itemNo || obj.item || obj.sku || obj.productCode || obj.item_id || obj.itemId, ''),
+                    upcCode: safeText(obj.upcCode || obj.upc || obj.barcode || obj.gtin, ''),
+                    invoiceQty: invoiceQty,
+                    priceInvoice: priceInvoice,
+                    priceSystem: priceSystem,
+                    raw: obj
+                };
+            }).filter(it => it.name || it.itemNumber || it.upcCode);
+
+            return {
+                invoice,
+                items: normalized
+            };
+        }
+
+        function activateReconciliation(invoiceData) {
+            if (!invoiceData || !Array.isArray(invoiceData.items) || invoiceData.items.length === 0) return;
+
+            reconciliationState.invoice = invoiceData.invoice || null;
+            reconciliationState.expectedItems = invoiceData.items;
+            reconciliationState.active = true;
+            buildExpectedIndex();
+            persistReconciliation();
+            hydrateInvoiceMeta();
+
+            setWorkflowStage('recon');
+            setScanningEnabled(true);
+            moveScannerInputToRecon();
+            renderReconciliation();
+        }
+
+        function hydrateInvoiceMeta() {
+            const nameEl = document.getElementById('invoiceMetaName');
+            const receiptEl = document.getElementById('invoiceMetaReceipt');
+            const uploadedEl = document.getElementById('invoiceMetaUploaded');
+            const statusEl = document.getElementById('invoiceMetaStatus');
+            const inv = reconciliationState.invoice || {};
+
+            if (nameEl) nameEl.textContent = safeText(inv.vendor || inv.vendorName || inv.supplier || inv.invoiceNumber || inv.number || inv.id, 'Invoice');
+            if (receiptEl) receiptEl.textContent = safeText(inv.receiptNumber || inv.invoiceReceiptNumber || inv.receipt || inv.invoiceReceipt, '—');
+            if (uploadedEl) uploadedEl.textContent = safeText(inv.uploadedAt || inv.dateUploaded || inv.createdAt || new Date().toLocaleString(), '—');
+            if (statusEl) statusEl.textContent = reconciliationState.active ? 'Active' : 'Not Loaded';
+        }
+
+        function showInvoiceError(message, code = null) {
+            const banner = document.getElementById('invoiceErrorBanner');
+            const text = document.getElementById('invoiceErrorText');
+            if (!banner || !text) return;
+            const prefix = (code !== null && code !== undefined && code !== '') ? `Error ${code}: ` : 'Error: ';
+            text.textContent = prefix + (message ? String(message) : 'Unknown error');
+            banner.classList.add('active');
+        }
+
+        function clearInvoiceError() {
+            const banner = document.getElementById('invoiceErrorBanner');
+            const text = document.getElementById('invoiceErrorText');
+            if (text) text.textContent = '';
+            if (banner) banner.classList.remove('active');
+        }
+
+        function computeReconStatus(expectedItem, scannedQty) {
+            const invoiceQty = Number(expectedItem.invoiceQty) || 0;
+            const qty = Number(scannedQty) || 0;
+
+            const priceInvoice = expectedItem.priceInvoice;
+            const priceSystem = expectedItem.priceSystem;
+            const hasPrice = priceInvoice !== null && priceInvoice !== undefined && priceInvoice !== '';
+            const hasSystem = priceSystem !== null && priceSystem !== undefined && priceSystem !== '';
+            const priceVariance = (hasPrice && hasSystem) && (Number(priceInvoice) !== Number(priceSystem));
+
+            if (invoiceQty === 0 && qty > 0) {
+                return { label: 'Fully Matched', cls: 'badge-success' };
+            }
+            if (qty === 0) return { label: 'Not Scanned', cls: 'badge-neutral' };
+            if (qty < invoiceQty) return { label: 'Partially Scanned', cls: 'badge-info' };
+            if (qty === invoiceQty) {
+                if (priceVariance) return { label: 'Price Variance', cls: 'badge-warning' };
+                return { label: 'Fully Matched', cls: 'badge-success' };
+            }
+            if (qty > invoiceQty) return { label: 'Quantity Mismatch', cls: 'badge-danger' };
+            return { label: 'Not Scanned', cls: 'badge-neutral' };
+        }
+
+        function buildScannedIndex() {
+            const idx = {};
+            (scannedItems || []).forEach((s) => {
+                const keys = [s.itemNumber, s.upcCode].filter(Boolean);
+                keys.forEach((k) => {
+                    const nk = normalizeKey(k);
+                    if (!nk) return;
+                    if (!idx[nk]) idx[nk] = 0;
+                    idx[nk] += Number(s.quantity) || 0;
+                });
+            });
+            return idx;
+        }
+
+        function renderReconciliation() {
+            const body = document.getElementById('reconTableBody');
+            if (!body) return;
+            const scannedIdx = buildScannedIndex();
+
+            let fullyMatched = 0;
+            let variances = 0;
+            let remaining = 0;
+
+            const rows = (reconciliationState.expectedItems || []).map((it) => {
+                const keys = [it.itemNumber, it.upcCode, it.name].filter(Boolean).map(normalizeKey);
+                let scannedQty = 0;
+                for (const k of keys) {
+                    if (scannedIdx[k]) {
+                        scannedQty = scannedIdx[k];
+                        break;
+                    }
+                }
+
+                const invoiceQty = Number(it.invoiceQty) || 0;
+                const variance = scannedQty - invoiceQty;
+                const status = computeReconStatus(it, scannedQty);
+
+                const isComplete = status.label === 'Fully Matched' || status.label === 'Price Variance';
+                if (isComplete) fullyMatched++;
+                if (status.label === 'Quantity Mismatch' || status.label === 'Price Variance') variances++;
+                if (!isComplete) remaining++;
+
+                const itemId = safeText(it.itemId || it.item_id || it.itemNumber, '—');
+                const desc = safeText(it.description || it.name, '—');
+                const vendor = (it.vendorName || it.vendorCode)
+                    ? `${safeText(it.vendorName, '—')}${it.vendorCode ? `<div style="font-size: 11px; color: var(--clinic-muted); font-weight: 600; margin-top: 2px;">Code ${safeText(it.vendorCode, '')}</div>` : ''}`
+                    : '—';
+
+                const orderedQty = (it.orderedQty !== null && it.orderedQty !== undefined) ? Number(it.orderedQty) : (Number(it.raw?.ordered) || 0);
+                const invoicedQty = (it.invoicedQty !== null && it.invoicedQty !== undefined) ? Number(it.invoicedQty) : (Number(it.raw?.invoiced) || 0);
+                const backorderQty = (it.backorderQty !== null && it.backorderQty !== undefined) ? Number(it.backorderQty) : (Number(it.raw?.backorder) || 0);
+
+                const unitPrice = (it.unitPrice !== null && it.unitPrice !== undefined && it.unitPrice !== '')
+                    ? safeText(it.unitPrice, '—')
+                    : safeText(it.priceInvoice, '—');
+                const extPrice = (it.extPrice !== null && it.extPrice !== undefined && it.extPrice !== '')
+                    ? safeText(it.extPrice, '—')
+                    : '—';
+
+                const lotNumber = safeText(it.lotNumber, '—');
+                const lotQty = (it.lotQty !== null && it.lotQty !== undefined && it.lotQty !== 0) ? String(it.lotQty) : '—';
+                const expiryDate = safeText(it.expiryDate, '—');
+
+                const rowClass = status.label === 'Fully Matched' ? 'style="background: rgba(16, 185, 129, 0.08);"' : '';
+
+                return `
+                    <tr ${rowClass}>
+                        <td><span class="badge ${status.cls}">${status.label}</span></td>
+                        <td><strong>${itemId}</strong></td>
+                        <td>${desc}${(it.upcCode || it.itemNumber) ? `<div style="font-size: 11px; color: var(--clinic-muted); font-weight: 600; margin-top: 2px;">${it.itemNumber ? `Item # ${safeText(it.itemNumber, '')}` : ''}${(it.itemNumber && it.upcCode) ? ' • ' : ''}${it.upcCode ? `UPC ${safeText(it.upcCode, '')}` : ''}</div>` : ''}</td>
+                        <td>${vendor}</td>
+                        <td>${orderedQty || 0}</td>
+                        <td>${invoicedQty || invoiceQty || 0}</td>
+                        <td>${backorderQty || 0}</td>
+                        <td>${unitPrice}</td>
+                        <td>${extPrice}</td>
+                        <td>${lotNumber}</td>
+                        <td>${lotQty}</td>
+                        <td>${expiryDate}</td>
+                        <td><strong>${scannedQty || 0}</strong></td>
+                        <td>${variance === 0 ? '0' : (variance > 0 ? `+${variance}` : `${variance}`)}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-primary btn-sm" onclick="toggleProductLibrarySection()">
+                                    <i class="fas fa-link"></i> Map
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            body.innerHTML = rows || `
+                <tr>
+                    <td colspan="15">
+                        <div class="empty-state">
+                            <i class="fas fa-file-invoice"></i>
+                            <p>No invoice items loaded yet. Upload and run Check to parse the invoice.</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+
+            const totalEl = document.getElementById('metricInvoiceTotalItems');
+            const matchedEl = document.getElementById('metricInvoiceFullyMatched');
+            const remainingEl = document.getElementById('metricInvoiceRemaining');
+            const varianceEl = document.getElementById('metricInvoiceVariances');
+            if (totalEl) totalEl.textContent = String((reconciliationState.expectedItems || []).length);
+            if (matchedEl) matchedEl.textContent = String(fullyMatched);
+            if (remainingEl) remainingEl.textContent = String(remaining);
+            if (varianceEl) varianceEl.textContent = String(variances);
+
+            renderNotOnInvoice(scannedIdx);
+        }
+
+        function renderNotOnInvoice(scannedIdx) {
+            const panel = document.getElementById('notOnInvoicePanel');
+            const body = document.getElementById('notOnInvoiceBody');
+            if (!panel || !body) return;
+            const expectedKeys = reconciliationState.expectedIndex || {};
+
+            const notOn = [];
+            (scannedItems || []).forEach((s) => {
+                const keys = [s.itemNumber, s.upcCode, s.name].filter(Boolean).map(normalizeKey);
+                const isExpected = keys.some(k => !!expectedKeys[k]);
+                if (!isExpected) notOn.push(s);
+            });
+            reconciliationState.notOnInvoice = notOn;
+
+            if (notOn.length === 0) {
+                panel.style.display = 'none';
+                body.innerHTML = '';
+                return;
+            }
+
+            panel.style.display = 'block';
+            body.innerHTML = notOn.map((s) => {
+                return `
+                    <tr>
+                        <td><span class="badge badge-warning">Not on Invoice</span></td>
+                        <td><strong>${safeText(s.itemNumber, '-')}</strong></td>
+                        <td>${safeText(s.upcCode, '-')}</td>
+                        <td>${safeText(s.name, '-')}</td>
+                        <td>${Number(s.quantity) || 0}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-primary btn-sm" onclick="editItem('${s.id}')">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn btn-primary btn-sm" onclick="toggleProductLibrarySection()">
+                                    <i class="fas fa-link"></i> Map
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function onReconScanFeedback(isMatch) {
+            if (!reconciliationState.active) return;
+            if (!isMatch) return;
+            const box = document.getElementById('reconScanBox');
+            if (!box) return;
+            box.classList.remove('scan-flash');
+            void box.offsetWidth;
+            box.classList.add('scan-flash');
+        }
+
+        function evaluateIfScanMatchesInvoice(itemNumber, upcCode, name) {
+            const expected = reconciliationState.expectedIndex || {};
+            const keys = [itemNumber, upcCode, name].filter(Boolean).map(normalizeKey);
+            return keys.some(k => !!expected[k]);
+        }
         
         // Search index for fast product searches
         // Pre-built when products are loaded to avoid repeated string operations
@@ -20745,6 +22184,10 @@
         function saveData() {
             localStorage.setItem('barcodeScannedItems', JSON.stringify(scannedItems));
             renderTable();
+            if (reconciliationState && reconciliationState.active) {
+                moveScannerInputToRecon();
+                renderReconciliation();
+            }
         }
 
         // Handle barcode scanner input
@@ -21051,6 +22494,11 @@
                 existingItem.updatedAt = new Date().toISOString();
                 saveData();
                 showStatus(`Item # ${itemNumber} quantity updated to ${existingItem.quantity}`, 'success');
+                if (reconciliationState && reconciliationState.active) {
+                    const matched = evaluateIfScanMatchesInvoice(existingItem.itemNumber, existingItem.upcCode, existingItem.name);
+                    onReconScanFeedback(matched);
+                    renderReconciliation();
+                }
                 setTimeout(() => {
                     document.getElementById('barcodeInput').focus();
                 }, 100);
@@ -21074,6 +22522,11 @@
                 // Open product library instead of missing product modal
                 toggleProductLibrarySection();
                 showStatus('Product not found. Please search and add from the Product Library.', 'error');
+                if (reconciliationState && reconciliationState.active) {
+                    const matched = evaluateIfScanMatchesInvoice(newItem.itemNumber, newItem.upcCode, newItem.name);
+                    onReconScanFeedback(matched);
+                    renderReconciliation();
+                }
                 return;
             }
 
@@ -21094,6 +22547,11 @@
             
             console.log('✅ Item added with database info');
             showStatus(`Item # ${itemNumber} added: ${newItem.name}`, 'success');
+            if (reconciliationState && reconciliationState.active) {
+                const matched = evaluateIfScanMatchesInvoice(newItem.itemNumber, newItem.upcCode, newItem.name);
+                onReconScanFeedback(matched);
+                renderReconciliation();
+            }
             
             setTimeout(() => {
                 document.getElementById('barcodeInput').focus();
@@ -21123,11 +22581,71 @@
             const tbody = document.getElementById('dataTableBody');
             const selectAllCheckbox = document.getElementById('selectAllCheckbox');
             const bulkActionsBar = document.getElementById('bulkActionsBar');
+
+            function computeItemStatus(item) {
+                if (!item) return { label: 'Not Linked', cls: 'badge-neutral' };
+                const explicit = (item.status || item.linkStatus || item.reconciliationStatus || '').toString().trim();
+                const normalized = explicit.toLowerCase();
+
+                if (normalized.includes('price') && normalized.includes('variance')) {
+                    return { label: 'Price Variance', cls: 'badge-warning' };
+                }
+                if (normalized.includes('quantity') && normalized.includes('mismatch')) {
+                    return { label: 'Quantity Mismatch', cls: 'badge-warning' };
+                }
+                if (normalized === 'matched') {
+                    return { label: 'Matched', cls: 'badge-success' };
+                }
+                if (normalized === 'not linked' || normalized === 'unlinked') {
+                    return { label: 'Not Linked', cls: 'badge-neutral' };
+                }
+
+                if (item.priceVariance === true || item.hasPriceVariance === true || item.varianceDetected === true) {
+                    return { label: 'Price Variance', cls: 'badge-warning' };
+                }
+                if (item.quantityMismatch === true || item.qtyMismatch === true) {
+                    return { label: 'Quantity Mismatch', cls: 'badge-warning' };
+                }
+                if (item.matched === true || item.isMatched === true) {
+                    return { label: 'Matched', cls: 'badge-success' };
+                }
+
+                const hasItemNumber = item.itemNumber && String(item.itemNumber).trim() && String(item.itemNumber).trim() !== '-';
+                return hasItemNumber ? { label: 'Matched', cls: 'badge-success' } : { label: 'Not Linked', cls: 'badge-neutral' };
+            }
+
+            function updateSummaryMetrics() {
+                try {
+                    const total = scannedItems.length;
+                    let matched = 0;
+                    let unlinked = 0;
+                    let variance = 0;
+
+                    scannedItems.forEach((item) => {
+                        const s = computeItemStatus(item).label;
+                        if (s === 'Matched') matched++;
+                        else if (s === 'Not Linked') unlinked++;
+                        else if (s === 'Price Variance' || s === 'Quantity Mismatch') variance++;
+                    });
+
+                    const elTotal = document.getElementById('metricTotalItems');
+                    const elMatched = document.getElementById('metricMatchedItems');
+                    const elUnlinked = document.getElementById('metricUnlinkedItems');
+                    const elVariance = document.getElementById('metricVarianceDetected');
+
+                    if (elTotal) elTotal.textContent = String(total);
+                    if (elMatched) elMatched.textContent = String(matched);
+                    if (elUnlinked) elUnlinked.textContent = String(unlinked);
+                    if (elVariance) elVariance.textContent = String(variance);
+                } catch (e) {
+                    // no-op
+                }
+            }
             
             if (scannedItems.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="7">
+                        <td colspan="8">
                             <div class="empty-state">
                                 <i class="fas fa-barcode"></i>
                                 <p>No scanned items yet. Start scanning to add items!</p>
@@ -21138,6 +22656,7 @@
                 selectedItemIds.clear();
                 updateBulkActionsBar();
                 if (selectAllCheckbox) selectAllCheckbox.checked = false;
+                updateSummaryMetrics();
                 return;
             }
 
@@ -21145,6 +22664,7 @@
                 const scannedDate = new Date(item.scannedAt);
                 const formattedDate = scannedDate.toLocaleDateString() + ' ' + scannedDate.toLocaleTimeString();
                 const isSelected = selectedItemIds.has(item.id);
+                const status = computeItemStatus(item);
                 
                 return `
                     <tr data-item-id="${item.id}" ${isSelected ? 'class="row-selected"' : ''}>
@@ -21156,6 +22676,7 @@
                                    onchange="toggleItemSelection('${item.id}', this.checked)"
                                    style="cursor: pointer;">
                         </td>
+                        <td><span class="badge ${status.cls}">${status.label}</span></td>
                         <td><strong>${item.itemNumber || '-'}</strong></td>
                         <td>${item.upcCode || '-'}</td>
                         <td>${item.name || '-'}</td>
@@ -21182,6 +22703,7 @@
             }
             
             updateBulkActionsBar();
+            updateSummaryMetrics();
         }
 
         // Toggle select all
@@ -22396,6 +23918,18 @@
             orderForms = [];
             uploadedDocuments = [];
             capturedPhotos = [];
+
+            reconciliationState.active = false;
+            reconciliationState.invoice = null;
+            reconciliationState.expectedItems = [];
+            reconciliationState.expectedIndex = {};
+            reconciliationState.notOnInvoice = [];
+            reconciliationState.lastScan = null;
+            try {
+                localStorage.removeItem(RECON_STORAGE_KEY);
+            } catch (e) {
+                // no-op
+            }
             
             saveData();
             saveOrderForms();
@@ -22405,6 +23939,13 @@
             renderTable();
             renderOrderForms();
             renderPhotos();
+
+            clearInvoiceError();
+            resetProgress();
+            hydrateInvoiceMeta();
+            setWorkflowStage('pre');
+            setScanningEnabled(false);
+            moveScannerInputToRecon();
             
             showStatus('All data cleared!', 'success');
             setTimeout(hideStatus, 3000);
@@ -22419,11 +23960,12 @@
 
         // Set up barcode input listener
         // File upload handler
-        function handleFiles(files) {
+        function handleFiles(files, options = null) {
             console.log('📁 [HANDLE-FILES] Called with:', {
                 files: files,
                 length: files ? files.length : 0,
-                type: typeof files
+                type: typeof files,
+                options: options
             });
             
             if (!files || files.length === 0) {
@@ -22442,6 +23984,14 @@
             let processedCount = 0;
             let errorCount = 0;
             let completedFiles = 0;
+
+            const source = options && typeof options === 'object' ? options.source : null;
+            const preLoader = document.getElementById('preInvoiceLoader');
+            const preLoaderText = document.getElementById('preInvoiceLoaderText');
+            if (source === 'preInvoice' && preLoader) {
+                const msg = fileArray.length > 1 ? `Uploading ${fileArray.length} files…` : 'Uploading…';
+                setPreInvoiceUploading(true, msg);
+            }
 
             fileArray.forEach((file) => {
                 // Check file type - treat images and PDFs as order forms only, don't parse
@@ -22487,6 +24037,11 @@
                             const dataUrl = e.target.result;
                             const orderFormType = isPdfFile ? 'file' : 'photo';
                             console.log(`📤 [HANDLE-FILES] Adding ${fileType} to Order Forms: ${file.name} (dataUrl length: ${dataUrl.length})`);
+                            if (source === 'preInvoice' && preLoaderText) {
+                                preLoaderText.textContent = fileArray.length > 1
+                                    ? `Sending to webhook… (${completedFiles + 1}/${fileArray.length})`
+                                    : 'Sending to webhook…';
+                            }
                             // Include dataUrl for both PDFs and images
                             await addOrderForm(orderFormType, file.name, file.size, dataUrl);
                             completedFiles++;
@@ -22495,12 +24050,22 @@
                             // Update status as files complete
                             if (completedFiles < fileArray.length) {
                                 showUploadStatus(`Uploading... ${completedFiles}/${fileArray.length} file(s) processed`, 'info');
+                                if (source === 'preInvoice' && preLoaderText) {
+                                    preLoaderText.textContent = `Waiting for next file… (${completedFiles}/${fileArray.length})`;
+                                }
                             } else {
                                 showUploadStatus(`✅ Successfully uploaded ${fileArray.length} order form(s)`, 'success');
                                 document.getElementById('fileInput').value = '';
                                 // Refresh order forms display
                                 renderOrderForms();
                                 renderOrderFormsManage();
+                                if (source === 'preInvoice') {
+                                    if (reconciliationState && reconciliationState.active) {
+                                        setPreInvoiceUploading(false);
+                                    } else {
+                                        setPreInvoiceUploading(false);
+                                    }
+                                }
                             }
                         } catch (err) {
                             errorCount++;
@@ -22509,6 +24074,9 @@
                             showUploadStatus(`Error processing ${file.name}: ${err.message}`, 'error');
                             if (completedFiles === fileArray.length) {
                                 document.getElementById('fileInput').value = '';
+                                if (source === 'preInvoice') {
+                                    setPreInvoiceUploading(false);
+                                }
                             }
                         }
                     };
@@ -22519,6 +24087,9 @@
                         showUploadStatus(`Error reading ${file.name}`, 'error');
                         if (completedFiles === fileArray.length) {
                             document.getElementById('fileInput').value = '';
+                            if (source === 'preInvoice') {
+                                setPreInvoiceUploading(false);
+                            }
                         }
                     };
                     
@@ -23704,9 +25275,12 @@
             // Show saved indicator in upload area
             showSavedIndicator();
             
-            // Note: Public URL upload is optional - files will be sent as binary data
-            // Files are ready to send via "Check for Discrepencies" button
-            // Don't auto-send - let user control when to send all files together
+            // Auto-send immediately on upload so invoice parsing begins without needing to press Check
+            try {
+                await sendOrderFormToWebhook(orderForm, formDataUrl || orderFormDataUrls.get(orderForm.id) || null);
+            } catch (err) {
+                // Errors are logged in sendOrderFormToWebhook; don't block UI
+            }
         }
 
         // Show saved indicator when order form is uploaded
@@ -23795,6 +25369,17 @@
             const webhookUrlInput = document.getElementById('webhookUrlInput');
             if (webhookUrlInput) webhookUrlInput.value = webhookUrl;
             localStorage.setItem('webhookUrl', webhookUrl);
+
+            if (!reconciliationState.active) {
+                setWorkflowStage('pre');
+                setScanningEnabled(false);
+                moveScannerInputToRecon();
+                resetProgress();
+            }
+            setProgress('uploading', 'In progress', 'active');
+            setProgress('parsing', 'Waiting', null);
+            setProgress('loaded', 'Waiting', null);
+
             try {
                 const publicUrl = orderForm.publicUrl;
                 // Get dataUrl from parameter, Map (primary), or form object (fallback)
@@ -23850,6 +25435,36 @@
                                 renderOrderForms();
                                 renderOrderFormsManage();
                                 console.log('✅ Order form sent to webhook as binary:', orderForm.name);
+
+                                setProgress('uploading', 'Complete', 'complete');
+                                setProgress('parsing', 'In progress', 'active');
+
+                                // If the response is readable, forward it to the existing response handler
+                                try {
+                                    const contentType = response.headers.get('content-type') || '';
+                                    let responseBody = null;
+                                    if (contentType.includes('application/json')) {
+                                        responseBody = await response.json();
+                                    } else {
+                                        const textBody = await response.text();
+                                        if (textBody) {
+                                            try {
+                                                responseBody = JSON.parse(textBody);
+                                            } catch (e) {
+                                                responseBody = textBody;
+                                            }
+                                        }
+                                    }
+                                    if (responseBody !== null && responseBody !== undefined) {
+                                        displayWebhookResponse(responseBody, true, response.status, response.statusText);
+                                    } else {
+                                        setProgress('parsing', 'Complete', 'complete');
+                                        setProgress('loaded', 'Waiting', null);
+                                    }
+                                } catch (e) {
+                                    setProgress('parsing', 'Complete', 'complete');
+                                    setProgress('loaded', 'Waiting', null);
+                                }
                                 return;
                             } else {
                                 throw new Error(`Server responded with status ${response.status}`);
@@ -23868,6 +25483,10 @@
                             renderOrderForms();
                             renderOrderFormsManage();
                             console.log('✅ Order form sent to webhook as binary (no-cors mode):', orderForm.name);
+
+                            setProgress('uploading', 'Complete', 'complete');
+                            setProgress('parsing', 'Sent', 'active');
+                            setProgress('loaded', 'Waiting', null);
                             return;
                         }
                     } catch (binaryError) {
@@ -23912,6 +25531,34 @@
                         saveOrderForms();
                         renderOrderForms();
                         console.log('✅ Order form sent to webhook as JSON:', orderForm.name);
+
+                        setProgress('uploading', 'Complete', 'complete');
+                        setProgress('parsing', 'In progress', 'active');
+                        try {
+                            const contentType = response.headers.get('content-type') || '';
+                            let responseBody = null;
+                            if (contentType.includes('application/json')) {
+                                responseBody = await response.json();
+                            } else {
+                                const textBody = await response.text();
+                                if (textBody) {
+                                    try {
+                                        responseBody = JSON.parse(textBody);
+                                    } catch (e) {
+                                        responseBody = textBody;
+                                    }
+                                }
+                            }
+                            if (responseBody !== null && responseBody !== undefined) {
+                                displayWebhookResponse(responseBody, true, response.status, response.statusText);
+                            } else {
+                                setProgress('parsing', 'Complete', 'complete');
+                                setProgress('loaded', 'Waiting', null);
+                            }
+                        } catch (e) {
+                            setProgress('parsing', 'Complete', 'complete');
+                            setProgress('loaded', 'Waiting', null);
+                        }
                     }
                 } catch (corsError) {
                     // Fall back to no-cors mode
@@ -23929,10 +25576,17 @@
                     saveOrderForms();
                     renderOrderForms();
                     console.log('✅ Order form sent to webhook as JSON (no-cors mode):', orderForm.name);
+
+                    setProgress('uploading', 'Complete', 'complete');
+                    setProgress('parsing', 'Sent', 'active');
+                    setProgress('loaded', 'Waiting', null);
                 }
             } catch (error) {
                 console.error('❌ Error sending order form to webhook:', error);
                 // Don't mark as sent on error
+                setProgress('uploading', 'Error', null);
+                setProgress('parsing', 'Waiting', null);
+                setProgress('loaded', 'Waiting', null);
             }
         }
 
@@ -24234,6 +25888,10 @@
                 }
             }
             
+            if (isSuccess) {
+                clearInvoiceError();
+            }
+
             // Parse and format response data professionally
             if (responseDataElement) {
                 let formattedData = '';
@@ -24252,6 +25910,24 @@
                     } else {
                         parsedData = responseData;
                     }
+
+                    if (isSuccess && parsedData && typeof parsedData === 'object') {
+                        try {
+                            setProgress('uploading', 'Complete', 'complete');
+                            setProgress('parsing', 'In progress', 'active');
+
+                            const invoiceData = extractInvoiceFromWebhook(parsedData);
+                            if (invoiceData && invoiceData.items && invoiceData.items.length > 0) {
+                                setProgress('parsing', 'Complete', 'complete');
+                                setProgress('loaded', 'Ready', 'complete');
+                                activateReconciliation(invoiceData);
+                                clearInvoiceError();
+                                hydrateInvoiceMeta();
+                            }
+                        } catch (e) {
+                            // no-op
+                        }
+                    }
                     
                     // Format based on data type
                     if (typeof parsedData === 'object' && parsedData !== null) {
@@ -24262,6 +25938,8 @@
                                 formattedData = parsedData.message;
                             }
                             summaryText = 'We encountered an issue while checking your order.';
+                            const code = parsedData.code || parsedData.errorCode || statusCode;
+                            showInvoiceError(formattedData, code);
                         } else if (parsedData.message) {
                             // Response with a message
                             formattedData = parsedData.message;
@@ -24302,6 +25980,11 @@
                         formattedData = String(parsedData);
                         summaryText = isSuccess ? 'Order check completed.' : 'Please review the details below.';
                     }
+
+                    if (!isSuccess) {
+                        const code = statusCode;
+                        showInvoiceError(formattedData || summaryText, code);
+                    }
                     
                     // Clean up formatting
                     formattedData = formattedData.trim();
@@ -24317,6 +26000,9 @@
                         ? 'Your order has been checked successfully.' 
                         : 'An error occurred while processing your request.';
                     summaryText = isSuccess ? 'Check completed.' : 'Processing failed.';
+                    if (!isSuccess) {
+                        showInvoiceError(formattedData, statusCode);
+                    }
                 }
                 
                 // Display formatted data
@@ -24370,7 +26056,7 @@
             }
         }
         
-        const N8N_WEBHOOK_URL = 'https://jackwilde.app.n8n.cloud/webhook/0efeec17-0878-454e-9f26-691cf6525645';
+        const N8N_WEBHOOK_URL = 'https://jackwilde.app.n8n.cloud/webhook/bc5d5337-1656-423e-9a33-c48fd8784c2f';
         document.addEventListener('DOMContentLoaded', function() {
             const webhookUrlInput = document.getElementById('webhookUrlInput');
             if (webhookUrlInput) webhookUrlInput.value = N8N_WEBHOOK_URL;
@@ -24390,6 +26076,22 @@
                 });
             }
         });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            resetProgress();
+            const restored = restoreReconciliation();
+            if (restored) {
+                hydrateInvoiceMeta();
+                setWorkflowStage('recon');
+                setScanningEnabled(true);
+                moveScannerInputToRecon();
+                renderReconciliation();
+            } else {
+                setWorkflowStage('pre');
+                setScanningEnabled(false);
+                moveScannerInputToRecon();
+            }
+        });
         
         async function sendDataToWebhook() {
             // Always use n8n cloud URL only - never read from input/localStorage (avoids stale tunnel URLs)
@@ -24407,6 +26109,16 @@
                 loadingOverlay.classList.add('active');
                 updateLoadingText('Looking for discrepencies', '');
             }
+
+            if (!reconciliationState.active) {
+                setWorkflowStage('pre');
+                setScanningEnabled(false);
+                moveScannerInputToRecon();
+                resetProgress();
+            }
+            setProgress('uploading', 'In progress', 'active');
+            setProgress('parsing', 'Waiting', null);
+            setProgress('loaded', 'Waiting', null);
             
             // Disable button and show loading state
             if (sendBtn) {
@@ -25458,7 +27170,7 @@
                 });
 
                 document.addEventListener('drop', (e) => {
-                    const isOverDropzone = e.target.closest && e.target.closest('#uploadDropzone');
+                    const isOverDropzone = e.target.closest && (e.target.closest('#uploadDropzone') || e.target.closest('#preInvoiceDropzone'));
                     const isOverBarcodeInput = e.target.id === 'barcodeInput' || (e.target.closest && e.target.closest('#barcodeInput'));
                     
                     console.log('📦 [DRAG-DROP] Document drop event:', {
@@ -25574,9 +27286,90 @@
                 console.log('✅ [DRAG-DROP] Handlers attached successfully');
             }
             }
+
+            function attachPreInvoiceDropzoneHandlers() {
+                const preDropzone = document.getElementById('preInvoiceDropzone');
+                const preFileInput = document.getElementById('preInvoiceFileInput');
+                if (!preDropzone || !preFileInput) return;
+                if (preDropzone.dataset.handlersAttached === 'true') return;
+                let dragCounter = 0;
+                let dragTimeout = null;
+
+                preDropzone.addEventListener('click', (e) => {
+                    if (e.target === preDropzone || e.target.closest('.wddc-dropzone-content')) {
+                        preFileInput.click();
+                    }
+                });
+
+                preDropzone.addEventListener('dragenter', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dragCounter++;
+                    if (dragTimeout) {
+                        clearTimeout(dragTimeout);
+                        dragTimeout = null;
+                    }
+                    preDropzone.classList.add('dragover');
+                });
+
+                preDropzone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.dataTransfer.dropEffect = 'copy';
+                    if (!preDropzone.classList.contains('dragover')) {
+                        preDropzone.classList.add('dragover');
+                    }
+                });
+
+                preDropzone.addEventListener('dragleave', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dragCounter--;
+                    clearTimeout(dragTimeout);
+                    dragTimeout = setTimeout(() => {
+                        if (dragCounter <= 0) {
+                            dragCounter = 0;
+                            preDropzone.classList.remove('dragover');
+                        }
+                    }, 50);
+                });
+
+                preDropzone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    if (dragTimeout) {
+                        clearTimeout(dragTimeout);
+                        dragTimeout = null;
+                    }
+                    dragCounter = 0;
+                    preDropzone.classList.remove('dragover');
+
+                    const files = e.dataTransfer.files;
+                    if (files && files.length > 0) {
+                        if (typeof handleFiles === 'function') {
+                            handleFiles(files, { source: 'preInvoice' });
+                        }
+                    }
+                    return false;
+                });
+
+                preFileInput.addEventListener('change', (e) => {
+                    const files = e.target.files;
+                    if (files && files.length > 0) {
+                        if (typeof handleFiles === 'function') {
+                            handleFiles(files, { source: 'preInvoice' });
+                        }
+                    }
+                    e.target.value = '';
+                });
+
+                preDropzone.dataset.handlersAttached = 'true';
+            }
             
             // Try to attach handlers immediately
             attachDragDropHandlers();
+            attachPreInvoiceDropzoneHandlers();
             
             // Also try to attach when modal opens
             const wddcOrderModalElement = document.getElementById('wddcOrderModal');
