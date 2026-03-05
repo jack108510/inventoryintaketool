@@ -102,14 +102,15 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0;
-            background: var(--clinic-surface-0);
-            backdrop-filter: blur(14px);
-            border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+            background: linear-gradient(135deg, rgba(6, 12, 34, 0.92) 0%, rgba(2, 6, 23, 0.94) 100%);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.14);
             position: sticky;
             top: 0;
-            z-index: 50;
-            flex: 0 0 auto;
+            z-index: 100;
+            padding: 0;
+            height: 144px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
         }
 
         .topbar-inner {
@@ -117,12 +118,12 @@
             max-width: 1200px;
             margin-left: auto;
             margin-right: auto;
-            padding-left: 28px;
-            padding-right: 28px;
+            padding-left: 24px;
+            padding-right: 24px;
+            height: 100%;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 16px;
         }
 
         @media (max-width: 720px) {
@@ -144,21 +145,19 @@
             align-items: center;
             gap: 10px;
             text-decoration: none;
-            color: var(--clinic-ink);
-            font-weight: 900;
-            letter-spacing: -0.02em;
+            color: inherit;
             flex: 0 0 auto;
         }
 
         .cliniciq-brand-mark {
-            height: clamp(92px, 9vw, 156px);
+            height: 128px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
         }
 
         .cliniciq-brand-logo {
-            height: clamp(92px, 9vw, 156px);
+            height: 128px;
             width: auto;
             display: block;
         }
@@ -173,8 +172,9 @@
             display: inline-flex;
             align-items: baseline;
             gap: 2px;
-            font-size: 14px;
-            line-height: 1;
+            font-size: 18px;
+            font-weight: 800;
+            color: rgba(226, 232, 240, 0.92);
             white-space: nowrap;
         }
 
@@ -188,13 +188,31 @@
             }
         }
 
-        .topbar-min {
-            display: flex;
+        .topbar-actions {
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
-            gap: 10px;
-            width: 100%;
-            flex-wrap: wrap;
+            gap: 12px;
+            flex: 0 0 auto;
+        }
+
+        .topbar-actions .btn {
+            height: 48px;
+            min-height: 48px;
+            padding: 12px 16px;
+            font-size: 14px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        @media (max-width: 600px) {
+            .topbar-actions .btn span {
+                display: none;
+            }
+            .topbar-actions .btn {
+                padding: 12px 14px;
+            }
         }
 
         .topbar-min .meta-chip {
@@ -1110,6 +1128,77 @@
             letter-spacing: 0.01em;
             user-select: none;
             white-space: nowrap;
+        }
+
+        .recon-action-inline {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .recon-action-mini-btn {
+            width: 30px;
+            height: 30px;
+            min-height: 30px;
+            padding: 0;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .recon-action-mini-btn.recon-minus::before {
+            content: '−';
+        }
+
+        .recon-action-mini-btn.recon-plus::before {
+            content: '+';
+        }
+
+        #completeOrderMissingList {
+            margin-top: 14px;
+            padding: 12px;
+            border-radius: 14px;
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            background: rgba(2, 6, 23, 0.35);
+            max-height: 260px;
+            overflow: auto;
+        }
+
+        #completeOrderMissingList .missing-title {
+            font-size: 11px;
+            color: var(--clinic-muted);
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        #completeOrderMissingList .missing-item {
+            padding: 10px;
+            border-radius: 12px;
+            background: rgba(15, 23, 42, 0.22);
+            border: 1px solid rgba(148, 163, 184, 0.14);
+        }
+
+        #completeOrderMissingList .missing-item + .missing-item {
+            margin-top: 10px;
+        }
+
+        #completeOrderMissingList .missing-name {
+            font-weight: 750;
+            color: rgba(226, 232, 240, 0.92);
+            font-size: 13px;
+            margin: 0;
+        }
+
+        #completeOrderMissingList .missing-meta {
+            margin-top: 6px;
+            font-size: 12px;
+            color: rgba(226, 232, 240, 0.72);
+            font-weight: 650;
         }
 
         .recon-action-badge .check {
@@ -4425,19 +4514,15 @@
                             <img class="cliniciq-brand-logo" src="cliniciq-logo.png" alt="ClinicIQ" />
                         </span>
                     </a>
-                    <div class="topbar-min" aria-label="Invoice header">
-                        <div class="meta-chip">
-                            <div class="meta-chip-label">Receipt #</div>
-                            <div class="meta-chip-value" id="invoiceMetaReceipt">—</div>
-                        </div>
-                        <div class="meta-chip">
-                            <div class="meta-chip-label">Vendor</div>
-                            <div class="meta-chip-value" id="invoiceMetaName">—</div>
-                        </div>
-                        <div class="meta-chip">
-                            <div class="meta-chip-label">Date</div>
-                            <div class="meta-chip-value" id="invoiceMetaUploaded">—</div>
-                        </div>
+                    <div class="topbar-actions" aria-label="Header actions">
+                        <button type="button" class="btn btn-secondary" onclick="openRestartReceivingModal()">
+                            <i class="fas fa-rotate"></i>
+                            <span>Refresh</span>
+                        </button>
+                        <button type="button" class="btn btn-success" id="completeOrderBtn" onclick="openCompleteOrderModal()">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Complete Order</span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -4867,7 +4952,7 @@
                         <div class="recon-top">
                             <div class="recon-workflow">
                                 <div class="recon-scanbox" id="reconScanBox">
-                                    <h3><i class="fas fa-barcode"></i> Scan Item</h3>
+                                    <h3 style="margin: 0;"><i class="fas fa-barcode"></i> Scan Item</h3>
                                     <div class="recon-scan-main">
                                         <div id="reconScanMount"></div>
                                         <div class="recon-remaining-inline" aria-label="Remaining items">
@@ -5271,6 +5356,55 @@
         </div>
     </div>
 
+    <div class="modal" id="reconCompleteModal">
+        <div class="modal-content" style="max-width: 520px;">
+            <div class="modal-header">
+                <h2>Everything accounted for</h2>
+                <button class="close-btn" onclick="closeReconCompleteModal()">&times;</button>
+            </div>
+            <p>All invoice items have been scanned and matched. You can accept this order.</p>
+            <div id="reconCompleteSuccess" class="alert alert-success" style="display: none; margin-top: 16px;">
+                Order accepted.
+            </div>
+            <div style="display:flex; gap:10px; justify-content:flex-end; margin-top: 26px;">
+                <button type="button" class="btn btn-secondary" onclick="closeReconCompleteModal()">Review table</button>
+                <button type="button" class="btn btn-success" id="reconAcceptOrderBtn" onclick="acceptOrder()">Accept order</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="restartReceivingModal">
+        <div class="modal-content" style="max-width: 520px;">
+            <div class="modal-header">
+                <h2>Restart Receiving</h2>
+                <button class="close-btn" onclick="closeRestartReceivingModal()">&times;</button>
+            </div>
+            <p>This will restart the order and return to the invoice upload screen.</p>
+            <div style="display:flex; gap:10px; justify-content:flex-end; margin-top: 26px;">
+                <button type="button" class="btn btn-secondary" onclick="closeRestartReceivingModal()">Cancel</button>
+                <button type="button" class="btn btn-danger" onclick="confirmRestartReceiving()">Restart</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="completeOrderModal">
+        <div class="modal-content" style="max-width: 560px;">
+            <div class="modal-header">
+                <h2>Complete Order</h2>
+                <button class="close-btn" onclick="closeCompleteOrderModal()">&times;</button>
+            </div>
+            <p id="completeOrderBodyText">Some items were not scanned. Are you sure you want to complete this order?</p>
+            <div id="completeOrderMissingList" style="display:none;"></div>
+            <div id="completeOrderSuccess" class="alert alert-success" style="display: none; margin-top: 16px;">
+                Order Completed
+            </div>
+            <div style="display:flex; gap:10px; justify-content:flex-end; margin-top: 26px;">
+                <button type="button" class="btn btn-secondary" onclick="closeCompleteOrderModal()">Cancel</button>
+                <button type="button" class="btn btn-success" id="confirmCompleteOrderBtn" onclick="confirmCompleteOrder()">Complete Order</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let scannedItems = [];
         let manualProducts = [];
@@ -5285,7 +5419,14 @@
             expectedItems: [],
             expectedIndex: {},
             notOnInvoice: [],
-            lastScan: null
+            lastScan: null,
+            ui: {
+                hasShownCompleteModal: false,
+                accepted: false,
+                accepting: false,
+                completed: false,
+                completing: false
+            }
         };
 
         const RECON_STORAGE_KEY = 'activeInvoiceReconciliation';
@@ -5393,7 +5534,8 @@
             try {
                 const payload = {
                     invoice: reconciliationState.invoice,
-                    expectedItems: reconciliationState.expectedItems
+                    expectedItems: reconciliationState.expectedItems,
+                    ui: reconciliationState.ui
                 };
                 localStorage.setItem(RECON_STORAGE_KEY, JSON.stringify(payload));
             } catch (e) {
@@ -5409,6 +5551,13 @@
                 if (!parsed || !Array.isArray(parsed.expectedItems) || parsed.expectedItems.length === 0) return false;
                 reconciliationState.invoice = parsed.invoice || null;
                 reconciliationState.expectedItems = parsed.expectedItems;
+                reconciliationState.ui = {
+                    hasShownCompleteModal: !!parsed?.ui?.hasShownCompleteModal,
+                    accepted: !!parsed?.ui?.accepted,
+                    accepting: false,
+                    completed: !!parsed?.ui?.completed,
+                    completing: false
+                };
                 buildExpectedIndex();
                 reconciliationState.active = true;
                 return true;
@@ -5540,6 +5689,13 @@
 
             reconciliationState.invoice = invoiceData.invoice || null;
             reconciliationState.expectedItems = invoiceData.items;
+            reconciliationState.ui = {
+                hasShownCompleteModal: false,
+                accepted: false,
+                accepting: false,
+                completed: false,
+                completing: false
+            };
             reconciliationState.active = true;
             buildExpectedIndex();
             persistReconciliation();
@@ -5561,7 +5717,244 @@
             if (nameEl) nameEl.textContent = safeText(inv.vendor || inv.vendorName || inv.supplier || inv.invoiceNumber || inv.number || inv.id, 'Invoice');
             if (receiptEl) receiptEl.textContent = safeText(inv.receiptNumber || inv.invoiceReceiptNumber || inv.receipt || inv.invoiceReceipt, '—');
             if (uploadedEl) uploadedEl.textContent = safeText(inv.uploadedAt || inv.dateUploaded || inv.createdAt || new Date().toLocaleString(), '—');
-            if (statusEl) statusEl.textContent = reconciliationState.active ? 'Active' : 'Not Loaded';
+            if (statusEl) {
+                statusEl.textContent = reconciliationState.ui?.completed
+                    ? 'Completed'
+                    : (reconciliationState.ui?.accepted ? 'Accepted' : (reconciliationState.active ? 'Active' : 'Not Loaded'));
+            }
+        }
+
+        function updateEndOfOrderButtons() {
+            const completeBtn = document.getElementById('completeOrderBtn');
+            if (!completeBtn) return;
+            const completing = !!reconciliationState.ui?.completing;
+            const completed = !!reconciliationState.ui?.completed;
+            completeBtn.disabled = completing || completed;
+            completeBtn.querySelector('span').textContent = completed ? 'Completed' : (completing ? 'Completing…' : 'Complete Order');
+        }
+
+        function openRestartReceivingModal() {
+            const modal = document.getElementById('restartReceivingModal');
+            if (!modal) return;
+            modal.classList.add('active');
+        }
+
+        function closeRestartReceivingModal() {
+            const modal = document.getElementById('restartReceivingModal');
+            if (!modal) return;
+            modal.classList.remove('active');
+        }
+
+        function restartReceiving() {
+            reconciliationState.active = false;
+            reconciliationState.invoice = null;
+            reconciliationState.expectedItems = [];
+            reconciliationState.expectedIndex = {};
+            reconciliationState.notOnInvoice = [];
+            reconciliationState.lastScan = null;
+            reconciliationState.ui = {
+                hasShownCompleteModal: false,
+                accepted: false,
+                accepting: false,
+                completed: false,
+                completing: false
+            };
+
+            scannedItems = [];
+            if (typeof saveData === 'function') saveData();
+
+            try {
+                localStorage.removeItem(RECON_STORAGE_KEY);
+            } catch (e) {
+                // no-op
+            }
+
+            clearInvoiceError();
+            resetProgress();
+            hydrateInvoiceMeta();
+            setWorkflowStage('pre');
+            setScanningEnabled(false);
+            moveScannerInputToRecon();
+            updateEndOfOrderButtons();
+            renderReconciliation();
+        }
+
+        function confirmRestartReceiving() {
+            closeRestartReceivingModal();
+            restartReceiving();
+        }
+
+        function openCompleteOrderModal() {
+            const modal = document.getElementById('completeOrderModal');
+            if (!modal) return;
+            modal.classList.add('active');
+
+            const success = document.getElementById('completeOrderSuccess');
+            if (success) success.style.display = 'none';
+
+            const bodyText = document.getElementById('completeOrderBodyText');
+            const list = document.getElementById('completeOrderMissingList');
+            if (!bodyText || !list) return;
+
+            const scannedIdx = buildScannedIndex();
+            const missing = (reconciliationState.expectedItems || []).map((it) => {
+                const expected = Number(it.invoiceQty) || 0;
+                const scanned = computeExpectedScannedQty(it, scannedIdx);
+                return { it, expected, scanned };
+            }).filter(x => x.scanned === 0 && x.expected > 0);
+
+            if (missing.length === 0) {
+                bodyText.textContent = 'All items have been scanned. Complete this order?';
+                list.style.display = 'none';
+                list.innerHTML = '';
+            } else {
+                bodyText.textContent = 'Some items were not scanned. Are you sure you want to complete this order?';
+                list.style.display = 'block';
+                list.innerHTML = `
+                    <div class="missing-title">Missing Items</div>
+                    ${missing.map(({ it, expected }) => {
+                        const name = sentenceCaseLabel(it.description || it.name);
+                        return `
+                            <div class="missing-item">
+                                <div class="missing-name">${name}</div>
+                                <div class="missing-meta">Expected: ${expected}</div>
+                            </div>
+                        `;
+                    }).join('')}
+                `;
+            }
+
+            updateCompleteOrderModalButtons();
+        }
+
+        function closeCompleteOrderModal() {
+            const modal = document.getElementById('completeOrderModal');
+            if (!modal) return;
+            modal.classList.remove('active');
+        }
+
+        function updateCompleteOrderModalButtons() {
+            const btn = document.getElementById('confirmCompleteOrderBtn');
+            if (!btn) return;
+            const completing = !!reconciliationState.ui?.completing;
+            const completed = !!reconciliationState.ui?.completed;
+            btn.disabled = completing || completed;
+            btn.textContent = completed ? 'Completed' : (completing ? 'Completing…' : 'Complete Order');
+        }
+
+        function confirmCompleteOrder() {
+            if (reconciliationState.ui?.completing || reconciliationState.ui?.completed) return;
+            reconciliationState.ui.completing = true;
+            updateCompleteOrderModalButtons();
+            updateEndOfOrderButtons();
+
+            // Send invoice data to webhook
+            const webhookUrl = 'https://jackwilde.app.n8n.cloud/webhook/53dc5b76-4bbc-487d-acdf-ef54eb9571d5';
+            const invoiceData = {
+                invoice: invoice,
+                items: items,
+                reconciliationState: reconciliationState,
+                timestamp: new Date().toISOString()
+            };
+
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(invoiceData)
+            }).catch(error => {
+                console.error('Webhook error:', error);
+            });
+
+            window.setTimeout(() => {
+                reconciliationState.ui.completing = false;
+                reconciliationState.ui.completed = true;
+                persistReconciliation();
+                hydrateInvoiceMeta();
+                setScanningEnabled(false);
+                updateCompleteOrderModalButtons();
+                updateEndOfOrderButtons();
+
+                const success = document.getElementById('completeOrderSuccess');
+                if (success) success.style.display = 'block';
+            }, 650);
+        }
+
+        function openReconCompleteModal() {
+            const modal = document.getElementById('reconCompleteModal');
+            if (!modal) return;
+            modal.classList.add('active');
+            const success = document.getElementById('reconCompleteSuccess');
+            if (success) success.style.display = 'none';
+            updateReconCompleteModalButtons();
+        }
+
+        function closeReconCompleteModal() {
+            const modal = document.getElementById('reconCompleteModal');
+            if (!modal) return;
+            modal.classList.remove('active');
+        }
+
+        function updateReconCompleteModalButtons() {
+            const acceptBtn = document.getElementById('reconAcceptOrderBtn');
+            if (!acceptBtn) return;
+            const accepting = !!reconciliationState.ui?.accepting;
+            const accepted = !!reconciliationState.ui?.accepted;
+            acceptBtn.disabled = accepting || accepted;
+            acceptBtn.textContent = accepted ? 'Accepted' : (accepting ? 'Accepting…' : 'Accept order');
+        }
+
+        function acceptOrder() {
+            if (reconciliationState.ui?.accepting || reconciliationState.ui?.accepted) return;
+            reconciliationState.ui.accepting = true;
+            updateReconCompleteModalButtons();
+
+            // Send invoice data to webhook
+            const webhookUrl = 'https://jackwilde.app.n8n.cloud/webhook/53dc5b76-4bbc-487d-acdf-ef54eb9571d5';
+            const invoiceData = {
+                invoice: invoice,
+                items: items,
+                reconciliationState: reconciliationState,
+                timestamp: new Date().toISOString()
+            };
+
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(invoiceData)
+            }).catch(error => {
+                console.error('Webhook error:', error);
+            });
+
+            window.setTimeout(() => {
+                reconciliationState.ui.accepting = false;
+                reconciliationState.ui.accepted = true;
+                persistReconciliation();
+                hydrateInvoiceMeta();
+                setScanningEnabled(false);
+                updateReconCompleteModalButtons();
+
+                const success = document.getElementById('reconCompleteSuccess');
+                if (success) success.style.display = 'block';
+            }, 650);
+        }
+
+        function updateReconciliationCompletion(isComplete) {
+            if (!reconciliationState.ui) return;
+
+            if (!isComplete) {
+                reconciliationState.ui.hasShownCompleteModal = false;
+                return;
+            }
+
+            if (!reconciliationState.ui.hasShownCompleteModal) {
+                reconciliationState.ui.hasShownCompleteModal = true;
+                persistReconciliation();
+                openReconCompleteModal();
+            }
         }
 
         function showInvoiceError(message, code = null) {
@@ -5641,11 +6034,13 @@
         function renderReconciliation() {
             const body = document.getElementById('reconTableBody');
             if (!body) return;
+            updateEndOfOrderButtons();
             const scannedIdx = buildScannedIndex();
 
             let fullyMatched = 0;
             let variances = 0;
             let remaining = 0;
+            let allVarianceZero = true;
 
             const rows = (reconciliationState.expectedItems || []).map((it, idx) => {
                 const keys = [it.itemNumber, it.upcCode, it.name].filter(Boolean).map(normalizeKey);
@@ -5660,6 +6055,8 @@
                 const invoiceQty = Number(it.invoiceQty) || 0;
                 const variance = scannedQty - invoiceQty;
                 const status = computeReconStatus(it, scannedQty);
+
+                if (variance !== 0) allVarianceZero = false;
 
                 const rowKey = normalizeKey(it.itemNumber || it.upcCode || it.name);
                 const isLastScanned = rowKey && lastReconScannedKey && rowKey === lastReconScannedKey;
@@ -5697,15 +6094,21 @@
 
                 const varianceClass = (variance === 0) ? 'zero' : (variance > 0 ? 'pos' : 'neg');
                 const needsResolution = (variance !== 0 || status.label === 'Quantity Mismatch' || status.label === 'Price Variance');
+                const hasScannedQty = (Number(scannedQty) || 0) > 0;
 
-                const actionHtml = (status.label === 'Fully Matched')
+                const actionLabelHtml = (status.label === 'Fully Matched')
                     ? `<span class="recon-action-badge"><span class="check">✓</span> Received</span>`
-                    : (status.label === 'Not Scanned')
-                        ? `<button class="btn btn-success btn-sm btn-receive" onclick="receiveReconItem(${idx})">Receive</button>`
-                        : (needsResolution
-                            ? `<button class="btn btn-secondary btn-sm" onclick="toggleReconDetails(${idx})">Resolve ▾</button>`
-                            : `<button class="btn btn-success btn-sm btn-receive" onclick="receiveReconItem(${idx})">Receive</button>`
-                        );
+                    : (needsResolution ? `<span class="recon-action-badge">Adjust</span>` : `<span class="recon-action-badge">Received</span>`);
+
+                const actionHtml = hasScannedQty
+                    ? `
+                        <div class="recon-action-inline">
+                            ${actionLabelHtml}
+                            <button class="btn btn-secondary btn-sm recon-action-mini-btn recon-minus" onclick="removeReconQty(${idx})" aria-label="Undo one scan"></button>
+                            <button class="btn btn-secondary btn-sm recon-action-mini-btn recon-plus" onclick="receiveReconItem(${idx})" aria-label="Add one scan"></button>
+                        </div>
+                      `
+                    : `<button class="btn btn-success btn-sm btn-receive" onclick="receiveReconItem(${idx})">Receive</button>`;
 
                 return `
                     <tr class="${rowClasses}">
@@ -5779,6 +6182,9 @@
             if (remainingCounter) remainingCounter.textContent = String(remaining);
 
             renderNotOnInvoice(scannedIdx);
+
+            const isComplete = remaining === 0 && variances === 0 && allVarianceZero;
+            updateReconciliationCompletion(isComplete);
         }
 
         let pendingReceiveCtx = null;
