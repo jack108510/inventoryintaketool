@@ -29296,3 +29296,228 @@
 </html>
 
 
+
+<!-- CLINIC ENHANCEMENT PANEL -->
+<style>
+.clinic-panel { display: none; position: fixed; top: 0; right: 0; width: 400px; height: 100vh; background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%); border-left: 1px solid #334155; z-index: 9999; overflow-y: auto; box-shadow: -10px 0 40px rgba(0,0,0,0.5); }
+.clinic-panel.active { display: block; }
+.clinic-panel-header { background: linear-gradient(135deg, #0ea5e9, #0284c7); padding: 20px; color: white; }
+.clinic-panel-header h2 { margin: 0 0 10px 0; font-size: 1.4rem; }
+.clinic-stats { display: flex; gap: 10px; }
+.clinic-stat { flex: 1; background: rgba(255,255,255,0.2); padding: 10px; border-radius: 8px; text-align: center; }
+.clinic-stat-value { font-size: 1.5rem; font-weight: 700; }
+.clinic-stat-label { font-size: 0.7rem; opacity: 0.9; }
+.clinic-panel-body { padding: 20px; }
+.clinic-section { margin-bottom: 20px; }
+.clinic-section h3 { color: #94a3b8; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+.clinic-item { background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 12px; margin-bottom: 10px; }
+.clinic-item.warning { border-color: #f59e0b; background: rgba(245,158,11,0.1); }
+.clinic-item.danger { border-color: #ef4444; background: rgba(239,68,68,0.1); }
+.clinic-item-name { font-weight: 600; color: white; margin-bottom: 4px; }
+.clinic-item-detail { font-size: 0.85rem; color: #94a3b8; }
+.clinic-toggle { position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #0ea5e9, #0284c7); border: none; color: white; font-size: 1.5rem; cursor: pointer; box-shadow: 0 4px 20px rgba(14,165,233,0.5); z-index: 9998; }
+.clinic-toggle:hover { transform: scale(1.1); }
+.clinic-form { background: #1e293b; border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+.clinic-form-group { margin-bottom: 12px; }
+.clinic-form-group label { display: block; color: #94a3b8; font-size: 0.85rem; margin-bottom: 6px; }
+.clinic-form-group input, .clinic-form-group select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; }
+.clinic-btn { width: 100%; padding: 12px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; }
+.clinic-btn-primary { background: #0ea5e9; color: white; }
+.clinic-btn-success { background: #10b981; color: white; }
+</style>
+
+<button class="clinic-toggle" onclick="toggleClinicPanel()" title="Clinic Panel">🏥</button>
+
+<div class="clinic-panel" id="clinicPanel">
+    <div class="clinic-panel-header">
+        <h2>🏥 Clinic Inventory Manager</h2>
+        <div class="clinic-stats">
+            <div class="clinic-stat"><div class="clinic-stat-value" id="clinicTotal">0</div><div class="clinic-stat-label">Total</div></div>
+            <div class="clinic-stat" style="background:rgba(245,158,11,0.3)"><div class="clinic-stat-value" id="clinicExpiring">0</div><div class="clinic-stat-label">Expiring</div></div>
+            <div class="clinic-stat" style="background:rgba(239,68,68,0.3)"><div class="clinic-stat-value" id="clinicLow">0</div><div class="clinic-stat-label">Low Stock</div></div>
+        </div>
+    </div>
+    <div class="clinic-panel-body">
+        <div class="clinic-section">
+            <h3>➕ Add Clinic Details</h3>
+            <div class="clinic-form">
+                <div class="clinic-form-group">
+                    <label>Select Item (from scanned)</label>
+                    <select id="clinicItemSelect"><option value="">-- Select Item --</option></select>
+                </div>
+                <div class="clinic-form-group">
+                    <label>Category</label>
+                    <select id="clinicCategory"><option value="supplies">🩹 Supplies</option><option value="medication">💊 Medication</option><option value="equipment">🔧 Equipment</option></select>
+                </div>
+                <div class="clinic-form-group">
+                    <label>Location / Room</label>
+                    <input type="text" id="clinicLocation" placeholder="e.g., Exam Room 1, Pharmacy">
+                </div>
+                <div class="clinic-form-group">
+                    <label>Expiration Date</label>
+                    <input type="date" id="clinicExpiration">
+                </div>
+                <div class="clinic-form-group">
+                    <label>Low Stock Threshold</label>
+                    <input type="number" id="clinicThreshold" value="10" min="1">
+                </div>
+                <button class="clinic-btn clinic-btn-primary" onclick="saveClinicDetails()">💾 Save Details</button>
+            </div>
+        </div>
+        
+        <div class="clinic-section">
+            <h3>⚠️ Low Stock Alerts</h3>
+            <div id="clinicLowStockList"></div>
+        </div>
+        
+        <div class="clinic-section">
+            <h3>📅 Expiring Soon (30 days)</h3>
+            <div id="clinicExpiringList"></div>
+        </div>
+        
+        <div class="clinic-section">
+            <h3>📋 Audit Log</h3>
+            <div id="clinicAuditList" style="max-height: 200px; overflow-y: auto;"></div>
+        </div>
+        
+        <div class="clinic-section">
+            <button class="clinic-btn clinic-btn-success" onclick="exportClinicCSV()">📥 Export to CSV</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// Clinic Enhancement
+const CLINIC_KEY = 'clinic_inventory_data';
+const CLINIC_AUDIT = 'clinic_audit_log';
+
+function getClinicData() {
+    return JSON.parse(localStorage.getItem(CLINIC_KEY) || '{}');
+}
+
+function saveClinicData(data) {
+    localStorage.setItem(CLINIC_KEY, JSON.stringify(data));
+}
+
+function addClinicAudit(action, item, details) {
+    const audit = JSON.parse(localStorage.getItem(CLINIC_AUDIT) || '[]');
+    audit.unshift({ action, item, details, time: new Date().toISOString() });
+    localStorage.setItem(CLINIC_AUDIT, JSON.stringify(audit.slice(0, 50)));
+}
+
+function toggleClinicPanel() {
+    document.getElementById('clinicPanel').classList.toggle('active');
+    if (document.getElementById('clinicPanel').classList.contains('active')) {
+        refreshClinicPanel();
+    }
+}
+
+function refreshClinicPanel() {
+    const data = getClinicData();
+    const clinicData = data.items || {};
+    const scanned = typeof scannedItems !== 'undefined' ? scannedItems : [];
+    
+    let expiring = [], lowStock = [], total = 0;
+    const today = new Date(); today.setHours(0,0,0,0);
+    
+    scanned.forEach(item => {
+        const key = item.itemNumber || item.upcCode;
+        const c = clinicData[key] || {};
+        total++;
+        
+        if (item.quantity <= (c.threshold || 10)) {
+            lowStock.push({ ...item, ...c, key });
+        }
+        
+        if (c.expiration) {
+            const exp = new Date(c.expiration); exp.setHours(0,0,0,0);
+            const days = Math.ceil((exp - today) / (1000*60*60*24));
+            if (days >= 0 && days <= 30) {
+                expiring.push({ ...item, ...c, key, daysLeft: days });
+            }
+        }
+    });
+    
+    document.getElementById('clinicTotal').textContent = total;
+    document.getElementById('clinicExpiring').textContent = expiring.length;
+    document.getElementById('clinicLow').textContent = lowStock.length;
+    
+    // Populate select
+    const select = document.getElementById('clinicItemSelect');
+    select.innerHTML = '<option value="">-- Select Item --</option>' + 
+        scanned.map(i => `<option value="${i.itemNumber || i.upcCode}">${i.name}</option>`).join('');
+    
+    // Low stock list
+    document.getElementById('clinicLowStockList').innerHTML = lowStock.length ? 
+        lowStock.map(i => `<div class="clinic-item danger"><div class="clinic-item-name">${i.name}</div><div class="clinic-item-detail">Qty: ${i.quantity} | Threshold: ${i.threshold || 10} | Loc: ${i.location || '—'}</div></div>`).join('') :
+        '<div class="clinic-item"><div class="clinic-item-detail">No low stock items</div></div>';
+    
+    // Expiring list
+    document.getElementById('clinicExpiringList').innerHTML = expiring.length ?
+        expiring.map(i => `<div class="clinic-item warning"><div class="clinic-item-name">${i.name}</div><div class="clinic-item-detail">Expires: ${i.expiration} (${i.daysLeft}d) | Loc: ${i.location || '—'}</div></div>`).join('') :
+        '<div class="clinic-item"><div class="clinic-item-detail">No items expiring soon</div></div>';
+    
+    // Audit list
+    const audit = JSON.parse(localStorage.getItem(CLINIC_AUDIT) || '[]');
+    document.getElementById('clinicAuditList').innerHTML = audit.length ?
+        audit.slice(0,10).map(a => `<div class="clinic-item"><div class="clinic-item-name">${a.action.toUpperCase()}</div><div class="clinic-item-detail">${a.item} - ${a.details}</div></div>`).join('') :
+        '<div class="clinic-item"><div class="clinic-item-detail">No audit entries</div></div>';
+}
+
+function saveClinicDetails() {
+    const key = document.getElementById('clinicItemSelect').value;
+    if (!key) { alert('Please select an item'); return; }
+    
+    const data = getClinicData();
+    if (!data.items) data.items = {};
+    
+    data.items[key] = {
+        category: document.getElementById('clinicCategory').value,
+        location: document.getElementById('clinicLocation').value,
+        expiration: document.getElementById('clinicExpiration').value,
+        threshold: parseInt(document.getElementById('clinicThreshold').value) || 10,
+        updatedAt: new Date().toISOString()
+    };
+    
+    saveClinicData(data);
+    addClinicAudit('update', key, `Category: ${data.items[key].category}, Loc: ${data.items[key].location}`);
+    refreshClinicPanel();
+    alert('Clinic details saved!');
+}
+
+function exportClinicCSV() {
+    const data = getClinicData();
+    const scanned = typeof scannedItems !== 'undefined' ? scannedItems : [];
+    const clinicData = data.items || {};
+    
+    const rows = [['Name', 'UPC', 'Quantity', 'Category', 'Location', 'Expiration', 'Threshold', 'Status']];
+    const today = new Date(); today.setHours(0,0,0,0);
+    
+    scanned.forEach(item => {
+        const key = item.itemNumber || item.upcCode;
+        const c = clinicData[key] || {};
+        let status = 'OK';
+        if (item.quantity <= (c.threshold || 10)) status = 'Low Stock';
+        if (c.expiration) {
+            const exp = new Date(c.expiration); exp.setHours(0,0,0,0);
+            const days = Math.ceil((exp - today) / (1000*60*60*24));
+            if (days < 0) status = 'Expired';
+            else if (days <= 30) status = 'Expiring Soon';
+        }
+        rows.push([item.name, key, item.quantity, c.category||'', c.location||'', c.expiration||'', c.threshold||10, status]);
+    });
+    
+    const csv = rows.map(r => r.map(c => '"'+(c||'')+'"').join(',')).join('\n');
+    const blob = new Blob([csv], {type: 'text/csv'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'clinic-inventory.csv'; a.click();
+}
+
+// Auto-refresh every 30 seconds
+setInterval(() => {
+    if (document.getElementById('clinicPanel').classList.contains('active')) {
+        refreshClinicPanel();
+    }
+}, 30000);
+
+console.log('🏥 Clinic Enhancement loaded');
+</script>
