@@ -28,30 +28,28 @@
         }
 
         :root {
-            --clinic-primary: #38bdf8;
-            --clinic-primary-hover: #22a3f0;
-            --clinic-secondary: #0ea5e9;
-            --clinic-primary-rgb: 56, 189, 248;
-            --clinic-secondary-rgb: 14, 165, 233;
-            --clinic-ink: #e9f2ff;
-            --clinic-bg: #050b1f;
-            --clinic-card: rgba(255, 255, 255, 0.06);
-            --clinic-border: rgba(148, 163, 184, 0.22);
-            --clinic-border-strong: rgba(148, 163, 184, 0.32);
-            --clinic-muted: rgba(226, 232, 240, 0.70);
-            --clinic-muted-2: rgba(226, 232, 240, 0.52);
-            --clinic-surface-0: rgba(6, 12, 34, 0.62);
-            --clinic-surface-1: rgba(255, 255, 255, 0.06);
-            --clinic-surface-2: rgba(255, 255, 255, 0.10);
-            --clinic-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
-            --clinic-shadow-sm: 0 10px 32px rgba(0, 0, 0, 0.32);
+            --clinic-primary: #2563eb;
+            --clinic-primary-hover: #1d4ed8;
+            --clinic-secondary: #60a5fa;
+            --clinic-primary-rgb: 37, 99, 235;
+            --clinic-secondary-rgb: 96, 165, 250;
+            --clinic-ink: #1e3a5f;
+            --clinic-bg: #f0f6ff;
+            --clinic-card: #ffffff;
+            --clinic-border: rgba(37, 99, 235, 0.15);
+            --clinic-border-strong: rgba(37, 99, 235, 0.25);
+            --clinic-muted: #64748b;
+            --clinic-muted-2: #94a3b8;
+            --clinic-surface-0: #f8faff;
+            --clinic-surface-1: #ffffff;
+            --clinic-surface-2: #f0f6ff;
+            --clinic-shadow: 0 4px 24px rgba(37, 99, 235, 0.10);
+            --clinic-shadow-sm: 0 2px 12px rgba(37, 99, 235, 0.08);
         }
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: radial-gradient(circle at 20% 0%, rgba(56, 189, 248, 0.14) 0%, rgba(5, 11, 31, 0.0) 48%),
-                        radial-gradient(circle at 90% 20%, rgba(14, 165, 233, 0.12) 0%, rgba(5, 11, 31, 0.0) 55%),
-                        linear-gradient(180deg, #050b1f 0%, #05071a 100%);
+            background: #f0f6ff;
             color: var(--clinic-ink);
             min-height: 100vh;
             padding: 10px;
@@ -69,10 +67,10 @@
             max-width: 100%;
             min-height: calc(100vh - 16px);
             margin: 0 auto;
-            background: rgba(10, 18, 46, 0.72);
+            background: #ffffff;
             border-radius: 14px;
-            border: 1px solid rgba(148, 163, 184, 0.20);
-            box-shadow: var(--clinic-shadow);
+            border: 1px solid rgba(37, 99, 235, 0.12);
+            box-shadow: 0 4px 24px rgba(37, 99, 235, 0.08);
             overflow: hidden;
             position: relative;
             z-index: 1;
@@ -102,15 +100,14 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: linear-gradient(135deg, rgba(6, 12, 34, 0.92) 0%, rgba(2, 6, 23, 0.94) 100%);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+            background: #ffffff;
+            border-bottom: 1px solid rgba(37, 99, 235, 0.12);
             position: sticky;
             top: 0;
             z-index: 100;
             padding: 0;
             height: 144px;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+            box-shadow: 0 2px 12px rgba(37, 99, 235, 0.06);
         }
 
         .topbar-inner {
@@ -174,7 +171,7 @@
             gap: 2px;
             font-size: 18px;
             font-weight: 800;
-            color: rgba(226, 232, 240, 0.92);
+            color: #1e3a5f;
             white-space: nowrap;
         }
 
@@ -221,7 +218,7 @@
             max-width: 260px;
             padding: 10px 12px;
             border-radius: 14px;
-            background: rgba(255, 255, 255, 0.04);
+            background: #f0f6ff;
             border: 1px solid rgba(148, 163, 184, 0.16);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.22);
         }
@@ -241,7 +238,7 @@
 
         .topbar-min .meta-chip-value {
             font-size: 13px;
-            color: rgba(248, 250, 252, 0.92);
+            color: #1e3a5f;
         }
 
         .topbar-left {
@@ -388,7 +385,7 @@
             padding: 6px 10px;
             border: 1px solid var(--clinic-border);
             border-radius: 12px;
-            background: rgba(255, 255, 255, 0.06);
+            background: #f0f6ff;
         }
 
         .topbar-actions .topbar-webhook input {
@@ -397,7 +394,7 @@
             background: transparent;
             font-size: 12px;
             min-width: 280px;
-            color: rgba(226, 232, 240, 0.88);
+            color: #1e3a5f;
         }
 
         @media (max-width: 1100px) {
@@ -485,7 +482,7 @@
 
         .scanner-controls {
             padding: 12px !important;
-            background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(246, 248, 251, 0.9) 100%) !important;
+            background: #ffffff !important;
         }
 
         .scanner-input-container {
@@ -552,18 +549,18 @@
         }
 
         .metric-card {
-            background: linear-gradient(180deg, rgba(15, 23, 42, 0.72) 0%, rgba(8, 13, 33, 0.80) 100%);
-            border: 1px solid rgba(148, 163, 184, 0.18);
+            background: #ffffff;
+            border: 1px solid rgba(37, 99, 235, 0.15);
             border-radius: 14px;
             padding: 14px 14px 13px;
-            box-shadow: 0 10px 26px rgba(0, 0, 0, 0.28);
+            box-shadow: 0 2px 12px rgba(37, 99, 235, 0.08);
             min-height: 70px;
         }
 
         .metric-label {
             font-size: 10px;
             font-weight: 700;
-            color: rgba(226, 232, 240, 0.62);
+            color: #64748b;
             text-transform: uppercase;
             letter-spacing: 0.08em;
         }
@@ -572,7 +569,7 @@
             margin-top: 6px;
             font-size: 26px;
             font-weight: 900;
-            color: rgba(226, 232, 240, 0.92);
+            color: #1e3a5f;
             letter-spacing: -0.02em;
         }
 
@@ -583,7 +580,7 @@
         .metric-hint {
             margin-top: 4px;
             font-size: 11px;
-            color: rgba(226, 232, 240, 0.62);
+            color: #64748b;
             font-weight: 500;
             white-space: nowrap;
             overflow: hidden;
@@ -604,20 +601,20 @@
         }
 
         .badge-success {
-            background: rgba(16, 185, 129, 0.14);
-            color: rgba(167, 243, 208, 0.95);
+            background: rgba(16, 185, 129, 0.12);
+            color: #065f46;
             border-color: rgba(16, 185, 129, 0.26);
         }
 
         .badge-warning {
-            background: rgba(245, 158, 11, 0.14);
-            color: rgba(253, 230, 138, 0.96);
+            background: rgba(245, 158, 11, 0.12);
+            color: #92400e;
             border-color: rgba(245, 158, 11, 0.30);
         }
 
         .badge-info {
-            background: rgba(var(--clinic-primary-rgb), 0.14);
-            color: rgba(186, 230, 253, 0.96);
+            background: rgba(var(--clinic-primary-rgb), 0.10);
+            color: #1e3a5f;
             border-color: rgba(var(--clinic-primary-rgb), 0.26);
         }
 
@@ -629,7 +626,7 @@
 
         .badge-neutral {
             background: rgba(148, 163, 184, 0.12);
-            color: rgba(226, 232, 240, 0.78);
+            color: #475569;
             border-color: rgba(148, 163, 184, 0.22);
         }
 
@@ -919,7 +916,7 @@
         .metric-card {
             padding: 10px 12px;
             border-radius: 14px;
-            box-shadow: 0 10px 26px rgba(0, 0, 0, 0.28);
+            box-shadow: 0 2px 12px rgba(37, 99, 235, 0.08);
         }
 
         .metric-label {
@@ -935,11 +932,11 @@
         .recon-scanbox {
             width: 100%;
             max-width: 980px;
-            background: linear-gradient(180deg, rgba(15, 23, 42, 0.78) 0%, rgba(8, 13, 33, 0.86) 100%);
-            border: 1px solid rgba(148, 163, 184, 0.18);
+            background: #ffffff;
+            border: 1px solid rgba(37, 99, 235, 0.15);
             border-radius: 18px;
             padding: 18px;
-            box-shadow: 0 18px 46px rgba(0, 0, 0, 0.34);
+            box-shadow: 0 2px 12px rgba(37, 99, 235, 0.08);
         }
 
         .recon-scan-main {
@@ -963,31 +960,27 @@
             height: 76px;
             font-size: 24px;
             border-radius: 16px;
-            border: 2px solid rgba(148, 163, 184, 0.45);
-            background: rgba(2, 6, 23, 0.45);
-            box-shadow:
-                inset 0 1px 0 rgba(255, 255, 255, 0.06),
-                0 18px 42px rgba(0, 0, 0, 0.32);
+            border: 2px solid rgba(37, 99, 235, 0.25);
+            background: #f8faff;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.06);
             font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
             letter-spacing: 0.02em;
-            caret-color: rgba(94, 234, 212, 0.95);
+            caret-color: #2563eb;
         }
 
         .recon-scanbox .barcode-input {
-            color: rgba(226, 232, 240, 0.92);
+            color: #1e3a5f;
         }
 
         .recon-scanbox .barcode-input::placeholder {
-            color: rgba(148, 163, 184, 0.85);
+            color: #94a3b8;
         }
 
         .recon-scanbox .barcode-input:focus {
-            border-color: rgba(var(--clinic-primary-rgb), 0.65);
+            border-color: #2563eb;
             box-shadow:
-                0 0 0 5px rgba(var(--clinic-primary-rgb), 0.18),
-                0 0 0 1px rgba(var(--clinic-primary-rgb), 0.22),
-                0 14px 34px rgba(0, 0, 0, 0.46),
-                inset 0 1px 0 rgba(255, 255, 255, 0.08);
+                0 0 0 3px rgba(37, 99, 235, 0.15),
+                0 2px 8px rgba(37, 99, 235, 0.10);
         }
 
         .recon-remaining {
@@ -996,8 +989,8 @@
             justify-content: space-between;
             gap: 10px;
             padding: 10px 12px;
-            border: 1px solid rgba(148, 163, 184, 0.45);
-            background: rgba(2, 6, 23, 0.35);
+            border: 1px solid rgba(37, 99, 235, 0.15);
+            background: #f0f6ff;
             border-radius: 14px;
         }
 
@@ -1007,13 +1000,13 @@
 
         .recon-remaining-inline {
             font-size: 12px;
-            color: rgba(226, 232, 240, 0.62);
+            color: #64748b;
             font-weight: 650;
             padding-left: 6px;
         }
 
         .recon-remaining-inline strong {
-            color: rgba(226, 232, 240, 0.88);
+            color: #1e3a5f;
             font-weight: 850;
         }
 
@@ -1028,7 +1021,7 @@
         .recon-remaining-value {
             font-size: 22px;
             font-weight: 900;
-            color: rgba(226, 232, 240, 0.92);
+            color: #1e3a5f;
         }
 
         .recon-table-scroll .data-table tbody tr.recon-last-scanned {
@@ -1043,13 +1036,13 @@
 
         .recon-item-title {
             font-weight: 650;
-            color: rgba(226, 232, 240, 0.92);
+            color: #1e3a5f;
             line-height: 1.25;
         }
 
         .recon-item-meta {
             font-size: 11px;
-            color: rgba(226, 232, 240, 0.62);
+            color: #64748b;
             font-weight: 600;
             margin-top: 2px;
         }
@@ -1068,13 +1061,13 @@
         }
 
         .recon-table-scroll .action-buttons .btn:not(.btn-receive) {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(148, 163, 184, 0.14);
-            color: rgba(226, 232, 240, 0.88);
+            background: #f0f6ff;
+            border: 1px solid rgba(37, 99, 235, 0.15);
+            color: #1e3a5f;
         }
 
         .recon-table-scroll .action-buttons .btn:not(.btn-receive):hover {
-            background: rgba(255, 255, 255, 0.10);
+            background: #e0eeff;
         }
 
         .recon-table-scroll .action-buttons .btn-receive {
@@ -1086,11 +1079,11 @@
         }
 
         .recon-table-scroll .action-buttons .btn.btn-icon i {
-            color: rgba(226, 232, 240, 0.78);
+            color: #64748b;
         }
 
         .recon-table-scroll .action-buttons .btn.btn-icon:hover i {
-            color: rgba(248, 250, 252, 0.92);
+            color: #1e3a5f;
         }
 
         .recon-table-scroll .action-buttons .btn.btn-icon {
@@ -1120,9 +1113,9 @@
             gap: 6px;
             padding: 6px 10px;
             border-radius: 10px;
-            border: 1px solid rgba(148, 163, 184, 0.18);
-            background: rgba(2, 6, 23, 0.25);
-            color: rgba(226, 232, 240, 0.70);
+            border: 1px solid rgba(37, 99, 235, 0.15);
+            background: #f0f6ff;
+            color: #64748b;
             font-size: 12px;
             font-weight: 800;
             letter-spacing: 0.01em;
@@ -1161,8 +1154,8 @@
             margin-top: 14px;
             padding: 12px;
             border-radius: 14px;
-            border: 1px solid rgba(148, 163, 184, 0.18);
-            background: rgba(2, 6, 23, 0.35);
+            border: 1px solid rgba(37, 99, 235, 0.15);
+            background: #f0f6ff;
             max-height: 260px;
             overflow: auto;
         }
@@ -1179,8 +1172,8 @@
         #completeOrderMissingList .missing-item {
             padding: 10px;
             border-radius: 12px;
-            background: rgba(15, 23, 42, 0.22);
-            border: 1px solid rgba(148, 163, 184, 0.14);
+            background: #ffffff;
+            border: 1px solid rgba(37, 99, 235, 0.12);
         }
 
         #completeOrderMissingList .missing-item + .missing-item {
@@ -1189,7 +1182,7 @@
 
         #completeOrderMissingList .missing-name {
             font-weight: 750;
-            color: rgba(226, 232, 240, 0.92);
+            color: #1e3a5f;
             font-size: 13px;
             margin: 0;
         }
@@ -1197,36 +1190,36 @@
         #completeOrderMissingList .missing-meta {
             margin-top: 6px;
             font-size: 12px;
-            color: rgba(226, 232, 240, 0.72);
+            color: #64748b;
             font-weight: 650;
         }
 
         .recon-action-badge .check {
-            color: rgba(167, 243, 208, 0.85);
+            color: #065f46;
         }
 
         .recon-table-scroll .data-table tbody tr.recon-row-matched {
-            color: rgba(226, 232, 240, 0.72);
-            background: rgba(15, 23, 42, 0.16);
+            color: #64748b;
+            background: rgba(37, 99, 235, 0.03);
         }
 
         .recon-table-scroll .data-table tbody tr.recon-row-matched .recon-item-title {
-            color: rgba(226, 232, 240, 0.78);
+            color: #64748b;
         }
 
         .recon-table-scroll .data-table tbody tr.recon-row-matched .badge-success {
-            opacity: 0.72;
+            opacity: 0.85;
         }
 
         .recon-table-scroll .data-table tbody tr.recon-row-matched .badge-success {
             background: rgba(16, 185, 129, 0.10);
             border-color: rgba(16, 185, 129, 0.18);
-            color: rgba(167, 243, 208, 0.82);
+            color: #065f46;
         }
 
         .recon-variance {
             font-weight: 700;
-            color: rgba(226, 232, 240, 0.68);
+            color: #64748b;
         }
 
         .recon-variance.nonzero {
@@ -1234,15 +1227,15 @@
         }
 
         .recon-variance.pos {
-            color: rgba(253, 230, 138, 0.96);
+            color: #92400e;
         }
 
         .recon-variance.neg {
-            color: rgba(248, 113, 113, 0.96);
+            color: #991b1b;
         }
 
         .recon-variance.zero {
-            color: rgba(226, 232, 240, 0.62);
+            color: #94a3b8;
             font-weight: 700;
         }
 
@@ -1259,8 +1252,8 @@
 
         .recon-details {
             padding: 10px 12px;
-            border-top: 1px solid rgba(148, 163, 184, 0.35);
-            background: rgba(2, 6, 23, 0.35);
+            border-top: 1px solid rgba(37, 99, 235, 0.12);
+            background: #f8faff;
         }
 
         .recon-details-grid {
@@ -1291,7 +1284,7 @@
         .recon-details-v {
             font-size: 12px;
             font-weight: 700;
-            color: rgba(226, 232, 240, 0.88);
+            color: #1e3a5f;
         }
 
         .btn-receive {
@@ -1312,12 +1305,12 @@
         }
 
         .header {
-            background: rgba(6, 12, 34, 0.62);
+            background: #f8faff;
             color: var(--clinic-ink);
             padding: 12px 20px;
             text-align: center;
             position: relative;
-            border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+            border-bottom: 1px solid rgba(37, 99, 235, 0.12);
             flex-shrink: 0;
         }
 
@@ -1397,9 +1390,9 @@
             flex-wrap: wrap;
             align-items: center;
             padding: 8px;
-            background: rgba(255, 255, 255, 0.04);
+            background: #ffffff;
             border-radius: 6px;
-            border: 1px solid rgba(148, 163, 184, 0.18);
+            border: 1px solid rgba(37, 99, 235, 0.15);
         }
 
         /* Modern Button Design System - Enhanced for Usability */
@@ -1471,21 +1464,21 @@
             transform: scale(1.05);
         }
 
-        /* Primary Button - Neutral */
+        /* Primary Button */
         .btn-primary {
-            background: var(--clinic-primary);
+            background: linear-gradient(135deg, #2563eb, #60a5fa);
             color: white;
-            border: 1px solid var(--clinic-secondary);
+            border: none;
         }
 
         .btn-primary:hover,
         .btn-primary:focus {
-            background: var(--clinic-primary-hover);
-            border-color: var(--clinic-secondary);
+            background: linear-gradient(135deg, #1d4ed8, #2563eb);
+            border: none;
         }
 
         .btn-primary:active {
-            background: var(--clinic-secondary);
+            background: linear-gradient(135deg, #1e40af, #1d4ed8);
         }
 
         /* Success Button - Neutral Green */
@@ -1524,28 +1517,23 @@
 
         /* Secondary Button - Light Theme */
         .btn-secondary {
-            background: #f3f4f6;
-            color: #374151;
-            border: 1px solid #d1d5db;
+            background: #f0f6ff;
+            color: #1e3a5f;
+            border: 1px solid rgba(37, 99, 235, 0.20);
         }
 
         .btn-secondary:hover,
         .btn-secondary:focus {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: #9ca3af;
+            background: #e0eeff;
+            border-color: rgba(37, 99, 235, 0.35);
         }
 
         .btn-secondary:hover,
         .btn-secondary:focus {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.28) 0%, 
-                rgba(255, 255, 255, 0.15) 100%);
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 
-                0 10px 30px rgba(0, 0, 0, 0.35),
-                0 4px 12px rgba(0, 0, 0, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.35);
-            border-color: rgba(255, 255, 255, 0.45);
+            background: #e0eeff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.12);
+            border-color: rgba(37, 99, 235, 0.35);
         }
 
         .btn-secondary:active {
@@ -1626,24 +1614,24 @@
         }
 
         .scanner-input-container {
-            background: rgba(255, 255, 255, 0.04);
+            background: #ffffff;
             padding: 8px;
             border-radius: 6px;
             margin-bottom: 8px;
         }
 
         .scanner-input-container {
-            background: rgba(255, 255, 255, 0.04);
+            background: #ffffff;
             padding: 8px;
             border-radius: 6px;
             margin-bottom: 8px;
             text-align: center;
-            border: 1px solid rgba(148, 163, 184, 0.18);
+            border: 1px solid rgba(37, 99, 235, 0.15);
         }
 
         .scanner-input-container h3 {
             margin-bottom: 8px;
-            color: rgba(226, 232, 240, 0.90);
+            color: #1e3a5f;
             font-size: 0.9em;
             font-weight: 600;
             letter-spacing: 0;
@@ -1654,12 +1642,12 @@
             padding: 8px 12px;
             font-size: 14px;
             text-align: center;
-            border: 1px solid rgba(148, 163, 184, 0.22);
+            border: 1px solid #cbd5e1;
             border-radius: 4px;
             font-weight: 500;
             letter-spacing: 1px;
-            background: rgba(255, 255, 255, 0.06);
-            color: rgba(226, 232, 240, 0.90);
+            background: #ffffff;
+            color: #1e3a5f;
             margin: 0 auto;
             display: block;
             transition: all 0.15s ease;
@@ -1674,16 +1662,16 @@
 
         .barcode-input:focus {
             outline: none;
-            border-color: var(--clinic-primary);
-            box-shadow: 0 0 0 3px rgba(var(--clinic-primary-rgb), 0.18);
-            background: rgba(255, 255, 255, 0.08);
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+            background: #ffffff;
         }
 
         .scanner-input-container {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(148, 163, 184, 0.18);
+            background: #ffffff;
+            border: 1px solid rgba(37, 99, 235, 0.15);
             border-radius: 14px;
-            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.26);
+            box-shadow: 0 2px 12px rgba(37, 99, 235, 0.08);
             padding: 14px;
         }
 
@@ -2307,7 +2295,7 @@
         .form-group label {
             margin-bottom: 10px;
             font-weight: 600;
-            color: rgba(226, 232, 240, 0.84);
+            color: #1e3a5f;
             font-size: 15px;
             letter-spacing: -0.01em;
             display: flex;
@@ -2316,7 +2304,7 @@
         }
 
         .modal .form-group label {
-            color: rgba(226, 232, 240, 0.90);
+            color: #1e3a5f;
             font-weight: 700;
         }
 
@@ -2335,15 +2323,15 @@
         .form-group input,
         .form-group textarea {
             padding: 14px 18px;
-            border: 2px solid rgba(148, 163, 184, 0.22);
+            border: 1px solid #cbd5e1;
             border-radius: 12px;
             font-size: 15px;
             font-weight: 500;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: rgba(255, 255, 255, 0.06);
-            color: rgba(226, 232, 240, 0.90);
+            background: #ffffff;
+            color: #1e3a5f;
             will-change: border-color, background-color, transform;
-            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+            box-shadow: 0 1px 4px rgba(37, 99, 235, 0.05);
             width: 100%;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         }
@@ -2383,7 +2371,7 @@
 
         .data-list h3 {
             margin-bottom: 8px;
-            color: rgba(226, 232, 240, 0.90);
+            color: #1e3a5f;
             font-size: 0.9em;
             font-weight: 600;
             letter-spacing: 0;
@@ -2392,13 +2380,13 @@
         .data-table {
             width: 100%;
             border-collapse: collapse;
-            background: rgba(255, 255, 255, 0.02);
+            background: #ffffff;
             font-size: 13px;
         }
 
         .data-table thead {
-            background: rgba(255, 255, 255, 0.06);
-            color: rgba(226, 232, 240, 0.92);
+            background: #f0f6ff;
+            color: #1e3a5f;
         }
 
         .data-table {
@@ -2412,7 +2400,7 @@
         .data-table th {
             font-size: 11px;
             font-weight: 800;
-            color: rgba(226, 232, 240, 0.92);
+            color: #1e3a5f;
             letter-spacing: 0.08em;
             text-transform: uppercase;
         }
@@ -2437,10 +2425,9 @@
             position: sticky;
             top: 0;
             z-index: 3;
-            background: linear-gradient(180deg, rgba(15, 23, 42, 0.92) 0%, rgba(2, 6, 23, 0.92) 100%);
-            border-bottom: 1px solid rgba(226, 232, 240, 0.16);
-            backdrop-filter: blur(6px);
-            color: rgba(248, 250, 252, 0.96);
+            background: #f0f6ff;
+            border-bottom: 1px solid rgba(37, 99, 235, 0.15);
+            color: #1e3a5f;
         }
 
         .recon-table-scroll .data-table tbody tr:nth-child(even) {
@@ -2457,9 +2444,9 @@
         }
 
         .data-table tbody tr {
-            border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+            border-bottom: 1px solid rgba(37, 99, 235, 0.08);
             transition: background-color 0.15s ease;
-            color: rgba(226, 232, 240, 0.86);
+            color: #1e3a5f;
         }
 
         .data-table tbody tr:hover {
@@ -2766,11 +2753,11 @@
         }
 
         .loading-content {
-            background: rgba(6, 12, 34, 0.82);
+            background: #ffffff;
             padding: 40px 50px;
             border-radius: 8px;
             text-align: center;
-            color: rgba(226, 232, 240, 0.90);
+            color: #1e3a5f;
         }
 
         .loading-icon-container {
@@ -2796,7 +2783,7 @@
         .loading-text {
             font-size: 18px;
             font-weight: 500;
-            color: rgba(226, 232, 240, 0.90);
+            color: #1e3a5f;
             margin: 0;
         }
 
@@ -2811,12 +2798,12 @@
         /* Response Display */
         .response-content {
             display: none;
-            background: rgba(6, 12, 34, 0.88);
+            background: #ffffff;
             padding: 0;
             border-radius: 12px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 4px 24px rgba(37, 99, 235, 0.12);
             text-align: left;
-            color: rgba(226, 232, 240, 0.90);
+            color: #1e3a5f;
             max-width: 700px;
             width: 90%;
             max-height: 85vh;
@@ -2929,37 +2916,37 @@
 
         .response-label {
             font-size: 16px;
-            color: rgba(226, 232, 240, 0.80);
+            color: #64748b;
             margin-bottom: 16px;
             font-weight: 600;
             display: none;
         }
 
         .response-summary {
-            background: rgba(255, 255, 255, 0.04);
+            background: #f0f6ff;
             border-radius: 12px;
             padding: 24px;
             margin-bottom: 24px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.06);
         }
 
         .response-summary-title {
             font-size: 15px;
-            color: rgba(226, 232, 240, 0.62);
+            color: #64748b;
             margin-bottom: 8px;
             font-weight: 500;
         }
 
         .response-summary-text {
             font-size: 17px;
-            color: rgba(226, 232, 240, 0.92);
+            color: #1e3a5f;
             font-weight: 600;
             line-height: 1.5;
         }
 
         .response-data {
-            background: rgba(255, 255, 255, 0.04);
-            border: 2px solid rgba(148, 163, 184, 0.18);
+            background: #f8faff;
+            border: 1px solid rgba(37, 99, 235, 0.15);
             border-radius: 12px;
             padding: 24px;
             margin-top: 0;
@@ -2969,12 +2956,12 @@
             overflow-x: auto;
             max-height: 50vh;
             overflow-y: auto;
-            color: rgba(226, 232, 240, 0.84);
+            color: #1e3a5f;
         }
 
         .response-data pre {
             margin: 0;
-            color: rgba(226, 232, 240, 0.84);
+            color: #1e3a5f;
             white-space: pre-wrap;
             word-wrap: break-word;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -3012,7 +2999,7 @@
         }
 
         .modal-content {
-            background: rgba(6, 12, 34, 0.86);
+            background: #ffffff;
             padding: 40px;
             border-radius: 24px;
             max-width: 650px;
@@ -3020,11 +3007,10 @@
             max-height: 90vh;
             overflow-y: auto;
             margin: auto;
-            box-shadow: 
-                0 20px 60px rgba(0, 0, 0, 0.3),
-                0 8px 32px rgba(var(--clinic-primary-rgb), 0.16),
-                inset 0 1px 0 rgba(255, 255, 255, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow:
+                0 4px 24px rgba(37, 99, 235, 0.12),
+                0 8px 32px rgba(37, 99, 235, 0.08);
+            border: 1px solid rgba(37, 99, 235, 0.15);
             position: relative;
             overflow: auto;
         }
@@ -3212,7 +3198,7 @@
         }
 
         .modal-header h2 {
-            color: rgba(226, 232, 240, 0.92);
+            color: #1e3a5f;
             font-size: 1.75em;
             font-weight: 700;
             margin: 0;
@@ -3534,12 +3520,11 @@
             width: 100%;
             max-width: 650px;
             margin: 0 auto;
-            background: linear-gradient(180deg, rgba(15, 23, 42, 0.78) 0%, rgba(8, 13, 33, 0.86) 100%);
-            border: 1px solid rgba(148, 163, 184, 0.18);
+            background: #ffffff;
+            border: 1px solid rgba(37, 99, 235, 0.15);
             border-radius: 12px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 24px rgba(37, 99, 235, 0.10);
             padding: 48px 40px;
-            backdrop-filter: blur(10px);
         }
 
         .upload-header {
@@ -3551,7 +3536,7 @@
             font-size: 32px;
             font-weight: 800;
             letter-spacing: -0.02em;
-            color: #ffffff;
+            color: #1e3a5f;
             margin: 0 0 12px 0;
             line-height: 1.2;
         }
@@ -3566,9 +3551,9 @@
 
         .upload-dropzone {
             position: relative;
-            border: 2px dashed rgba(var(--clinic-primary-rgb), 0.8);
+            border: 2px dashed rgba(37, 99, 235, 0.40);
             border-radius: 12px;
-            background: linear-gradient(180deg, rgba(15, 23, 42, 0.6) 0%, rgba(8, 13, 33, 0.7) 100%);
+            background: #f0f6ff;
             padding: 60px 40px;
             margin: 32px 0;
             cursor: pointer;
@@ -3594,9 +3579,9 @@
 
         .upload-dropzone:hover {
             border-color: var(--clinic-primary);
-            background: linear-gradient(180deg, rgba(15, 23, 42, 0.8) 0%, rgba(8, 13, 33, 0.9) 100%);
+            background: #e0eeff;
             transform: translateY(-2px);
-            box-shadow: 0 12px 40px rgba(var(--clinic-primary-rgb), 0.25);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.15);
         }
 
         .upload-dropzone:hover::before {
@@ -3638,14 +3623,14 @@
         .upload-dropzone-text h3 {
             font-size: 28px;
             font-weight: 700;
-            color: #ffffff;
+            color: #1e3a5f;
             margin: 0 0 8px 0;
             letter-spacing: -0.01em;
         }
 
         .upload-dropzone-text p {
             font-size: 18px;
-            color: #A8B3CF;
+            color: #64748b;
             margin: 0;
             font-weight: 400;
         }
@@ -29295,229 +29280,3 @@
 </body>
 </html>
 
-
-
-<!-- CLINIC ENHANCEMENT PANEL -->
-<style>
-.clinic-panel { display: none; position: fixed; top: 0; right: 0; width: 400px; height: 100vh; background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%); border-left: 1px solid #334155; z-index: 9999; overflow-y: auto; box-shadow: -10px 0 40px rgba(0,0,0,0.5); }
-.clinic-panel.active { display: block; }
-.clinic-panel-header { background: linear-gradient(135deg, #0ea5e9, #0284c7); padding: 20px; color: white; }
-.clinic-panel-header h2 { margin: 0 0 10px 0; font-size: 1.4rem; }
-.clinic-stats { display: flex; gap: 10px; }
-.clinic-stat { flex: 1; background: rgba(255,255,255,0.2); padding: 10px; border-radius: 8px; text-align: center; }
-.clinic-stat-value { font-size: 1.5rem; font-weight: 700; }
-.clinic-stat-label { font-size: 0.7rem; opacity: 0.9; }
-.clinic-panel-body { padding: 20px; }
-.clinic-section { margin-bottom: 20px; }
-.clinic-section h3 { color: #94a3b8; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
-.clinic-item { background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 12px; margin-bottom: 10px; }
-.clinic-item.warning { border-color: #f59e0b; background: rgba(245,158,11,0.1); }
-.clinic-item.danger { border-color: #ef4444; background: rgba(239,68,68,0.1); }
-.clinic-item-name { font-weight: 600; color: white; margin-bottom: 4px; }
-.clinic-item-detail { font-size: 0.85rem; color: #94a3b8; }
-.clinic-toggle { position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #0ea5e9, #0284c7); border: none; color: white; font-size: 1.5rem; cursor: pointer; box-shadow: 0 4px 20px rgba(14,165,233,0.5); z-index: 9998; }
-.clinic-toggle:hover { transform: scale(1.1); }
-.clinic-form { background: #1e293b; border-radius: 12px; padding: 16px; margin-bottom: 16px; }
-.clinic-form-group { margin-bottom: 12px; }
-.clinic-form-group label { display: block; color: #94a3b8; font-size: 0.85rem; margin-bottom: 6px; }
-.clinic-form-group input, .clinic-form-group select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; }
-.clinic-btn { width: 100%; padding: 12px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; }
-.clinic-btn-primary { background: #0ea5e9; color: white; }
-.clinic-btn-success { background: #10b981; color: white; }
-</style>
-
-<button class="clinic-toggle" onclick="toggleClinicPanel()" title="Clinic Panel">🏥</button>
-
-<div class="clinic-panel" id="clinicPanel">
-    <div class="clinic-panel-header">
-        <h2>🏥 Clinic Inventory Manager</h2>
-        <div class="clinic-stats">
-            <div class="clinic-stat"><div class="clinic-stat-value" id="clinicTotal">0</div><div class="clinic-stat-label">Total</div></div>
-            <div class="clinic-stat" style="background:rgba(245,158,11,0.3)"><div class="clinic-stat-value" id="clinicExpiring">0</div><div class="clinic-stat-label">Expiring</div></div>
-            <div class="clinic-stat" style="background:rgba(239,68,68,0.3)"><div class="clinic-stat-value" id="clinicLow">0</div><div class="clinic-stat-label">Low Stock</div></div>
-        </div>
-    </div>
-    <div class="clinic-panel-body">
-        <div class="clinic-section">
-            <h3>➕ Add Clinic Details</h3>
-            <div class="clinic-form">
-                <div class="clinic-form-group">
-                    <label>Select Item (from scanned)</label>
-                    <select id="clinicItemSelect"><option value="">-- Select Item --</option></select>
-                </div>
-                <div class="clinic-form-group">
-                    <label>Category</label>
-                    <select id="clinicCategory"><option value="supplies">🩹 Supplies</option><option value="medication">💊 Medication</option><option value="equipment">🔧 Equipment</option></select>
-                </div>
-                <div class="clinic-form-group">
-                    <label>Location / Room</label>
-                    <input type="text" id="clinicLocation" placeholder="e.g., Exam Room 1, Pharmacy">
-                </div>
-                <div class="clinic-form-group">
-                    <label>Expiration Date</label>
-                    <input type="date" id="clinicExpiration">
-                </div>
-                <div class="clinic-form-group">
-                    <label>Low Stock Threshold</label>
-                    <input type="number" id="clinicThreshold" value="10" min="1">
-                </div>
-                <button class="clinic-btn clinic-btn-primary" onclick="saveClinicDetails()">💾 Save Details</button>
-            </div>
-        </div>
-        
-        <div class="clinic-section">
-            <h3>⚠️ Low Stock Alerts</h3>
-            <div id="clinicLowStockList"></div>
-        </div>
-        
-        <div class="clinic-section">
-            <h3>📅 Expiring Soon (30 days)</h3>
-            <div id="clinicExpiringList"></div>
-        </div>
-        
-        <div class="clinic-section">
-            <h3>📋 Audit Log</h3>
-            <div id="clinicAuditList" style="max-height: 200px; overflow-y: auto;"></div>
-        </div>
-        
-        <div class="clinic-section">
-            <button class="clinic-btn clinic-btn-success" onclick="exportClinicCSV()">📥 Export to CSV</button>
-        </div>
-    </div>
-</div>
-
-<script>
-// Clinic Enhancement
-const CLINIC_KEY = 'clinic_inventory_data';
-const CLINIC_AUDIT = 'clinic_audit_log';
-
-function getClinicData() {
-    return JSON.parse(localStorage.getItem(CLINIC_KEY) || '{}');
-}
-
-function saveClinicData(data) {
-    localStorage.setItem(CLINIC_KEY, JSON.stringify(data));
-}
-
-function addClinicAudit(action, item, details) {
-    const audit = JSON.parse(localStorage.getItem(CLINIC_AUDIT) || '[]');
-    audit.unshift({ action, item, details, time: new Date().toISOString() });
-    localStorage.setItem(CLINIC_AUDIT, JSON.stringify(audit.slice(0, 50)));
-}
-
-function toggleClinicPanel() {
-    document.getElementById('clinicPanel').classList.toggle('active');
-    if (document.getElementById('clinicPanel').classList.contains('active')) {
-        refreshClinicPanel();
-    }
-}
-
-function refreshClinicPanel() {
-    const data = getClinicData();
-    const clinicData = data.items || {};
-    const scanned = typeof scannedItems !== 'undefined' ? scannedItems : [];
-    
-    let expiring = [], lowStock = [], total = 0;
-    const today = new Date(); today.setHours(0,0,0,0);
-    
-    scanned.forEach(item => {
-        const key = item.itemNumber || item.upcCode;
-        const c = clinicData[key] || {};
-        total++;
-        
-        if (item.quantity <= (c.threshold || 10)) {
-            lowStock.push({ ...item, ...c, key });
-        }
-        
-        if (c.expiration) {
-            const exp = new Date(c.expiration); exp.setHours(0,0,0,0);
-            const days = Math.ceil((exp - today) / (1000*60*60*24));
-            if (days >= 0 && days <= 30) {
-                expiring.push({ ...item, ...c, key, daysLeft: days });
-            }
-        }
-    });
-    
-    document.getElementById('clinicTotal').textContent = total;
-    document.getElementById('clinicExpiring').textContent = expiring.length;
-    document.getElementById('clinicLow').textContent = lowStock.length;
-    
-    // Populate select
-    const select = document.getElementById('clinicItemSelect');
-    select.innerHTML = '<option value="">-- Select Item --</option>' + 
-        scanned.map(i => `<option value="${i.itemNumber || i.upcCode}">${i.name}</option>`).join('');
-    
-    // Low stock list
-    document.getElementById('clinicLowStockList').innerHTML = lowStock.length ? 
-        lowStock.map(i => `<div class="clinic-item danger"><div class="clinic-item-name">${i.name}</div><div class="clinic-item-detail">Qty: ${i.quantity} | Threshold: ${i.threshold || 10} | Loc: ${i.location || '—'}</div></div>`).join('') :
-        '<div class="clinic-item"><div class="clinic-item-detail">No low stock items</div></div>';
-    
-    // Expiring list
-    document.getElementById('clinicExpiringList').innerHTML = expiring.length ?
-        expiring.map(i => `<div class="clinic-item warning"><div class="clinic-item-name">${i.name}</div><div class="clinic-item-detail">Expires: ${i.expiration} (${i.daysLeft}d) | Loc: ${i.location || '—'}</div></div>`).join('') :
-        '<div class="clinic-item"><div class="clinic-item-detail">No items expiring soon</div></div>';
-    
-    // Audit list
-    const audit = JSON.parse(localStorage.getItem(CLINIC_AUDIT) || '[]');
-    document.getElementById('clinicAuditList').innerHTML = audit.length ?
-        audit.slice(0,10).map(a => `<div class="clinic-item"><div class="clinic-item-name">${a.action.toUpperCase()}</div><div class="clinic-item-detail">${a.item} - ${a.details}</div></div>`).join('') :
-        '<div class="clinic-item"><div class="clinic-item-detail">No audit entries</div></div>';
-}
-
-function saveClinicDetails() {
-    const key = document.getElementById('clinicItemSelect').value;
-    if (!key) { alert('Please select an item'); return; }
-    
-    const data = getClinicData();
-    if (!data.items) data.items = {};
-    
-    data.items[key] = {
-        category: document.getElementById('clinicCategory').value,
-        location: document.getElementById('clinicLocation').value,
-        expiration: document.getElementById('clinicExpiration').value,
-        threshold: parseInt(document.getElementById('clinicThreshold').value) || 10,
-        updatedAt: new Date().toISOString()
-    };
-    
-    saveClinicData(data);
-    addClinicAudit('update', key, `Category: ${data.items[key].category}, Loc: ${data.items[key].location}`);
-    refreshClinicPanel();
-    alert('Clinic details saved!');
-}
-
-function exportClinicCSV() {
-    const data = getClinicData();
-    const scanned = typeof scannedItems !== 'undefined' ? scannedItems : [];
-    const clinicData = data.items || {};
-    
-    const rows = [['Name', 'UPC', 'Quantity', 'Category', 'Location', 'Expiration', 'Threshold', 'Status']];
-    const today = new Date(); today.setHours(0,0,0,0);
-    
-    scanned.forEach(item => {
-        const key = item.itemNumber || item.upcCode;
-        const c = clinicData[key] || {};
-        let status = 'OK';
-        if (item.quantity <= (c.threshold || 10)) status = 'Low Stock';
-        if (c.expiration) {
-            const exp = new Date(c.expiration); exp.setHours(0,0,0,0);
-            const days = Math.ceil((exp - today) / (1000*60*60*24));
-            if (days < 0) status = 'Expired';
-            else if (days <= 30) status = 'Expiring Soon';
-        }
-        rows.push([item.name, key, item.quantity, c.category||'', c.location||'', c.expiration||'', c.threshold||10, status]);
-    });
-    
-    const csv = rows.map(r => r.map(c => '"'+(c||'')+'"').join(',')).join('\n');
-    const blob = new Blob([csv], {type: 'text/csv'});
-    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'clinic-inventory.csv'; a.click();
-}
-
-// Auto-refresh every 30 seconds
-setInterval(() => {
-    if (document.getElementById('clinicPanel').classList.contains('active')) {
-        refreshClinicPanel();
-    }
-}, 30000);
-
-console.log('🏥 Clinic Enhancement loaded');
-</script>
